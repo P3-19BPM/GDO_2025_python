@@ -9,10 +9,10 @@ output_excel_path = r"E:\Painel_PowerBI\BASE_GDO\BD_2025\Query.xlsx"
 
 # Arquivos CSV e os nomes das abas correspondentes
 csv_files = {
-    "IMV": r"E:\Painel_PowerBI\BASE_GDO\BD_2025\GDO_2025_1.csv",
-    "ICVPe": r"E:\Painel_PowerBI\BASE_GDO\BD_2025\GDO_2025_2.csv",
-    "ICVPa": r"E:\Painel_PowerBI\BASE_GDO\BD_2025\GDO_2025_3.csv",
-    "POG": r"E:\Painel_PowerBI\BASE_GDO\BD_2025\GDO_2025_4.csv"
+    "BD_IMV": r"E:\Painel_PowerBI\BASE_GDO\BD_2025\GDO_2025_1.csv",
+    "BD_ICVPe": r"E:\Painel_PowerBI\BASE_GDO\BD_2025\GDO_2025_2.csv",
+    "BD_ICVPa": r"E:\Painel_PowerBI\BASE_GDO\BD_2025\GDO_2025_3.csv",
+    "BD_POG": r"E:\Painel_PowerBI\BASE_GDO\BD_2025\GDO_2025_4.csv"
 }
 
 # --- Função para Processar Cada Arquivo ---
