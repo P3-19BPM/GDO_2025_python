@@ -5,23 +5,28 @@ from openpyxl import load_workbook
 
 # --- Configurações dos Caminhos ---
 geojson_path = r"E:\QGis\csv\Mapas_Tratados\SubSetores_19BPM_GeoJSON.json"
-output_excel_path = r"E:\Painel_PowerBI\BASE_GDO\BD_2025\Query.xlsx"
+# "E:\Painel_PowerBI\BASE_GDO\BD_2025\Query.xlsx"
+output_excel_path = r"E:\GDO\GDO_2025\Monitoramento_GDO_2025.xlsx"
+
 
 # Arquivos CSV e os nomes das abas correspondentes
 csv_files = {
-    "BD_IMV": r"E:\Painel_PowerBI\BASE_GDO\BD_2025\GDO_2025_1.csv",
+    "BD_IMV2025": r"E:\Painel_PowerBI\BASE_GDO\BD_2025\GDO_2025_1.csv",
     "BD_ICVPe": r"E:\Painel_PowerBI\BASE_GDO\BD_2025\GDO_2025_2.csv",
     "BD_ICVPa": r"E:\Painel_PowerBI\BASE_GDO\BD_2025\GDO_2025_3.csv",
     "BD_POG": r"E:\Painel_PowerBI\BASE_GDO\BD_2025\GDO_2025_4.csv"
 }
 
 # --- Função para Processar Cada Arquivo ---
+
+
 def process_csv(file_path, geojson_path):
     # Carregar o CSV
     df = pd.read_csv(file_path)
 
     # Criar GeoDataFrame
-    df['geometry'] = df.apply(lambda row: Point(row['numero_longitude'], row['numero_latitude']), axis=1)
+    df['geometry'] = df.apply(lambda row: Point(
+        row['numero_longitude'], row['numero_latitude']), axis=1)
     points_gdf = gpd.GeoDataFrame(df, geometry='geometry', crs='EPSG:4326')
 
     # Carregar GeoJSON
@@ -32,7 +37,8 @@ def process_csv(file_path, geojson_path):
         polygons_gdf = polygons_gdf.to_crs('EPSG:4326')
 
     # Realizar Interseção Geoespacial
-    result_gdf = gpd.sjoin(points_gdf, polygons_gdf, how='left', predicate='within')
+    result_gdf = gpd.sjoin(points_gdf, polygons_gdf,
+                           how='left', predicate='within')
 
     # Selecionar Colunas Desejadas
     output_columns = list(df.columns) + ['name', 'PELOTAO', 'CIA_PM']
@@ -40,12 +46,13 @@ def process_csv(file_path, geojson_path):
 
     # Renomear Colunas
     result = result.rename(columns={
-        'name': 'poligono_intersectado',
-        'PELOTAO': 'geojson_pelotao',
-        'CIA_PM': 'geojson_cia_pm'
+        'name': 'SubSetor',
+        'PELOTAO': 'Pelotao',
+        'CIA_PM': 'CIA_PM'
     })
 
     return result
+
 
 # --- Atualizar ou Criar o Arquivo Excel ---
 try:
@@ -54,7 +61,7 @@ try:
         for sheet_name, file_path in csv_files.items():
             # Processar o arquivo CSV
             processed_data = process_csv(file_path, geojson_path)
-            
+
             # Salvar ou substituir a aba no Excel
             processed_data.to_excel(writer, sheet_name=sheet_name, index=False)
     print(f"Arquivo atualizado em: {output_excel_path}")
@@ -64,7 +71,7 @@ except FileNotFoundError:
         for sheet_name, file_path in csv_files.items():
             # Processar o arquivo CSV
             processed_data = process_csv(file_path, geojson_path)
-            
+
             # Salvar no Excel
             processed_data.to_excel(writer, sheet_name=sheet_name, index=False)
     print(f"Novo arquivo criado em: {output_excel_path}")
