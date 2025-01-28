@@ -25,8 +25,7 @@ def process_csv(file_path, geojson_path):
     df = pd.read_csv(file_path)
 
     # Criar GeoDataFrame
-    df['geometry'] = df.apply(lambda row: Point(
-        row['numero_longitude'], row['numero_latitude']), axis=1)
+    df['geometry'] = df.apply(lambda row: Point(row['numero_longitude'], row['numero_latitude']), axis=1)
     points_gdf = gpd.GeoDataFrame(df, geometry='geometry', crs='EPSG:4326')
 
     # Carregar GeoJSON
@@ -37,8 +36,7 @@ def process_csv(file_path, geojson_path):
         polygons_gdf = polygons_gdf.to_crs('EPSG:4326')
 
     # Realizar Interseção Geoespacial
-    result_gdf = gpd.sjoin(points_gdf, polygons_gdf,
-                           how='left', predicate='within')
+    result_gdf = gpd.sjoin(points_gdf, polygons_gdf, how='left', predicate='within')
 
     # Selecionar Colunas Desejadas
     output_columns = list(df.columns) + ['name', 'PELOTAO', 'CIA_PM']
@@ -51,6 +49,10 @@ def process_csv(file_path, geojson_path):
         'CIA_PM': 'CIA_PM'
     })
 
+    # --- Adicionar a Nova Coluna com a Data ---
+    if 'data_hora_fato' in result.columns:
+        result['data_fato'] = pd.to_datetime(result['data_hora_fato'], errors='coerce').dt.date
+
     return result
 
 
@@ -59,7 +61,7 @@ try:
     # Se o arquivo já existir, carregar as abas existentes
     with pd.ExcelWriter(output_excel_path, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
         for sheet_name, file_path in csv_files.items():
-            # Processar o arquivo CSV
+            # Processar o arquivo CSV e criar a nova coluna 'data_fato'
             processed_data = process_csv(file_path, geojson_path)
 
             # Salvar ou substituir a aba no Excel
@@ -69,7 +71,7 @@ except FileNotFoundError:
     # Se o arquivo não existir, criar um novo
     with pd.ExcelWriter(output_excel_path, engine='openpyxl') as writer:
         for sheet_name, file_path in csv_files.items():
-            # Processar o arquivo CSV
+            # Processar o arquivo CSV e criar a nova coluna 'data_fato'
             processed_data = process_csv(file_path, geojson_path)
 
             # Salvar no Excel
