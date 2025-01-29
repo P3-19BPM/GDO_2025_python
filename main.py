@@ -14,7 +14,8 @@ csv_files = {
     "BD_IMV2025": r"E:\Painel_PowerBI\BASE_GDO\BD_2025\GDO_2025_1.csv",
     "BD_ICVPe": r"E:\Painel_PowerBI\BASE_GDO\BD_2025\GDO_2025_2.csv",
     "BD_ICVPa": r"E:\Painel_PowerBI\BASE_GDO\BD_2025\GDO_2025_3.csv",
-    "BD_POG": r"E:\Painel_PowerBI\BASE_GDO\BD_2025\GDO_2025_4.csv"
+    "BD_POG": r"E:\Painel_PowerBI\BASE_GDO\BD_2025\GDO_2025_4.csv",
+    "BD_PL2025": r"E:\Painel_PowerBI\BASE_GDO\BD_2025\GDO_2025_5.csv"
 }
 
 # --- Função para Processar Cada Arquivo ---
@@ -25,7 +26,8 @@ def process_csv(file_path, geojson_path):
     df = pd.read_csv(file_path)
 
     # Criar GeoDataFrame
-    df['geometry'] = df.apply(lambda row: Point(row['numero_longitude'], row['numero_latitude']), axis=1)
+    df['geometry'] = df.apply(lambda row: Point(
+        row['numero_longitude'], row['numero_latitude']), axis=1)
     points_gdf = gpd.GeoDataFrame(df, geometry='geometry', crs='EPSG:4326')
 
     # Carregar GeoJSON
@@ -36,7 +38,8 @@ def process_csv(file_path, geojson_path):
         polygons_gdf = polygons_gdf.to_crs('EPSG:4326')
 
     # Realizar Interseção Geoespacial
-    result_gdf = gpd.sjoin(points_gdf, polygons_gdf, how='left', predicate='within')
+    result_gdf = gpd.sjoin(points_gdf, polygons_gdf,
+                           how='left', predicate='within')
 
     # Selecionar Colunas Desejadas
     output_columns = list(df.columns) + ['name', 'PELOTAO', 'CIA_PM']
@@ -51,7 +54,8 @@ def process_csv(file_path, geojson_path):
 
     # --- Adicionar a Nova Coluna com a Data ---
     if 'data_hora_fato' in result.columns:
-        result['data_fato'] = pd.to_datetime(result['data_hora_fato'], errors='coerce').dt.date
+        result['data_fato'] = pd.to_datetime(
+            result['data_hora_fato'], errors='coerce').dt.date
 
     return result
 

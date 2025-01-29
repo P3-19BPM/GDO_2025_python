@@ -5,7 +5,7 @@ excel_path = r"E:\GDO\GDO_2025\Monitoramento_GDO_2025.xlsx"
 pdf_output_path = r"E:\Painel_PowerBI\BASE_GDO\BD_2025\Relatorio_GDO_Abas_Especificas.pdf"
 
 # Lista de abas específicas que você deseja incluir no PDF
-abas_especificas = ["IMV", "ICVPe", "ICVPa"]
+abas_especificas = ["IMV", "ICVPe", "ICVPa", "PÓS_DELITO", "PVD", "EGRESSO", "CAVALO_ACO"]
 
 # Abrir o Excel
 excel = win32.gencache.EnsureDispatch("Excel.Application")
