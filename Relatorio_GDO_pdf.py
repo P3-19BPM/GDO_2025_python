@@ -11,11 +11,11 @@ import psutil  # Biblioteca para gerenciar processos do sistema
 excel_path = r"E:\GDO\GDO_2025\Monitoramento_GDO_2025.xlsx"
 
 # Gerar o nome do arquivo PDF dinamicamente com a data do dia
-data_hoje = datetime.datetime.now().strftime("%Y-%m-%d")  # Formato AAAA-MM-DD
+data_hoje = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")  # Formato: AAAA-MM-DD_HH-MM
 pdf_output_path = f"E:\\GDO\\GDO_2025\\Monitoramento_GDO_{data_hoje}.pdf"
 
 # Lista de abas que devem ser exportadas para o PDF na sequência desejada
-abas_especificas = ["IMV", "ICVPe", "ICVPa", "PÓS_DELITO", "PVD", "EGRESSO", "CAVALO_ACO"]
+abas_especificas = ["IMV", "ICVPe", "IRTD", "ICVPa", "POG", "PÓS_DELITO", "PVD", "EGRESSO", "CAVALO_ACO"]
 
 # Criar um caminho temporário para evitar bloqueios no arquivo original
 temp_excel_path = r"E:\GDO\GDO_2025\TEMP_Monitoramento_GDO_2025.xlsx"
