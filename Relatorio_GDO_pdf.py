@@ -4,6 +4,8 @@ import shutil  # Biblioteca para copiar e mover arquivos
 import os  # Biblioteca para manipulação de arquivos e diretórios
 import time  # Biblioteca para controle de tempo (pausas, delays)
 import psutil  # Biblioteca para gerenciar processos do sistema
+from fpdf import FPDF  # Biblioteca para criar PDFs com a capa
+from PyPDF2 import PdfMerger  # Biblioteca para mesclar PDFs
 
 # ---------------------------- CONFIGURAÇÕES INICIAIS ----------------------------
 
@@ -12,10 +14,15 @@ excel_path = r"E:\GDO\GDO_2025\Monitoramento_GDO_2025.xlsx"
 
 # Gerar o nome do arquivo PDF dinamicamente com a data do dia
 data_hoje = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")  # Formato: AAAA-MM-DD_HH-MM
-pdf_output_path = f"E:\\GDO\\GDO_2025\\Monitoramento_GDO_{data_hoje}.pdf"
+pdf_output_path = f"E:\\GDO\\GDO_2025\\GDO_{data_hoje}.pdf"
+pdf_capa_path = f"E:\\GDO\\GDO_2025\\Capa_{data_hoje}.pdf"
+pdf_final_path = f"E:\\GDO\\GDO_2025\\Monitoramento_GDO_{data_hoje}.pdf"
+
+# Caminho da imagem de capa
+imagem_capa_path = r"C:\Users\P3-19BPM\Downloads\Capa_Escura.png"
 
 # Lista de abas que devem ser exportadas para o PDF na sequência desejada
-abas_especificas = ["IMV", "ICVPe", "ICVPa", "POG", "IRTD", "PÓS_DELITO", "PVD", "EGRESSO", "CAVALO_ACO"]
+abas_especificas = ["IMV", "ICVPe", "ICVPa", "IRTD", "PÓS_DELITO", "PVD", "EGRESSO", "CAVALO_ACO", "POG", "PP", "PP_Especifica"]
 
 # Criar um caminho temporário para evitar bloqueios no arquivo original
 temp_excel_path = r"E:\GDO\GDO_2025\TEMP_Monitoramento_GDO_2025.xlsx"
@@ -32,6 +39,17 @@ def fechar_excel():
                 proc.kill()  # Mata o processo do Excel
             except psutil.NoSuchProcess:
                 pass  # O processo já foi encerrado
+
+# ---------------------------- GERAR A CAPA EM PDF ----------------------------
+def gerar_capa_pdf(imagem_path, pdf_output):
+    """
+    Gera um PDF contendo apenas a imagem de capa.
+    """
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.image(imagem_path, x=0, y=0, w=210, h=297)  # A4 em mm (210x297)
+    pdf.output(pdf_output, "F")
+    print(f"Capa gerada com sucesso: {pdf_output}")
 
 # Fechar o Excel antes de rodar para garantir que o arquivo não esteja bloqueado
 fechar_excel()
@@ -98,4 +116,31 @@ finally:
     # ---------------------------- REMOVER ARQUIVO TEMPORÁRIO ----------------------------
     if os.path.exists(temp_excel_path):
         time.sleep(2)  # Pequena pausa para garantir que o arquivo não esteja em uso
-        os.remove(temp_excel_path)  # Exclui o arquivo temporário após o uso
+        os.remove(temp_excel_path)  # Exclui o arquivo temporário após o uso 
+
+# ---------------------------- MESCLAR A CAPA E O RELATÓRIO ----------------------------
+try:
+    # Gerar a capa em PDF
+    gerar_capa_pdf(imagem_capa_path, pdf_capa_path)
+
+    # Criar um objeto para mesclar os PDFs
+    merger = PdfMerger()
+    
+    # Adicionar a capa primeiro
+    merger.append(pdf_capa_path)
+    
+    # Adicionar o relatório gerado pelo Excel
+    merger.append(pdf_output_path)
+    
+    # Salvar o PDF final com a capa
+    merger.write(pdf_final_path)
+    merger.close()
+    
+    print(f"Relatório final gerado com sucesso: {pdf_final_path}")
+
+    # Remover arquivos temporários (capa e PDF original)
+    os.remove(pdf_capa_path)
+    os.remove(pdf_output_path)
+
+except Exception as e:
+    print(f"Erro ao mesclar PDFs: {e}")
