@@ -15,7 +15,7 @@ data_hoje = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")  # Formato: AAAA-
 pdf_output_path = f"E:\\GDO\\GDO_2025\\Monitoramento_GDO_{data_hoje}.pdf"
 
 # Lista de abas que devem ser exportadas para o PDF na sequência desejada
-abas_especificas = ["IMV", "ICVPe", "IRTD", "ICVPa", "POG", "PÓS_DELITO", "PVD", "EGRESSO", "CAVALO_ACO"]
+abas_especificas = ["IMV", "ICVPe", "ICVPa", "POG", "IRTD", "PÓS_DELITO", "PVD", "EGRESSO", "CAVALO_ACO"]
 
 # Criar um caminho temporário para evitar bloqueios no arquivo original
 temp_excel_path = r"E:\GDO\GDO_2025\TEMP_Monitoramento_GDO_2025.xlsx"
