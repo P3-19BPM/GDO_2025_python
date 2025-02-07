@@ -1,19 +1,21 @@
-import win32com.client as win32  # Biblioteca para automação do Microsoft Excel
-import datetime  # Biblioteca para manipulação de datas
-import shutil  # Biblioteca para copiar e mover arquivos
-import os  # Biblioteca para manipulação de arquivos e diretórios
-import time  # Biblioteca para controle de tempo (pausas, delays)
-import psutil  # Biblioteca para gerenciar processos do sistema
-from fpdf import FPDF  # Biblioteca para criar PDFs com a capa
-from PyPDF2 import PdfMerger  # Biblioteca para mesclar PDFs
+import win32com.client as win32  # Automação do Microsoft Excel
+import datetime  # Manipulação de datas
+import shutil  # Copiar e mover arquivos
+import os  # Manipulação de arquivos e diretórios
+import time  # Controle de tempo
+import psutil  # Gerenciar processos do sistema
+import webbrowser  # Abrir o PDF no navegador
+from fpdf import FPDF  # Criar PDFs
+from PyPDF2 import PdfMerger  # Mesclar PDFs
+import subprocess
 
 # ---------------------------- CONFIGURAÇÕES INICIAIS ----------------------------
 
-# Caminho do arquivo Excel original (fonte de dados)
+# Caminho do arquivo Excel original
 excel_path = r"E:\GDO\GDO_2025\Monitoramento_GDO_2025.xlsx"
 
-# Gerar o nome do arquivo PDF dinamicamente com a data do dia
-data_hoje = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")  # Formato: AAAA-MM-DD_HH-MM
+# Gerar nomes dinâmicos para os arquivos
+data_hoje = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")
 pdf_output_path = f"E:\\GDO\\GDO_2025\\GDO_{data_hoje}.pdf"
 pdf_capa_path = f"E:\\GDO\\GDO_2025\\Capa_{data_hoje}.pdf"
 pdf_final_path = f"E:\\GDO\\GDO_2025\\Monitoramento_GDO_{data_hoje}.pdf"
@@ -21,126 +23,129 @@ pdf_final_path = f"E:\\GDO\\GDO_2025\\Monitoramento_GDO_{data_hoje}.pdf"
 # Caminho da imagem de capa
 imagem_capa_path = r"C:\Users\P3-19BPM\Downloads\Capa_Escura.png"
 
-# Lista de abas que devem ser exportadas para o PDF na sequência desejada
-abas_especificas = ["IMV", "ICVPe", "ICVPa", "IRTD", "PÓS_DELITO", "PVD", "EGRESSO", "CAVALO_ACO", "POG", "PP", "PP_Especifica"]
+# Lista de abas que devem ser exportadas para o PDF
+abas_especificas = ["IMV", "ICVPe", "ICVPa", "IRTD", "PÓS_DELITO",
+                    "PVD", "EGRESSO", "CAVALO_ACO", "POG", "PP", "PP_Especifica"]
 
 # Criar um caminho temporário para evitar bloqueios no arquivo original
 temp_excel_path = r"E:\GDO\GDO_2025\TEMP_Monitoramento_GDO_2025.xlsx"
 
-# ---------------------------- FUNÇÃO PARA FECHAR O EXCEL ----------------------------
+# ---------------------------- FECHAR EXCEL SE ESTIVER ABERTO ----------------------------
+
+
 def fechar_excel():
-    """
-    Fecha qualquer instância do Microsoft Excel que esteja rodando no sistema.
-    Isso evita que o arquivo esteja bloqueado para leitura/escrita antes de ser aberto no script.
-    """
+    """ Fecha qualquer instância do Microsoft Excel rodando no sistema. """
     for proc in psutil.process_iter(attrs=['pid', 'name']):
         if proc.info['name'] and 'EXCEL.EXE' in proc.info['name'].upper():
             try:
-                proc.kill()  # Mata o processo do Excel
+                proc.kill()
             except psutil.NoSuchProcess:
                 pass  # O processo já foi encerrado
 
-# ---------------------------- GERAR A CAPA EM PDF ----------------------------
+# ---------------------------- GERAR CAPA EM PDF ----------------------------
+
+
 def gerar_capa_pdf(imagem_path, pdf_output):
-    """
-    Gera um PDF contendo apenas a imagem de capa.
-    """
+    """ Cria um PDF contendo a imagem de capa. """
     pdf = FPDF()
     pdf.add_page()
-    pdf.image(imagem_path, x=0, y=0, w=210, h=297)  # A4 em mm (210x297)
+    pdf.image(imagem_path, x=0, y=0, w=210, h=297)  # A4 (210x297 mm)
     pdf.output(pdf_output, "F")
-    print(f"Capa gerada com sucesso: {pdf_output}")
 
-# Fechar o Excel antes de rodar para garantir que o arquivo não esteja bloqueado
-fechar_excel()
+# ---------------------------- EXPORTAR PLANILHA COMO PDF ----------------------------
 
-# Criar uma cópia do arquivo original para evitar problemas de bloqueio
-shutil.copy(excel_path, temp_excel_path)
 
-# ---------------------------- INICIAR O MICROSOFT EXCEL ----------------------------
+def exportar_planilha_para_pdf():
+    """ Usa o Excel para exportar as abas desejadas para um PDF. """
+    fechar_excel()  # Garante que o Excel não esteja travado
 
-# Inicializa o Excel via COM Object
-excel = win32.gencache.EnsureDispatch("Excel.Application")
-excel.Visible = False  # Mantém o Excel invisível durante a execução
-excel.DisplayAlerts = False  # Desativa pop-ups e alertas do Excel para evitar interrupções
+    # Criar uma cópia do arquivo para evitar bloqueios
+    shutil.copy(excel_path, temp_excel_path)
 
-try:
-    # ---------------------------- ABRIR O ARQUIVO EXCEL ----------------------------
-    # Tenta abrir a cópia do arquivo em modo SOMENTE LEITURA para evitar conflitos
-    workbook = excel.Workbooks.Open(temp_excel_path, ReadOnly=True)
+    excel = win32.Dispatch("Excel.Application")
+    excel.Visible = False
+    excel.DisplayAlerts = False
 
     try:
-        # ---------------------------- CRIAR NOVO ARQUIVO EXCEL TEMPORÁRIO ----------------------------
-        # Criamos um novo arquivo no Excel para armazenar apenas as abas desejadas
+        workbook = excel.Workbooks.Open(temp_excel_path, ReadOnly=True)
+
+        # Criar um novo arquivo Excel temporário
         temp_workbook = excel.Workbooks.Add()
 
-        # Verifica se o novo arquivo foi criado corretamente
-        if temp_workbook is None:
-            raise Exception("Falha ao criar um novo arquivo no Excel.")
-
-        # ---------------------------- REMOVER ABAS PADRÃO DO NOVO ARQUIVO ----------------------------
-        # O Excel cria um novo arquivo com abas padrão, então devemos excluí-las
+        # Remover abas padrão do novo arquivo
         while temp_workbook.Sheets.Count > 1:
-            temp_workbook.Sheets(1).Delete()  # Deleta cada aba extra até restar apenas uma
+            temp_workbook.Sheets(1).Delete()
 
-        # ---------------------------- COPIAR AS ABAS SELECIONADAS ----------------------------
-        # Copiamos as abas desejadas do arquivo original para o novo arquivo
+        # Copiar apenas as abas desejadas
         for aba in abas_especificas:
-            worksheet = workbook.Sheets(aba)  # Seleciona a aba específica
-            worksheet.Copy(After=temp_workbook.Sheets(temp_workbook.Sheets.Count))  # Copia a aba para o final
+            if aba in [sheet.Name for sheet in workbook.Sheets]:
+                workbook.Sheets(aba).Copy(
+                    After=temp_workbook.Sheets(temp_workbook.Sheets.Count))
+            else:
+                print(
+                    f"⚠️  Aviso: A aba '{aba}' não existe no arquivo original.")
 
-        # ---------------------------- EXPORTAR COMO PDF ----------------------------
-        # Converte as abas copiadas para um arquivo PDF no caminho definido
-        temp_workbook.ExportAsFixedFormat(0, pdf_output_path)  # 0 representa o formato PDF
+        # Exportar para PDF
+        temp_workbook.ExportAsFixedFormat(0, pdf_output_path)
 
-        # Mensagem de sucesso
-        print(f"Relatório gerado com sucesso: {pdf_output_path}")
-
-    finally:
-        # ---------------------------- FECHAR OS ARQUIVOS ----------------------------
-        # Fecha o arquivo temporário do Excel sem salvar alterações
-        if 'temp_workbook' in locals():
-            temp_workbook.Close(SaveChanges=False)
-        
-        # Fecha a cópia do arquivo original sem salvar alterações
+        # Fechar arquivos
+        temp_workbook.Close(SaveChanges=False)
         workbook.Close(SaveChanges=False)
 
-except Exception as e:
-    # Se houver erro, exibe a mensagem no terminal
-    print(f"Erro ao gerar o relatório: {e}")
+        print(f"✅ Relatório gerado com sucesso: {pdf_output_path}")
 
-finally:
-    # ---------------------------- FINALIZAR O EXCEL ----------------------------
-    excel.Quit()  # Fecha o Excel completamente
+    except Exception as e:
+        print(f"❌ Erro ao gerar o relatório: {e}")
 
-    # ---------------------------- REMOVER ARQUIVO TEMPORÁRIO ----------------------------
-    if os.path.exists(temp_excel_path):
-        time.sleep(2)  # Pequena pausa para garantir que o arquivo não esteja em uso
-        os.remove(temp_excel_path)  # Exclui o arquivo temporário após o uso 
+    finally:
+        excel.Quit()
+        if os.path.exists(temp_excel_path):
+            time.sleep(1)
+            os.remove(temp_excel_path)
 
-# ---------------------------- MESCLAR A CAPA E O RELATÓRIO ----------------------------
-try:
-    # Gerar a capa em PDF
-    gerar_capa_pdf(imagem_capa_path, pdf_capa_path)
+# ---------------------------- MESCLAR CAPA COM O PDF ----------------------------
 
-    # Criar um objeto para mesclar os PDFs
-    merger = PdfMerger()
-    
-    # Adicionar a capa primeiro
-    merger.append(pdf_capa_path)
-    
-    # Adicionar o relatório gerado pelo Excel
-    merger.append(pdf_output_path)
-    
-    # Salvar o PDF final com a capa
-    merger.write(pdf_final_path)
-    merger.close()
-    
-    print(f"Relatório final gerado com sucesso: {pdf_final_path}")
 
-    # Remover arquivos temporários (capa e PDF original)
-    os.remove(pdf_capa_path)
-    os.remove(pdf_output_path)
+def mesclar_pdfs():
+    """ Mescla a capa com o PDF gerado e remove arquivos temporários. """
+    try:
+        gerar_capa_pdf(imagem_capa_path, pdf_capa_path)
 
-except Exception as e:
-    print(f"Erro ao mesclar PDFs: {e}")
+        merger = PdfMerger()
+        merger.append(pdf_capa_path)
+        merger.append(pdf_output_path)
+        merger.write(pdf_final_path)
+        merger.close()
+
+        print(f"📄 Relatório final gerado: {pdf_final_path}")
+
+        os.remove(pdf_capa_path)
+        os.remove(pdf_output_path)
+
+    except Exception as e:
+        print(f"❌ Erro ao mesclar PDFs: {e}")
+
+# ---------------------------- ABRIR O PDF NO CHROME ----------------------------
+
+
+def abrir_pdf_no_chrome():
+    """ Abre o PDF gerado no navegador Google Chrome. """
+    try:
+        chrome_path = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
+        
+        if os.path.exists(chrome_path):
+            subprocess.Popen([chrome_path, pdf_final_path], shell=True)
+        else:
+            webbrowser.open(pdf_final_path)  # Abre no navegador padrão
+
+        print("🌍 PDF aberto no Chrome.")
+
+    except Exception as e:
+        print(f"❌ Erro ao abrir o PDF: {e}")
+
+
+# ---------------------------- EXECUÇÃO PRINCIPAL ----------------------------
+if __name__ == "__main__":
+    exportar_planilha_para_pdf()
+    mesclar_pdfs()
+    abrir_pdf_no_chrome()
