@@ -64,7 +64,7 @@ def process_csv(file_path, geojson_path):
 # --- Atualizar ou Criar o Arquivo Excel ---
 try:
     # Se o arquivo já existir, carregar as abas existentes
-    with pd.ExcelWriter(output_excel_path, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
+    with pd.ExcelWriter(output_excel_path, engine='openpyxl', mode='w') as writer:
         for sheet_name, file_path in csv_files.items():
             # Processar o arquivo CSV e criar a nova coluna 'data_fato'
             processed_data = process_csv(file_path, geojson_path)
@@ -81,4 +81,7 @@ except FileNotFoundError:
 
             # Salvar no Excel
             processed_data.to_excel(writer, sheet_name=sheet_name, index=False)
+            print("Caminho absoluto do arquivo salvo:",
+          os.path.abspath(output_excel_path))
     print(f"Novo arquivo criado em: {output_excel_path}")
+    
