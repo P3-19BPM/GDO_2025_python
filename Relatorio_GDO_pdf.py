@@ -56,52 +56,42 @@ def gerar_capa_pdf(imagem_path, pdf_output):
 
 
 def exportar_planilha_para_pdf():
-    """ Usa o Excel para exportar as abas desejadas para um PDF. """
+    """Exporta as abas especificadas para PDF respeitando as configurações de impressão existentes."""
     fechar_excel()  # Garante que o Excel não esteja travado
-
-    # Criar uma cópia do arquivo para evitar bloqueios
-    shutil.copy(excel_path, temp_excel_path)
+    print("✅ Excel fechado, se estava aberto.")
 
     excel = win32.Dispatch("Excel.Application")
-    excel.Visible = False
+    excel.Visible = True
     excel.DisplayAlerts = False
 
     try:
-        workbook = excel.Workbooks.Open(temp_excel_path, ReadOnly=True)
+        # Abrir diretamente o arquivo original
+        workbook = excel.Workbooks.Open(excel_path, ReadOnly=False)
+        print("✅ Arquivo Excel aberto com sucesso.")
 
-        # Criar um novo arquivo Excel temporário
-        temp_workbook = excel.Workbooks.Add()
+        # Verificar e selecionar as abas desejadas
+        abas_existentes = [sheet.Name for sheet in workbook.Sheets if sheet.Name in abas_especificas]
 
-        # Remover abas padrão do novo arquivo
-        while temp_workbook.Sheets.Count > 1:
-            temp_workbook.Sheets(1).Delete()
+        if not abas_existentes:
+            print("❌ Nenhuma das abas especificadas foi encontrada no arquivo.")
+            return
 
-        # Copiar apenas as abas desejadas
-        for aba in abas_especificas:
-            if aba in [sheet.Name for sheet in workbook.Sheets]:
-                workbook.Sheets(aba).Copy(
-                    After=temp_workbook.Sheets(temp_workbook.Sheets.Count))
-            else:
-                print(
-                    f"⚠️  Aviso: A aba '{aba}' não existe no arquivo original.")
+        # Selecionar as abas desejadas
+        workbook.WorkSheets(abas_existentes).Select()
+        print(f"✅ Abas selecionadas para exportação: {abas_existentes}")
 
-        # Exportar para PDF
-        temp_workbook.ExportAsFixedFormat(0, pdf_output_path)
+        # Exportar diretamente para o PDF
+        workbook.ActiveSheet.ExportAsFixedFormat(0, pdf_output_path)
+        print(f"✅ PDF exportado com sucesso: {pdf_output_path}.")
 
-        # Fechar arquivos
-        temp_workbook.Close(SaveChanges=False)
-        workbook.Close(SaveChanges=False)
-
-        print(f"✅ Relatório gerado com sucesso: {pdf_output_path}")
+        # Não fechar ou excluir o arquivo original
+        print("📄 Exportação concluída sem alterar a planilha original.")
 
     except Exception as e:
         print(f"❌ Erro ao gerar o relatório: {e}")
 
     finally:
-        excel.Quit()
-        if os.path.exists(temp_excel_path):
-            time.sleep(1)
-            os.remove(temp_excel_path)
+        excel.Quit()  # Fecha o aplicativo Excel para liberar a memória
 
 # ---------------------------- MESCLAR CAPA COM O PDF ----------------------------
 
