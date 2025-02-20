@@ -113,7 +113,7 @@ def mesclar_pdfs():
         os.remove(pdf_output_path)
 
     except Exception as e:
-        print(f"❌ Erro ao mesclar PDFs: {e}")
+        print(f"❌ Erro ao mesclar os PDFs: {e}")
 
 # ---------------------------- ABRIR O PDF NO CHROME ----------------------------
 
