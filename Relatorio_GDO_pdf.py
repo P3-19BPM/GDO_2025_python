@@ -70,7 +70,8 @@ def exportar_planilha_para_pdf():
         print("✅ Arquivo Excel aberto com sucesso.")
 
         # Verificar e selecionar as abas desejadas
-        abas_existentes = [sheet.Name for sheet in workbook.Sheets if sheet.Name in abas_especificas]
+        abas_existentes = [
+            sheet.Name for sheet in workbook.Sheets if sheet.Name in abas_especificas]
 
         if not abas_existentes:
             print("❌ Nenhuma das abas especificadas foi encontrada no arquivo.")
@@ -122,7 +123,7 @@ def abrir_pdf_no_chrome():
     """ Abre o PDF gerado no navegador Google Chrome. """
     try:
         chrome_path = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
-        
+
         if os.path.exists(chrome_path):
             subprocess.Popen([chrome_path, pdf_final_path], shell=True)
         else:
