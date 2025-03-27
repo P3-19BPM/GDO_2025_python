@@ -16,7 +16,8 @@ csv_files = {
     "BD_ICVPa": r"E:\Painel_PowerBI\BASE_GDO\BD_2025\GDO_2025_3.csv",
     "BD_POG": r"E:\Painel_PowerBI\BASE_GDO\BD_2025\GDO_2025_4.csv",
     "BD_PL": r"E:\Painel_PowerBI\BASE_GDO\BD_2025\GDO_2025_5.csv",
-    "BD_IRTD": r"E:\Painel_PowerBI\BASE_GDO\BD_2025\GDO_2025_6.csv"
+    "BD_IRTD": r"E:\Painel_PowerBI\BASE_GDO\BD_2025\GDO_2025_6.csv",
+    "BD_INTERACAO_COMUNITARIA": r"E:\Painel_PowerBI\BASE_GDO\BD_2025\GDO_2025_7.csv"
 }
 
 # --- Função para Processar Cada Arquivo ---
@@ -82,6 +83,5 @@ except FileNotFoundError:
             # Salvar no Excel
             processed_data.to_excel(writer, sheet_name=sheet_name, index=False)
             print("Caminho absoluto do arquivo salvo:",
-          os.path.abspath(output_excel_path))
+                  os.path.abspath(output_excel_path))
     print(f"Novo arquivo criado em: {output_excel_path}")
-    
