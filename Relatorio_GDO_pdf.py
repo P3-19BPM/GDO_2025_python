@@ -25,7 +25,7 @@ imagem_capa_path = r"C:\Users\P3-19BPM\Downloads\Capa_Escura.png"
 
 # Lista de abas que devem ser exportadas para o PDF
 abas_especificas = ["IMV", "ICVPe", "ICVPa", "IRTD", "PÓS_DELITO",
-                    "PVD", "EGRESSO", "CAVALO_ACO", "POG", "PPROXIMIDADE"]
+                    "PVD", "EGRESSO", "CAVALO_ACO", "POG", "PROXIMIDADE"]
 
 # Criar um caminho temporário para evitar bloqueios no arquivo original
 temp_excel_path = r"E:\GDO\GDO_2025\TEMP_Monitoramento_GDO_2025.xlsx"
