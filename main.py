@@ -17,49 +17,68 @@ csv_files = {
     "BD_POG": r"E:\Painel_PowerBI\BASE_GDO\BD_2025\GDO_2025_4.csv",
     "BD_PL": r"E:\Painel_PowerBI\BASE_GDO\BD_2025\GDO_2025_5.csv",
     "BD_IRTD": r"E:\Painel_PowerBI\BASE_GDO\BD_2025\GDO_2025_6.csv",
-    "BD_INTERACAO_COMUNITARIA": r"E:\Painel_PowerBI\BASE_GDO\BD_2025\GDO_2025_7.csv"
+    "BD_INTERACAO_COMUNITARIA": r"E:\Painel_PowerBI\BASE_GDO\BD_2025\GDO_2025_7.csv",
+    "BD_MRPP_INT_CUM": r"E:\Painel_PowerBI\BASE_GDO\BD_2025\INT_COM_2025_1.csv",
+    "BD_RC_INT_CUM": r"E:\Painel_PowerBI\BASE_GDO\BD_2025\INT_COM_2025_2.csv",
+    "BD_VCP_INT_CUM": r"E:\Painel_PowerBI\BASE_GDO\BD_2025\INT_COM_2025_3.csv",
+    "BD_VTC_DENOMINADOR_INT_CUM": r"E:\Painel_PowerBI\BASE_GDO\BD_2025\INT_COM_2025_4.csv",
+    "BD_VTC_NUMERADOR_INT_CUM": r"E:\Painel_PowerBI\BASE_GDO\BD_2025\INT_COM_2025_5.csv",
+    "BD_VT_DENOMINADOR_INT_CUM": r"E:\Painel_PowerBI\BASE_GDO\BD_2025\INT_COM_2025_6.csv",
+    "BD_VT_NUMERADOR_INT_CUM": r"E:\Painel_PowerBI\BASE_GDO\BD_2025\INT_COM_2025_7.csv"
 }
 
 # --- Função para Processar Cada Arquivo ---
 
 
 def process_csv(file_path, geojson_path):
-    # Carregar o CSV
-    df = pd.read_csv(file_path)
+    try:
+        # Carregar o CSV
+        df = pd.read_csv(file_path)
+        
+        # Verificar se as colunas necessárias existem
+        required_columns = ['numero_longitude', 'numero_latitude']
+        missing_columns = [col for col in required_columns if col not in df.columns]
+        
+        if missing_columns:
+            print(f"\n[ERRO] Arquivo CSV: {file_path}")
+            print(f"Colunas esperadas: {required_columns}")
+            print(f"Colunas faltando: {missing_columns}")
+            print(f"Colunas disponíveis: {df.columns.tolist()}\n")
+            raise ValueError(f"Colunas faltando: {missing_columns}")
+        
+        # Criar GeoDataFrame
+        df['geometry'] = df.apply(lambda row: Point(
+            row['numero_longitude'], row['numero_latitude']), axis=1)
+        points_gdf = gpd.GeoDataFrame(df, geometry='geometry', crs='EPSG:4326')
 
-    # Criar GeoDataFrame
-    df['geometry'] = df.apply(lambda row: Point(
-        row['numero_longitude'], row['numero_latitude']), axis=1)
-    points_gdf = gpd.GeoDataFrame(df, geometry='geometry', crs='EPSG:4326')
+        # Restante do seu código...
+        polygons_gdf = gpd.read_file(geojson_path)
 
-    # Carregar GeoJSON
-    polygons_gdf = gpd.read_file(geojson_path)
+        if polygons_gdf.crs != 'EPSG:4326':
+            polygons_gdf = polygons_gdf.to_crs('EPSG:4326')
 
-    # Garantir CRS Compatível
-    if polygons_gdf.crs != 'EPSG:4326':
-        polygons_gdf = polygons_gdf.to_crs('EPSG:4326')
+        result_gdf = gpd.sjoin(points_gdf, polygons_gdf,
+                               how='left', predicate='within')
 
-    # Realizar Interseção Geoespacial
-    result_gdf = gpd.sjoin(points_gdf, polygons_gdf,
-                           how='left', predicate='within')
+        output_columns = list(df.columns) + ['name', 'PELOTAO', 'CIA_PM']
+        result = result_gdf[output_columns]
 
-    # Selecionar Colunas Desejadas
-    output_columns = list(df.columns) + ['name', 'PELOTAO', 'CIA_PM']
-    result = result_gdf[output_columns]
+        result = result.rename(columns={
+            'name': 'SubSetor',
+            'PELOTAO': 'Pelotao',
+            'CIA_PM': 'CIA_PM'
+        })
 
-    # Renomear Colunas
-    result = result.rename(columns={
-        'name': 'SubSetor',
-        'PELOTAO': 'Pelotao',
-        'CIA_PM': 'CIA_PM'
-    })
+        if 'data_hora_fato' in result.columns:
+            result['data_fato'] = pd.to_datetime(
+                result['data_hora_fato'], errors='coerce').dt.date
 
-    # --- Adicionar a Nova Coluna com a Data ---
-    if 'data_hora_fato' in result.columns:
-        result['data_fato'] = pd.to_datetime(
-            result['data_hora_fato'], errors='coerce').dt.date
+        return result
 
-    return result
+    except Exception as e:
+        print(f"\n[ERRO] Falha ao processar o arquivo: {file_path}")
+        print(f"Detalhes do erro: {str(e)}\n")
+        raise  # Re-lança o erro para interromper a execução
 
 
 # --- Atualizar ou Criar o Arquivo Excel ---
