@@ -4,7 +4,7 @@ from shapely.geometry import Point
 import os
 
 # --- Configurações dos Caminhos ---
-geojson_path = r"E:\QGis\UrbanoRural\Uniao_Urb_Rural_MG.json"
+geojson_path = r"E:\QGis\UrbanoRural\Rural_19BPM.json"
 output_excel_path = r"E:\QGis\UrbanoRural\BD_2020-2024_memorando_018-15RPM.xlsx"
 
 # Dicionário com os arquivos e abas correspondentes
