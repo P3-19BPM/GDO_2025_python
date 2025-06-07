@@ -21,14 +21,14 @@ pdf_capa_path = f"E:\\GDO\\GDO_2025\\Capa_{data_hoje}.pdf"
 pdf_final_path = f"E:\\GDO\\GDO_2025\\Monitoramento_INT_Comunitaria_{data_hoje}.pdf"
 
 # Caminho da imagem de capa
-imagem_capa_path = r"C:\Users\P3-19BPM\Downloads\Capa_Escura.png"
+imagem_capa_path = r"C:\Users\P3-19BPM\Downloads\Capa_Escura2.png"
 
 # Lista de abas que devem ser exportadas para o PDF
 abas_especificas = ["VCP", "RC", "RCR", "MRPP", "VT",
                     "VTCV"]
 
 # Criar um caminho temporário para evitar bloqueios no arquivo original
-temp_excel_path = r"E:\GDO\GDO_2025\TEMP_Monitoramento_GDO_2025.xlsx"
+temp_excel_path = r"E:\GDO\GDO_2025\TEMP_Monitoramento_INT_2025.xlsx"
 
 # ---------------------------- FECHAR EXCEL SE ESTIVER ABERTO ----------------------------
 
