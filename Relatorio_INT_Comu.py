@@ -18,7 +18,7 @@ excel_path = r"E:\GDO\GDO_2025\Monitoramento_INT_Comunitaria_2025.xlsx"
 data_hoje = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")
 pdf_output_path = f"E:\\GDO\\GDO_2025\\GDO_{data_hoje}.pdf"
 pdf_capa_path = f"E:\\GDO\\GDO_2025\\Capa_{data_hoje}.pdf"
-pdf_final_path = f"E:\\GDO\\GDO_2025\\Monitoramento_INT_Comunitaria_{data_hoje}.pdf"
+pdf_final_path = f"E:\\GDO\\GDO_2025\\Monitoramento_GDI_{data_hoje}.pdf"
 
 # Caminho da imagem de capa
 imagem_capa_path = r"C:\Users\P3-19BPM\Downloads\Capa_Escura2.png"
