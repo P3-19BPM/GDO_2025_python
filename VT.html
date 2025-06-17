@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,23 +12,70 @@
     <!-- Turf.js (Geoanálise) -->
     <script src="https://npmcdn.com/@turf/turf/turf.min.js"></script>
     <!-- Leaflet (Mapas) -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f0f2f5; }
-        .fade-in { animation: fadeIn 0.5s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .geo-filters-disabled { opacity: 0.5; pointer-events: none; }
-        .hidden { display: none; }
-        .leaflet-container { background: #fff; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .geo-filters-disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .leaflet-container {
+            background: #fff;
+        }
     </style>
 </head>
+
 <body class="p-4 md:p-8">
     <div class="max-w-7xl mx-auto">
         <header class="mb-8">
@@ -42,28 +90,39 @@
                 <h2 class="text-xl font-semibold text-gray-700 mb-4">1. Carregar Arquivos</h2>
                 <div class="grid md:grid-cols-2 gap-6">
                     <div>
-                        <label for="excel-file" class="block text-sm font-medium text-gray-700 mb-1">Arquivo Excel (VT_CRIME e VT_VISITA)</label>
-                        <input type="file" id="excel-file" accept=".xlsx, .xls" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                        <label for="excel-file" class="block text-sm font-medium text-gray-700 mb-1">Arquivo Excel
+                            (VT_CRIME e VT_VISITA)</label>
+                        <input type="file" id="excel-file" accept=".xlsx, .xls"
+                            class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
                     </div>
                     <div>
-                        <label for="geojson-file" class="block text-sm font-medium text-gray-700 mb-1">Arquivo de Setores (GeoJSON)</label>
-                        <input type="file" id="geojson-file" accept=".geojson" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100">
+                        <label for="geojson-file" class="block text-sm font-medium text-gray-700 mb-1">Arquivo de
+                            Setores (GeoJSON)</label>
+                        <input type="file" id="geojson-file" accept=".geojson"
+                            class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100">
                     </div>
                 </div>
-                 <div class="mt-6"><button id="process-button" class="bg-blue-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-700">Processar e Analisar</button></div>
+                <div class="mt-6"><button id="process-button"
+                        class="bg-blue-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-700">Processar e
+                        Analisar</button></div>
             </div>
-             <!-- Info de dados carregados -->
-             <div id="loaded-data-info" class="hidden">
-                 <h2 class="text-xl font-semibold text-gray-700 mb-4">Dados Carregados</h2>
-                 <p class="text-gray-600">Continuando com os arquivos salvos:</p>
-                 <ul class="list-disc list-inside my-2 text-gray-800">
+            <!-- Info de dados carregados -->
+            <div id="loaded-data-info" class="hidden">
+                <h2 class="text-xl font-semibold text-gray-700 mb-4">Dados Carregados</h2>
+                <p class="text-gray-600">Continuando com os arquivos salvos:</p>
+                <ul class="list-disc list-inside my-2 text-gray-800">
                     <li id="loaded-excel-filename"></li>
                     <li id="loaded-geojson-filename" class="hidden"></li>
-                 </ul>
-                 <button id="clear-data-button" class="mt-4 bg-red-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-red-700">Limpar Dados e Carregar Novos</button>
+                </ul>
+                <button id="clear-data-button"
+                    class="mt-4 bg-red-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-red-700">Limpar Dados e
+                    Carregar Novos</button>
             </div>
-             <!-- Loader e Erro -->
-             <div class="mt-4 flex items-center gap-4"><div id="loader" class="loader hidden"></div><div id="error-message" class="text-red-600 font-medium hidden"></div></div>
+            <!-- Loader e Erro -->
+            <div class="mt-4 flex items-center gap-4">
+                <div id="loader" class="loader hidden"></div>
+                <div id="error-message" class="text-red-600 font-medium hidden"></div>
+            </div>
         </div>
 
         <!-- Seção Principal de Análise -->
@@ -71,32 +130,59 @@
             <!-- Filtros -->
             <div id="filter-section" class="bg-white p-6 rounded-xl shadow-md mb-8 fade-in">
                 <h2 class="text-xl font-semibold text-gray-700 mb-4">2. Filtros de Análise</h2>
-                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
-                    <div><label for="municipio-filter" class="block text-sm font-medium text-gray-700">Município</label><select id="municipio-filter" class="mt-1 block w-full pl-3 pr-10 py-2 border-gray-300 rounded-md"></select></div>
-                    <div><label for="start-date-filter" class="block text-sm font-medium text-gray-700">Data Início</label><input type="date" id="start-date-filter" class="mt-1 block w-full border-gray-300 rounded-md"></div>
-                    <div><label for="end-date-filter" class="block text-sm font-medium text-gray-700">Data Fim</label><input type="date" id="end-date-filter" class="mt-1 block w-full border-gray-300 rounded-md"></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+                    <div><label for="municipio-filter"
+                            class="block text-sm font-medium text-gray-700">Município</label><select
+                            id="municipio-filter"
+                            class="mt-1 block w-full pl-3 pr-10 py-2 border-gray-300 rounded-md"></select></div>
+                    <div><label for="start-date-filter" class="block text-sm font-medium text-gray-700">Data
+                            Início</label><input type="date" id="start-date-filter"
+                            class="mt-1 block w-full border-gray-300 rounded-md"></div>
+                    <div><label for="end-date-filter" class="block text-sm font-medium text-gray-700">Data
+                            Fim</label><input type="date" id="end-date-filter"
+                            class="mt-1 block w-full border-gray-300 rounded-md"></div>
                     <div id="geo-filters" class="contents geo-filters-disabled">
-                        <div><label for="cia-filter" class="block text-sm font-medium text-gray-700">CIA PM</label><select id="cia-filter" class="mt-1 block w-full pl-3 pr-10 py-2 border-gray-300 rounded-md"></select></div>
-                        <div><label for="pel-filter" class="block text-sm font-medium text-gray-700">PEL PM</label><select id="pel-filter" class="mt-1 block w-full pl-3 pr-10 py-2 border-gray-300 rounded-md"></select></div>
-                        <div><label for="subsetor-filter" class="block text-sm font-medium text-gray-700">SubSetor</label><select id="subsetor-filter" class="mt-1 block w-full pl-3 pr-10 py-2 border-gray-300 rounded-md"></select></div>
+                        <div><label for="cia-filter" class="block text-sm font-medium text-gray-700">CIA
+                                PM</label><select id="cia-filter"
+                                class="mt-1 block w-full pl-3 pr-10 py-2 border-gray-300 rounded-md"></select></div>
+                        <div><label for="pel-filter"
+                                class="block text-sm font-medium text-gray-700">Pelotão</label><select id="pel-filter"
+                                class="mt-1 block w-full pl-3 pr-10 py-2 border-gray-300 rounded-md"></select></div>
+                        <div><label for="subsetor-filter" class="block text-sm font-medium text-gray-700">Sub
+                                Setor</label><select id="subsetor-filter"
+                                class="mt-1 block w-full pl-3 pr-10 py-2 border-gray-300 rounded-md"></select></div>
                     </div>
                 </div>
-                 <div class="mt-4"><button id="apply-filters-button" class="bg-green-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-green-700">Aplicar Filtros</button></div>
+                <div class="mt-4"><button id="apply-filters-button"
+                        class="bg-green-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-green-700">Aplicar
+                        Filtros</button></div>
             </div>
 
             <!-- Mapa e Dashboard -->
             <div class="grid lg:grid-cols-3 gap-8 mb-8 fade-in">
                 <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-md">
-                   <h2 class="text-xl font-semibold text-gray-700 mb-4">3. Mapa de Ocorrências</h2>
-                   <div id="map" style="height: 500px;" class="rounded-lg z-0"></div>
+                    <h2 class="text-xl font-semibold text-gray-700 mb-4">3. Mapa de Ocorrências</h2>
+                    <div id="map" style="height: 500px;" class="rounded-lg z-0"></div>
                 </div>
                 <div id="dashboard-section" class="lg:col-span-1">
                     <h2 class="text-xl font-semibold text-gray-700 mb-4">4. Resumo das Visitas</h2>
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-6">
-                        <div class="bg-red-400 text-white p-6 rounded-xl shadow-lg"><h3>Total de Crimes</h3><p id="total-crimes" class="text-4xl font-bold mt-2">0</p></div>
-                        <div class="bg-gray-300 text-gray-800 p-6 rounded-xl shadow-lg"><h3>Sem Visitas</h3><p id="no-visits" class="text-4xl font-bold mt-2">0</p></div>
-                        <div class="bg-green-300 text-gray-800 p-6 rounded-xl shadow-lg"><h3>Com 1 Visita</h3><p id="one-visit" class="text-4xl font-bold mt-2">0</p></div>
-                        <div class="bg-green-600 text-white p-6 rounded-xl shadow-lg"><h3>Com 2+ Visitas</h3><p id="two-plus-visits" class="text-4xl font-bold mt-2">0</p></div>
+                        <div class="bg-red-400 text-white p-6 rounded-xl shadow-lg">
+                            <h3>Total de Crimes</h3>
+                            <p id="total-crimes" class="text-4xl font-bold mt-2">0</p>
+                        </div>
+                        <div class="bg-gray-300 text-gray-800 p-6 rounded-xl shadow-lg">
+                            <h3>Sem Visitas</h3>
+                            <p id="no-visits" class="text-4xl font-bold mt-2">0</p>
+                        </div>
+                        <div class="bg-green-300 text-gray-800 p-6 rounded-xl shadow-lg">
+                            <h3>Com 1 Visita</h3>
+                            <p id="one-visit" class="text-4xl font-bold mt-2">0</p>
+                        </div>
+                        <div class="bg-green-600 text-white p-6 rounded-xl shadow-lg">
+                            <h3>Com 2+ Visitas</h3>
+                            <p id="two-plus-visits" class="text-4xl font-bold mt-2">0</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -104,7 +190,9 @@
             <!-- Consulta de Ocorrências -->
             <div id="lookup-section" class="bg-white p-6 rounded-xl shadow-md fade-in">
                 <h2 class="text-xl font-semibold text-gray-700 mb-4">5. Consultar Detalhes da Ocorrência</h2>
-                <div><label for="occurrence-select" class="block text-sm font-medium text-gray-700">Selecione a Ocorrência:</label><select id="occurrence-select" class="mt-1 block w-full pl-3 pr-10 py-2 border-gray-300 rounded-md"></select></div>
+                <div><label for="occurrence-select" class="block text-sm font-medium text-gray-700">Selecione a
+                        Ocorrência:</label><select id="occurrence-select"
+                        class="mt-1 block w-full pl-3 pr-10 py-2 border-gray-300 rounded-md"></select></div>
                 <div id="results-area" class="mt-6 overflow-x-auto"></div>
             </div>
         </main>
@@ -151,7 +239,7 @@
 
         // --- Gerenciamento do IndexedDB ---
         const db = {
-            DB_NAME: 'CrimeAnalysisDB_v2',
+            DB_NAME: 'CrimeAnalysisDB_v3', // Versão incrementada para evitar conflitos de schema
             STORE_NAME: 'FileStore',
             open() {
                 return new Promise((resolve, reject) => {
@@ -190,12 +278,12 @@
         };
 
         // --- Funções Principais e de Inicialização ---
-        
+
         async function initializeApp() {
             showLoader(true);
             try {
                 const savedCrimeData = await db.get('crimeData');
-                if (savedCrimeData) {
+                if (savedCrimeData && savedCrimeData.length > 0) {
                     state.allCrimeData = savedCrimeData;
                     state.allVisitaData = await db.get('visitaData');
                     state.geojsonData = await db.get('geojsonData');
@@ -209,7 +297,7 @@
                         geoLi.textContent = `GeoJSON: ${geojsonFileName}`;
                         geoLi.classList.remove('hidden');
                     }
-                    
+
                     ui.uploadInputs.classList.add('hidden');
                     ui.loadedDataInfo.classList.remove('hidden');
                     initMap();
@@ -226,7 +314,7 @@
 
         function initMap() {
             if (state.map) return;
-            state.map = L.map(ui.map).setView([-18.22, -41.50], 10); // Teófilo Otoni Coordinates
+            state.map = L.map(ui.map).setView([-18.22, -41.50], 10); // Coordenadas de Teófilo Otoni
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(state.map);
@@ -241,7 +329,7 @@
             try {
                 const workbook = await readExcelFile(excelFile);
                 validateAndLoadExcelData(workbook);
-                
+
                 if (ui.geojsonFile.files[0]) {
                     const geojsonText = await ui.geojsonFile.files[0].text();
                     state.geojsonData = JSON.parse(geojsonText);
@@ -249,21 +337,21 @@
                 } else {
                     state.geojsonData = null;
                 }
-                
+
                 await saveAllDataToDB(excelFile.name, ui.geojsonFile.files[0]?.name);
-                
+
                 initMap();
                 runFullAnalysis();
                 ui.analysisSection.classList.remove('hidden');
-                
+
                 ui.uploadInputs.classList.add('hidden');
                 ui.loadedDataInfo.classList.remove('hidden');
                 document.getElementById('loaded-excel-filename').textContent = `Excel: ${excelFile.name}`;
                 if (ui.geojsonFile.files[0]) {
-                     document.getElementById('loaded-geojson-filename').textContent = `GeoJSON: ${ui.geojsonFile.files[0].name}`;
-                     document.getElementById('loaded-geojson-filename').classList.remove('hidden');
+                    document.getElementById('loaded-geojson-filename').textContent = `GeoJSON: ${ui.geojsonFile.files[0].name}`;
+                    document.getElementById('loaded-geojson-filename').classList.remove('hidden');
                 }
-                
+
             } catch (error) {
                 showError(`Erro ao processar: ${error.message}`);
                 ui.analysisSection.classList.add('hidden');
@@ -290,12 +378,12 @@
                 reader.readAsArrayBuffer(file);
             });
         }
-        
+
         function validateAndLoadExcelData(workbook) {
             const crimeSheetName = "VT_CRIME";
             const visitaSheetName = "VT_VISITA";
             if (!workbook.SheetNames.includes(crimeSheetName) || !workbook.SheetNames.includes(visitaSheetName)) throw new Error(`Abas "${crimeSheetName}" e "${visitaSheetName}" não encontradas.`);
-            
+
             state.allCrimeData = XLSX.utils.sheet_to_json(workbook.Sheets[crimeSheetName]);
             state.allVisitaData = XLSX.utils.sheet_to_json(workbook.Sheets[visitaSheetName]);
 
@@ -319,15 +407,14 @@
 
         function applyFiltersAndRedraw() {
             let currentData = [...state.allCrimeData];
-            
-            // Aplicar filtros
+
             const municipio = ui.filters.municipio.value;
             if (municipio) currentData = currentData.filter(c => c.nome_municipio === municipio);
-            
+
             const startDate = ui.filters.startDate.valueAsDate;
             const endDate = ui.filters.endDate.valueAsDate;
             if (startDate || endDate) {
-                 currentData = currentData.filter(c => {
+                currentData = currentData.filter(c => {
                     const crimeDate = parseExcelDate(c.data_hora_fato);
                     if (!crimeDate) return false;
                     if (startDate && crimeDate < startDate) return false;
@@ -339,52 +426,60 @@
                     return true;
                 });
             }
-            
+
             const cia = ui.filters.cia.value;
             const pel = ui.filters.pel.value;
             const subsetor = ui.filters.subsetor.value;
             if (cia) currentData = currentData.filter(c => c.cia_pm === cia);
-            if (pel) currentData = currentData.filter(c => c.pel_pm === pel);
-            if (subsetor) currentData = currentData.filter(c => c.subsetor === subsetor);
-            
+            if (pel) currentData = currentData.filter(c => c.pelotao === pel);
+            if (subsetor) currentData = currentData.filter(c => c.sub_setor === subsetor);
+
             state.filteredCrimeData = currentData;
-            
+
             updateDashboard(state.filteredCrimeData, state.allVisitaData);
             populateOccurrenceDropdown(state.filteredCrimeData);
             updateMapLayers();
         }
 
         function populateAllFilters() {
-            const populateSelect = (el, values, keepValue) => {
-                const currentValue = keepValue ? el.value : null;
-                el.innerHTML = `<option value="">Todos</option>`;
-                [...new Set(values)].filter(v => v).sort().forEach(v => {
-                    el.innerHTML += `<option value="${v}" ${currentValue === v ? 'selected' : ''}>${v}</option>`;
+            const populateSelect = (el, values, keepSelection) => {
+                const currentValue = keepSelection ? el.value : null;
+                const uniqueSorted = [...new Set(values)].filter(v => v).sort();
+
+                el.innerHTML = '<option value="">Todos</option>';
+                uniqueSorted.forEach(v => {
+                    const isSelected = currentValue === String(v) ? 'selected' : '';
+                    el.innerHTML += `<option value="${v}" ${isSelected}>${v}</option>`;
                 });
             };
 
-            populateSelect(ui.filters.municipio, state.allCrimeData.map(c => c.nome_municipio));
-            if(state.geojsonData) {
-                // Filtros em cascata
+            // Popula filtros independentes
+            populateSelect(ui.filters.municipio, state.allCrimeData.map(c => c.nome_municipio), true);
+
+            // Popula filtros geográficos em cascata
+            if (state.geojsonData) {
                 const selectedCia = ui.filters.cia.value;
                 const selectedPel = ui.filters.pel.value;
 
-                const availableCias = state.allCrimeData.map(c => c.cia_pm);
-                populateSelect(ui.filters.cia, availableCias);
+                // CIA: Sempre baseado em todos os dados
+                const allCias = state.allCrimeData.map(c => c.cia_pm);
+                populateSelect(ui.filters.cia, allCias, true);
 
+                // PELOTÃO: Baseado em todos os dados ou filtrado pela CIA selecionada
                 const availablePels = state.allCrimeData
                     .filter(c => !selectedCia || c.cia_pm === selectedCia)
-                    .map(c => c.pel_pm);
+                    .map(c => c.pelotao);
                 populateSelect(ui.filters.pel, availablePels, true);
 
+                // SUB SETOR: Baseado em todos, ou filtrado por CIA e/ou PELOTÃO
                 const availableSubsetores = state.allCrimeData
-                    .filter(c => (!selectedCia || c.cia_pm === selectedCia) && (!selectedPel || c.pel_pm === selectedPel))
-                    .map(c => c.subsetor);
+                    .filter(c => (!selectedCia || c.cia_pm === selectedCia) && (!selectedPel || c.pelotao === selectedPel))
+                    .map(c => c.sub_setor);
                 populateSelect(ui.filters.subsetor, availableSubsetores, true);
             }
         }
-        
-        // --- Funções de Atualização da UI (Dashboard, Select, Tabela) ---
+
+        // --- Funções de Atualização da UI ---
 
         function updateDashboard(crimes, visitas) {
             const uniqueOccurrences = [...new Set(crimes.map(c => String(c.numero_ocorrencia)))];
@@ -410,7 +505,7 @@
             unique.forEach(occ => ui.occurrenceSelect.innerHTML += `<option value="${occ}">${occ}</option>`);
             ui.resultsArea.innerHTML = '';
         }
-        
+
         function displayOccurrenceDetails() {
             const selected = ui.occurrenceSelect.value;
             ui.resultsArea.innerHTML = '';
@@ -419,7 +514,7 @@
             const people = state.filteredCrimeData
                 .filter(r => String(r.numero_ocorrencia) === selected)
                 .filter(r => !palavrasExcluidas.some(p => String(r.envolvimento_descricao || '').toLowerCase().includes(p)));
-            
+
             if (people.length > 0) {
                 ui.resultsArea.innerHTML = `<table class="min-w-full divide-y divide-gray-200 mt-4">
                     <thead class="bg-gray-50"><tr>
@@ -455,35 +550,34 @@
                 const point = turf.point([lon, lat]);
                 for (const feature of state.geojsonData.features) {
                     if (turf.booleanPointInPolygon(point, feature)) {
-                        crime.cia_pm = findProperty(feature.properties, 'CIA PM');
-                        crime.pel_pm = findProperty(feature.properties, 'PEL PM');
-                        crime.subsetor = findProperty(feature.properties, 'SubSetor');
+                        crime.cia_pm = findProperty(feature.properties, 'CIA_PM');
+                        crime.pelotao = findProperty(feature.properties, 'PELOTAO');
+                        crime.sub_setor = findProperty(feature.properties, 'SUB_SETOR');
                         return;
                     }
                 }
             });
         }
-        
+
         function updateMapLayers() {
             if (!state.map) return;
-
-            // Limpa camadas antigas
             state.crimeMarkersLayer.clearLayers();
-            if (state.sectorLayer) state.sectorLayer.clearLayers();
-            
-            // Desenha setores do GeoJSON
+            if (state.sectorLayer) state.map.removeLayer(state.sectorLayer);
+
             if (state.geojsonData) {
                 state.sectorLayer = L.geoJSON(state.geojsonData, {
-                    style: { color: "#3b82f6", weight: 2, opacity: 0.6, fillOpacity: 0.1 },
+                    style: feature => ({
+                        color: "#3b82f6", weight: 2, opacity: 0.7, fillOpacity: 0.1,
+                    }),
                     onEachFeature: (feature, layer) => {
-                        const cia = findProperty(feature.properties, 'CIA PM');
-                        const pel = findProperty(feature.properties, 'PEL PM');
-                        const subsetor = findProperty(feature.properties, 'SubSetor');
-                        layer.bindTooltip(`<b>Setor:</b> ${subsetor || pel || cia}`);
-                        
+                        const cia = findProperty(feature.properties, 'CIA_PM');
+                        const pel = findProperty(feature.properties, 'PELOTAO');
+                        const subsetor = findProperty(feature.properties, 'SUB_SETOR');
+                        layer.bindTooltip(`<b>CIA:</b> ${cia}<br><b>Pelotão:</b> ${pel}<br><b>Sub Setor:</b> ${subsetor}`);
+
                         layer.on('click', () => {
                             ui.filters.cia.value = cia || '';
-                            populateAllFilters(); // Atualiza PEL e SubSetor em cascata
+                            populateAllFilters();
                             ui.filters.pel.value = pel || '';
                             populateAllFilters();
                             ui.filters.subsetor.value = subsetor || '';
@@ -493,7 +587,6 @@
                 }).addTo(state.map);
             }
 
-            // Desenha marcadores de crimes
             const markers = [];
             state.filteredCrimeData.forEach(crime => {
                 const lat = parseFloat(String(crime.numero_latitude).replace(',', '.'));
@@ -507,11 +600,11 @@
 
             if (markers.length > 0) {
                 state.map.fitBounds(L.latLngBounds(markers), { padding: [50, 50], maxZoom: 15 });
-            } else if (state.sectorLayer) {
+            } else if (state.sectorLayer && state.sectorLayer.getBounds().isValid()) {
                 state.map.fitBounds(state.sectorLayer.getBounds());
             }
         }
-        
+
         // --- Funções Auxiliares ---
         function parseExcelDate(d) {
             if (!d) return null;
@@ -532,11 +625,19 @@
             }
         });
         ui.occurrenceSelect.addEventListener('change', displayOccurrenceDetails);
-        ui.filters.cia.addEventListener('change', populateAllFilters);
-        ui.filters.pel.addEventListener('change', populateAllFilters);
+        ui.filters.cia.addEventListener('change', () => {
+            ui.filters.pel.value = '';
+            ui.filters.subsetor.value = '';
+            populateAllFilters();
+        });
+        ui.filters.pel.addEventListener('change', () => {
+            ui.filters.subsetor.value = '';
+            populateAllFilters();
+        });
 
         // Inicia a aplicação
         initializeApp();
     </script>
 </body>
+
 </html>
