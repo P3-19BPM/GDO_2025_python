@@ -1,336 +1,337 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Analisador de Dados de Crimes</title>
-    <!-- Tailwind CSS para estilização -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Biblioteca SheetJS para ler arquivos Excel -->
+    <!-- SheetJS (Excel) -->
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
-    <!-- Biblioteca Turf.js para análise geoespacial -->
+    <!-- Turf.js (Geoanálise) -->
     <script src="https://npmcdn.com/@turf/turf/turf.min.js"></script>
+    <!-- Leaflet (Mapas) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f0f2f5;
-        }
-
-        .fade-in {
-            animation: fadeIn 0.5s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .loader {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #3498db;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* Desabilita os filtros geo até que o arquivo seja carregado */
-        .geo-filters-disabled {
-            opacity: 0.5;
-            pointer-events: none;
-        }
+        body { font-family: 'Inter', sans-serif; background-color: #f0f2f5; }
+        .fade-in { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .geo-filters-disabled { opacity: 0.5; pointer-events: none; }
+        .hidden { display: none; }
+        .leaflet-container { background: #fff; }
     </style>
 </head>
-
 <body class="p-4 md:p-8">
     <div class="max-w-7xl mx-auto">
         <header class="mb-8">
             <h1 class="text-3xl font-bold text-gray-800">Painel de Análise de Ocorrências</h1>
-            <p class="text-gray-600 mt-1">Carregue seus arquivos de dados para iniciar a análise.</p>
+            <p class="text-gray-600 mt-1">Carregue seus arquivos de dados ou continue com a sessão anterior.</p>
         </header>
 
-        <!-- Seção de Upload de Arquivos -->
+        <!-- Seção de Upload -->
         <div id="upload-section" class="bg-white p-6 rounded-xl shadow-md mb-8">
-            <h2 class="text-xl font-semibold text-gray-700 mb-4">1. Carregar Arquivos</h2>
-            <div class="grid md:grid-cols-2 gap-6">
-                <div>
-                    <label for="excel-file" class="block text-sm font-medium text-gray-700 mb-1">Arquivo Excel (VT_CRIME
-                        e VT_VISITA)</label>
-                    <input type="file" id="excel-file" accept=".xlsx, .xls"
-                        class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+            <!-- Inputs para upload -->
+            <div id="upload-inputs">
+                <h2 class="text-xl font-semibold text-gray-700 mb-4">1. Carregar Arquivos</h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="excel-file" class="block text-sm font-medium text-gray-700 mb-1">Arquivo Excel (VT_CRIME e VT_VISITA)</label>
+                        <input type="file" id="excel-file" accept=".xlsx, .xls" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                    </div>
+                    <div>
+                        <label for="geojson-file" class="block text-sm font-medium text-gray-700 mb-1">Arquivo de Setores (GeoJSON)</label>
+                        <input type="file" id="geojson-file" accept=".geojson" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100">
+                    </div>
                 </div>
-                <div>
-                    <label for="geojson-file" class="block text-sm font-medium text-gray-700 mb-1">Arquivo de Setores
-                        (GeoJSON)</label>
-                    <input type="file" id="geojson-file" accept=".geojson"
-                        class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100">
-                </div>
+                 <div class="mt-6"><button id="process-button" class="bg-blue-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-700">Processar e Analisar</button></div>
             </div>
-            <div class="mt-6 flex items-center gap-4">
-                <button id="process-button"
-                    class="bg-blue-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-700 transition duration-300">
-                    Processar e Analisar
-                </button>
-                <div id="loader" class="loader hidden"></div>
+             <!-- Info de dados carregados -->
+             <div id="loaded-data-info" class="hidden">
+                 <h2 class="text-xl font-semibold text-gray-700 mb-4">Dados Carregados</h2>
+                 <p class="text-gray-600">Continuando com os arquivos salvos:</p>
+                 <ul class="list-disc list-inside my-2 text-gray-800">
+                    <li id="loaded-excel-filename"></li>
+                    <li id="loaded-geojson-filename" class="hidden"></li>
+                 </ul>
+                 <button id="clear-data-button" class="mt-4 bg-red-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-red-700">Limpar Dados e Carregar Novos</button>
             </div>
-            <div id="error-message" class="text-red-600 mt-4 font-medium hidden"></div>
+             <!-- Loader e Erro -->
+             <div class="mt-4 flex items-center gap-4"><div id="loader" class="loader hidden"></div><div id="error-message" class="text-red-600 font-medium hidden"></div></div>
         </div>
 
-        <!-- Seção Principal de Análise (inicialmente oculta) -->
+        <!-- Seção Principal de Análise -->
         <main id="analysis-section" class="hidden">
-            <!-- Seção de Filtros -->
+            <!-- Filtros -->
             <div id="filter-section" class="bg-white p-6 rounded-xl shadow-md mb-8 fade-in">
                 <h2 class="text-xl font-semibold text-gray-700 mb-4">2. Filtros de Análise</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                    <!-- Filtros Padrão -->
-                    <div>
-                        <label for="municipio-filter" class="block text-sm font-medium text-gray-700">Município</label>
-                        <select id="municipio-filter"
-                            class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"></select>
-                    </div>
-                    <div>
-                        <label for="start-date-filter" class="block text-sm font-medium text-gray-700">Data
-                            Início</label>
-                        <input type="date" id="start-date-filter"
-                            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                    </div>
-                    <div>
-                        <label for="end-date-filter" class="block text-sm font-medium text-gray-700">Data Fim</label>
-                        <input type="date" id="end-date-filter"
-                            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                    </div>
-                    <!-- Filtros Geográficos -->
+                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+                    <div><label for="municipio-filter" class="block text-sm font-medium text-gray-700">Município</label><select id="municipio-filter" class="mt-1 block w-full pl-3 pr-10 py-2 border-gray-300 rounded-md"></select></div>
+                    <div><label for="start-date-filter" class="block text-sm font-medium text-gray-700">Data Início</label><input type="date" id="start-date-filter" class="mt-1 block w-full border-gray-300 rounded-md"></div>
+                    <div><label for="end-date-filter" class="block text-sm font-medium text-gray-700">Data Fim</label><input type="date" id="end-date-filter" class="mt-1 block w-full border-gray-300 rounded-md"></div>
                     <div id="geo-filters" class="contents geo-filters-disabled">
-                        <div>
-                            <label for="cia-filter" class="block text-sm font-medium text-gray-700">CIA PM</label>
-                            <select id="cia-filter"
-                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"></select>
-                        </div>
-                        <div>
-                            <label for="pel-filter" class="block text-sm font-medium text-gray-700">PEL PM</label>
-                            <select id="pel-filter"
-                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"></select>
-                        </div>
-                        <div>
-                            <label for="subsetor-filter"
-                                class="block text-sm font-medium text-gray-700">SubSetor</label>
-                            <select id="subsetor-filter"
-                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"></select>
-                        </div>
+                        <div><label for="cia-filter" class="block text-sm font-medium text-gray-700">CIA PM</label><select id="cia-filter" class="mt-1 block w-full pl-3 pr-10 py-2 border-gray-300 rounded-md"></select></div>
+                        <div><label for="pel-filter" class="block text-sm font-medium text-gray-700">PEL PM</label><select id="pel-filter" class="mt-1 block w-full pl-3 pr-10 py-2 border-gray-300 rounded-md"></select></div>
+                        <div><label for="subsetor-filter" class="block text-sm font-medium text-gray-700">SubSetor</label><select id="subsetor-filter" class="mt-1 block w-full pl-3 pr-10 py-2 border-gray-300 rounded-md"></select></div>
                     </div>
                 </div>
-                <div class="mt-4">
-                    <button id="apply-filters-button"
-                        class="bg-green-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-green-700 transition duration-300">
-                        Aplicar Filtros
-                    </button>
-                </div>
+                 <div class="mt-4"><button id="apply-filters-button" class="bg-green-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-green-700">Aplicar Filtros</button></div>
             </div>
 
-            <!-- Seção do Dashboard de Estatísticas -->
-            <div id="dashboard-section" class="mb-8 fade-in">
-                <h2 class="text-xl font-semibold text-gray-700 mb-4">3. Resumo das Visitas</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div class="bg-red-400 text-white p-6 rounded-xl shadow-lg">
-                        <h3 class="font-semibold text-lg">Total de Crimes</h3>
-                        <p id="total-crimes" class="text-4xl font-bold mt-2">0</p>
-                    </div>
-                    <div class="bg-gray-300 text-gray-800 p-6 rounded-xl shadow-lg">
-                        <h3 class="font-semibold text-lg">Sem Visitas</h3>
-                        <p id="no-visits" class="text-4xl font-bold mt-2">0</p>
-                    </div>
-                    <div class="bg-green-300 text-gray-800 p-6 rounded-xl shadow-lg">
-                        <h3 class="font-semibold text-lg">Com 1 Visita</h3>
-                        <p id="one-visit" class="text-4xl font-bold mt-2">0</p>
-                    </div>
-                    <div class="bg-green-600 text-white p-6 rounded-xl shadow-lg">
-                        <h3 class="font-semibold text-lg">Com 2 ou Mais Visitas</h3>
-                        <p id="two-plus-visits" class="text-4xl font-bold mt-2">0</p>
+            <!-- Mapa e Dashboard -->
+            <div class="grid lg:grid-cols-3 gap-8 mb-8 fade-in">
+                <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-md">
+                   <h2 class="text-xl font-semibold text-gray-700 mb-4">3. Mapa de Ocorrências</h2>
+                   <div id="map" style="height: 500px;" class="rounded-lg z-0"></div>
+                </div>
+                <div id="dashboard-section" class="lg:col-span-1">
+                    <h2 class="text-xl font-semibold text-gray-700 mb-4">4. Resumo das Visitas</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-6">
+                        <div class="bg-red-400 text-white p-6 rounded-xl shadow-lg"><h3>Total de Crimes</h3><p id="total-crimes" class="text-4xl font-bold mt-2">0</p></div>
+                        <div class="bg-gray-300 text-gray-800 p-6 rounded-xl shadow-lg"><h3>Sem Visitas</h3><p id="no-visits" class="text-4xl font-bold mt-2">0</p></div>
+                        <div class="bg-green-300 text-gray-800 p-6 rounded-xl shadow-lg"><h3>Com 1 Visita</h3><p id="one-visit" class="text-4xl font-bold mt-2">0</p></div>
+                        <div class="bg-green-600 text-white p-6 rounded-xl shadow-lg"><h3>Com 2+ Visitas</h3><p id="two-plus-visits" class="text-4xl font-bold mt-2">0</p></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Seção de Consulta de Ocorrências -->
+            <!-- Consulta de Ocorrências -->
             <div id="lookup-section" class="bg-white p-6 rounded-xl shadow-md fade-in">
-                <h2 class="text-xl font-semibold text-gray-700 mb-4">4. Consultar Detalhes da Ocorrência</h2>
-                <div>
-                    <label for="occurrence-select" class="block text-sm font-medium text-gray-700 mb-1">Selecione o
-                        Número da Ocorrência:</label>
-                    <select id="occurrence-select"
-                        class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
-                        <option>Selecione uma ocorrência</option>
-                    </select>
-                </div>
-
-                <div id="results-area" class="mt-6 overflow-x-auto">
-                </div>
+                <h2 class="text-xl font-semibold text-gray-700 mb-4">5. Consultar Detalhes da Ocorrência</h2>
+                <div><label for="occurrence-select" class="block text-sm font-medium text-gray-700">Selecione a Ocorrência:</label><select id="occurrence-select" class="mt-1 block w-full pl-3 pr-10 py-2 border-gray-300 rounded-md"></select></div>
+                <div id="results-area" class="mt-6 overflow-x-auto"></div>
             </div>
         </main>
     </div>
 
     <script>
         // --- Elementos da UI ---
-        const excelFileInput = document.getElementById('excel-file');
-        const geojsonFileInput = document.getElementById('geojson-file');
-        const processButton = document.getElementById('process-button');
-        const applyFiltersButton = document.getElementById('apply-filters-button');
-        const loader = document.getElementById('loader');
-        const errorMessage = document.getElementById('error-message');
-        const analysisSection = document.getElementById('analysis-section');
-        const occurrenceSelect = document.getElementById('occurrence-select');
-        const resultsArea = document.getElementById('results-area');
+        const ui = {
+            excelFile: document.getElementById('excel-file'),
+            geojsonFile: document.getElementById('geojson-file'),
+            processBtn: document.getElementById('process-button'),
+            applyFiltersBtn: document.getElementById('apply-filters-button'),
+            clearDataBtn: document.getElementById('clear-data-button'),
+            loader: document.getElementById('loader'),
+            errorMsg: document.getElementById('error-message'),
+            analysisSection: document.getElementById('analysis-section'),
+            occurrenceSelect: document.getElementById('occurrence-select'),
+            resultsArea: document.getElementById('results-area'),
+            uploadInputs: document.getElementById('upload-inputs'),
+            loadedDataInfo: document.getElementById('loaded-data-info'),
+            filters: {
+                municipio: document.getElementById('municipio-filter'),
+                startDate: document.getElementById('start-date-filter'),
+                endDate: document.getElementById('end-date-filter'),
+                cia: document.getElementById('cia-filter'),
+                pel: document.getElementById('pel-filter'),
+                subsetor: document.getElementById('subsetor-filter'),
+            },
+            geoFiltersContainer: document.getElementById('geo-filters'),
+            map: document.getElementById('map'),
+        };
 
-        // Filtros
-        const municipioFilter = document.getElementById('municipio-filter');
-        const startDateFilter = document.getElementById('start-date-filter');
-        const endDateFilter = document.getElementById('end-date-filter');
-        const ciaFilter = document.getElementById('cia-filter');
-        const pelFilter = document.getElementById('pel-filter');
-        const subsetorFilter = document.getElementById('subsetor-filter');
-        const geoFiltersContainer = document.getElementById('geo-filters');
-
-        // --- Armazenamento de dados ---
-        let allCrimeData = [];
-        let allVisitaData = [];
-        let filteredCrimeData = [];
-        let geojsonData = null;
+        // --- Estado da Aplicação ---
+        let state = {
+            allCrimeData: [],
+            allVisitaData: [],
+            filteredCrimeData: [],
+            geojsonData: null,
+            map: null,
+            crimeMarkersLayer: null,
+            sectorLayer: null
+        };
         const palavrasExcluidas = ['autor', 'suspeito', 'co-autor'];
 
-        // --- Funções Principais ---
-
-        /**
-         * Processa os arquivos carregados, popula os filtros e realiza a primeira análise.
-         */
-        async function processFilesAndAnalyze() {
-            const excelFile = excelFileInput.files[0];
-            if (!excelFile) {
-                showError("Por favor, selecione o arquivo Excel.");
-                return;
+        // --- Gerenciamento do IndexedDB ---
+        const db = {
+            DB_NAME: 'CrimeAnalysisDB_v2',
+            STORE_NAME: 'FileStore',
+            open() {
+                return new Promise((resolve, reject) => {
+                    const request = indexedDB.open(this.DB_NAME, 1);
+                    request.onerror = () => reject("Erro ao abrir DB");
+                    request.onsuccess = () => resolve(request.result);
+                    request.onupgradeneeded = e => e.target.result.createObjectStore(this.STORE_NAME, { keyPath: 'id' });
+                });
+            },
+            async set(id, value) {
+                const db = await this.open();
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction([this.STORE_NAME], 'readwrite');
+                    tx.objectStore(this.STORE_NAME).put({ id, value });
+                    tx.oncomplete = () => resolve();
+                    tx.onerror = () => reject(tx.error);
+                });
+            },
+            async get(id) {
+                const db = await this.open();
+                return new Promise((resolve, reject) => {
+                    const request = db.transaction([this.STORE_NAME]).objectStore(this.STORE_NAME).get(id);
+                    request.onsuccess = () => resolve(request.result ? request.result.value : null);
+                    request.onerror = () => reject(request.error);
+                });
+            },
+            async clear() {
+                const db = await this.open();
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction([this.STORE_NAME], 'readwrite');
+                    tx.objectStore(this.STORE_NAME).clear();
+                    tx.oncomplete = () => resolve();
+                    tx.onerror = () => reject(tx.error);
+                });
             }
+        };
 
-            loader.classList.remove('hidden');
-            errorMessage.classList.add('hidden');
-            processButton.disabled = true;
-
+        // --- Funções Principais e de Inicialização ---
+        
+        async function initializeApp() {
+            showLoader(true);
             try {
-                // Ler arquivo Excel
-                const workbook = await readExcelFile(excelFile);
-                validateAndLoadExcelData(workbook);
+                const savedCrimeData = await db.get('crimeData');
+                if (savedCrimeData) {
+                    state.allCrimeData = savedCrimeData;
+                    state.allVisitaData = await db.get('visitaData');
+                    state.geojsonData = await db.get('geojsonData');
 
-                // Ler arquivo GeoJSON se estiver selecionado
-                if (geojsonFileInput.files[0]) {
-                    const geojsonText = await geojsonFileInput.files[0].text();
-                    geojsonData = JSON.parse(geojsonText);
-                    tagCrimesWithGeoData(); // Adiciona dados geográficos aos crimes
-                    geoFiltersContainer.classList.remove('geo-filters-disabled');
+                    const excelFileName = await db.get('excelFileName') || 'Arquivo salvo';
+                    const geojsonFileName = await db.get('geojsonFileName');
+
+                    document.getElementById('loaded-excel-filename').textContent = `Excel: ${excelFileName}`;
+                    if (geojsonFileName) {
+                        const geoLi = document.getElementById('loaded-geojson-filename');
+                        geoLi.textContent = `GeoJSON: ${geojsonFileName}`;
+                        geoLi.classList.remove('hidden');
+                    }
+                    
+                    ui.uploadInputs.classList.add('hidden');
+                    ui.loadedDataInfo.classList.remove('hidden');
+                    initMap();
+                    runFullAnalysis();
+                    ui.analysisSection.classList.remove('hidden');
                 }
-
-                populateAllFilters();
-                applyFiltersAndRedraw(); // Realiza a primeira análise com dados completos
-                analysisSection.classList.remove('hidden');
-
             } catch (error) {
-                showError(`Erro ao processar arquivos: ${error.message}`);
-                analysisSection.classList.add('hidden');
+                showError("Não foi possível carregar dados salvos. Por favor, carregue os arquivos novamente.");
+                console.error("Erro no IndexedDB:", error);
             } finally {
-                loader.classList.add('hidden');
-                processButton.disabled = false;
+                showLoader(false);
             }
         }
 
-        /**
-         * Lê um arquivo Excel e retorna o objeto workbook.
-         * @param {File} file - O arquivo Excel.
-         * @returns {Promise<Object>} O workbook do SheetJS.
-         */
+        function initMap() {
+            if (state.map) return;
+            state.map = L.map(ui.map).setView([-18.22, -41.50], 10); // Teófilo Otoni Coordinates
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(state.map);
+            state.crimeMarkersLayer = L.layerGroup().addTo(state.map);
+        }
+
+        async function processFilesAndAnalyze() {
+            const excelFile = ui.excelFile.files[0];
+            if (!excelFile) return showError("Por favor, selecione o arquivo Excel.");
+
+            showLoader(true);
+            try {
+                const workbook = await readExcelFile(excelFile);
+                validateAndLoadExcelData(workbook);
+                
+                if (ui.geojsonFile.files[0]) {
+                    const geojsonText = await ui.geojsonFile.files[0].text();
+                    state.geojsonData = JSON.parse(geojsonText);
+                    tagCrimesWithGeoData();
+                } else {
+                    state.geojsonData = null;
+                }
+                
+                await saveAllDataToDB(excelFile.name, ui.geojsonFile.files[0]?.name);
+                
+                initMap();
+                runFullAnalysis();
+                ui.analysisSection.classList.remove('hidden');
+                
+                ui.uploadInputs.classList.add('hidden');
+                ui.loadedDataInfo.classList.remove('hidden');
+                document.getElementById('loaded-excel-filename').textContent = `Excel: ${excelFile.name}`;
+                if (ui.geojsonFile.files[0]) {
+                     document.getElementById('loaded-geojson-filename').textContent = `GeoJSON: ${ui.geojsonFile.files[0].name}`;
+                     document.getElementById('loaded-geojson-filename').classList.remove('hidden');
+                }
+                
+            } catch (error) {
+                showError(`Erro ao processar: ${error.message}`);
+                ui.analysisSection.classList.add('hidden');
+            } finally {
+                showLoader(false);
+            }
+        }
+
+        function runFullAnalysis() {
+            if (state.geojsonData) {
+                ui.geoFiltersContainer.classList.remove('geo-filters-disabled');
+            }
+            populateAllFilters();
+            applyFiltersAndRedraw();
+        }
+
+        // --- Funções de Manipulação de Dados e Arquivos ---
+
         function readExcelFile(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
-                reader.onload = (event) => {
-                    const data = new Uint8Array(event.target.result);
-                    const workbook = XLSX.read(data, { type: 'array' });
-                    resolve(workbook);
-                };
-                reader.onerror = () => reject(new Error("Erro ao ler o arquivo Excel."));
+                reader.onload = e => resolve(XLSX.read(new Uint8Array(e.target.result), { type: 'array' }));
+                reader.onerror = () => reject(new Error("Erro ao ler arquivo Excel."));
                 reader.readAsArrayBuffer(file);
             });
         }
-
-        /**
-         * Valida e carrega os dados das abas do Excel para as variáveis globais.
-         * @param {Object} workbook - O workbook do SheetJS.
-         */
+        
         function validateAndLoadExcelData(workbook) {
             const crimeSheetName = "VT_CRIME";
             const visitaSheetName = "VT_VISITA";
+            if (!workbook.SheetNames.includes(crimeSheetName) || !workbook.SheetNames.includes(visitaSheetName)) throw new Error(`Abas "${crimeSheetName}" e "${visitaSheetName}" não encontradas.`);
+            
+            state.allCrimeData = XLSX.utils.sheet_to_json(workbook.Sheets[crimeSheetName]);
+            state.allVisitaData = XLSX.utils.sheet_to_json(workbook.Sheets[visitaSheetName]);
 
-            if (!workbook.SheetNames.includes(crimeSheetName) || !workbook.SheetNames.includes(visitaSheetName)) {
-                throw new Error(`O arquivo Excel deve conter as abas "${crimeSheetName}" e "${visitaSheetName}".`);
-            }
+            if (state.allCrimeData.length === 0) throw new Error(`Aba "${crimeSheetName}" está vazia.`);
 
-            allCrimeData = XLSX.utils.sheet_to_json(workbook.Sheets[crimeSheetName]);
-            allVisitaData = XLSX.utils.sheet_to_json(workbook.Sheets[visitaSheetName]);
-
-            if (allCrimeData.length === 0) throw new Error(`A aba "${crimeSheetName}" está vazia.`);
-
-            // Validação de colunas
-            const requiredCrimeCols = ['numero_ocorrencia', 'nome_completo_envolvido', 'envolvimento_descricao', 'nome_municipio', 'data_hora_fato', 'numero_latitude', 'numero_longitude'];
-            const crimeHeader = Object.keys(allCrimeData[0]);
-            const missingCrimeCols = requiredCrimeCols.filter(col => !crimeHeader.includes(col));
-            if (missingCrimeCols.length > 0) throw new Error(`Faltando colunas em VT_CRIME: [${missingCrimeCols.join(', ')}]`);
-
-            const requiredVisitaCols = ['numero_reds_furto'];
-            if (allVisitaData.length > 0) {
-                const visitaHeader = Object.keys(allVisitaData[0]);
-                const missingVisitaCols = requiredVisitaCols.filter(col => !visitaHeader.includes(col));
-                if (missingVisitaCols.length > 0) throw new Error(`Faltando colunas em VT_VISITA: [${missingVisitaCols.join(', ')}]`);
-            }
+            const required = ['numero_ocorrencia', 'nome_municipio', 'data_hora_fato', 'numero_latitude', 'numero_longitude'];
+            const header = Object.keys(state.allCrimeData[0]);
+            const missing = required.filter(col => !header.includes(col));
+            if (missing.length > 0) throw new Error(`Faltando colunas em VT_CRIME: [${missing.join(', ')}]`);
         }
 
-        /**
-         * Aplica todos os filtros selecionados e redesenha o dashboard e a lista de ocorrências.
-         */
+        async function saveAllDataToDB(excelFileName, geojsonFileName) {
+            await db.set('crimeData', state.allCrimeData);
+            await db.set('visitaData', state.allVisitaData);
+            await db.set('geojsonData', state.geojsonData);
+            await db.set('excelFileName', excelFileName);
+            await db.set('geojsonFileName', geojsonFileName || null);
+        }
+
+        // --- Funções de Filtragem e Análise ---
+
         function applyFiltersAndRedraw() {
-            let currentData = [...allCrimeData];
-
-            // 1. Filtro de Município
-            const selectedMunicipio = municipioFilter.value;
-            if (selectedMunicipio) {
-                currentData = currentData.filter(crime => crime.nome_municipio === selectedMunicipio);
-            }
-
-            // 2. Filtro de Data
-            const startDate = startDateFilter.valueAsDate;
-            const endDate = endDateFilter.valueAsDate;
+            let currentData = [...state.allCrimeData];
+            
+            // Aplicar filtros
+            const municipio = ui.filters.municipio.value;
+            if (municipio) currentData = currentData.filter(c => c.nome_municipio === municipio);
+            
+            const startDate = ui.filters.startDate.valueAsDate;
+            const endDate = ui.filters.endDate.valueAsDate;
             if (startDate || endDate) {
-                currentData = currentData.filter(crime => {
-                    const crimeDate = parseExcelDate(crime.data_hora_fato);
+                 currentData = currentData.filter(c => {
+                    const crimeDate = parseExcelDate(c.data_hora_fato);
                     if (!crimeDate) return false;
                     if (startDate && crimeDate < startDate) return false;
                     if (endDate) {
-                        // Inclui o dia inteiro do endDate
                         const endOfDay = new Date(endDate);
                         endOfDay.setHours(23, 59, 59, 999);
                         if (crimeDate > endOfDay) return false;
@@ -338,184 +339,204 @@
                     return true;
                 });
             }
-
-            // 3. Filtros Geográficos
-            const selectedCia = ciaFilter.value;
-            const selectedPel = pelFilter.value;
-            const selectedSubsetor = subsetorFilter.value;
-
-            if (selectedCia) currentData = currentData.filter(c => c.cia_pm === selectedCia);
-            if (selectedPel) currentData = currentData.filter(c => c.pel_pm === selectedPel);
-            if (selectedSubsetor) currentData = currentData.filter(c => c.subsetor === selectedSubsetor);
-
-            filteredCrimeData = currentData;
-            updateDashboard(filteredCrimeData, allVisitaData);
-            populateOccurrenceDropdown(filteredCrimeData);
+            
+            const cia = ui.filters.cia.value;
+            const pel = ui.filters.pel.value;
+            const subsetor = ui.filters.subsetor.value;
+            if (cia) currentData = currentData.filter(c => c.cia_pm === cia);
+            if (pel) currentData = currentData.filter(c => c.pel_pm === pel);
+            if (subsetor) currentData = currentData.filter(c => c.subsetor === subsetor);
+            
+            state.filteredCrimeData = currentData;
+            
+            updateDashboard(state.filteredCrimeData, state.allVisitaData);
+            populateOccurrenceDropdown(state.filteredCrimeData);
+            updateMapLayers();
         }
 
-        /**
-         * Atualiza os cartões do dashboard com as estatísticas dos dados filtrados.
-         * @param {Array} crimes - Os dados de crimes filtrados.
-         * @param {Array} visitas - Todos os dados de visitas.
-         */
-        function updateDashboard(crimes, visitas) {
-            const uniqueOccurrences = [...new Set(crimes.map(crime => String(crime.numero_ocorrencia)))];
-            document.getElementById('total-crimes').textContent = uniqueOccurrences.length;
-
-            const visitCounts = {};
-            visitas.forEach(visita => {
-                const crimeId = String(visita.numero_reds_furto);
-                if (crimeId) visitCounts[crimeId] = (visitCounts[crimeId] || 0) + 1;
-            });
-
-            let noVisits = 0, oneVisit = 0, twoPlusVisits = 0;
-            uniqueOccurrences.forEach(occurrenceId => {
-                const count = visitCounts[occurrenceId] || 0;
-                if (count === 0) noVisits++;
-                else if (count === 1) oneVisit++;
-                else twoPlusVisits++;
-            });
-
-            document.getElementById('no-visits').textContent = noVisits;
-            document.getElementById('one-visit').textContent = oneVisit;
-            document.getElementById('two-plus-visits').textContent = twoPlusVisits;
-        }
-
-        /**
-         * Popula o menu de ocorrências com base nos dados filtrados.
-         * @param {Array} crimes - Os dados de crimes filtrados.
-         */
-        function populateOccurrenceDropdown(crimes) {
-            const uniqueOccurrences = [...new Set(crimes.map(crime => String(crime.numero_ocorrencia)))];
-            occurrenceSelect.innerHTML = '<option value="">-- Selecione uma ocorrência --</option>';
-            uniqueOccurrences.sort().forEach(occ => {
-                const option = document.createElement('option');
-                option.value = occ;
-                option.textContent = occ;
-                occurrenceSelect.appendChild(option);
-            });
-            resultsArea.innerHTML = '';
-        }
-
-        /**
-         * Exibe os detalhes da ocorrência selecionada.
-         */
-        function displayOccurrenceDetails() {
-            const selectedOccurrence = occurrenceSelect.value;
-            resultsArea.innerHTML = '';
-            if (!selectedOccurrence) return;
-
-            // Usa os dados filtrados para encontrar os envolvidos
-            const relatedPeople = filteredCrimeData
-                .filter(record => String(record.numero_ocorrencia) === selectedOccurrence)
-                .filter(record => {
-                    const involvement = String(record.envolvimento_descricao || '').toLowerCase();
-                    return !palavrasExcluidas.some(palavra => involvement.includes(palavra));
+        function populateAllFilters() {
+            const populateSelect = (el, values, keepValue) => {
+                const currentValue = keepValue ? el.value : null;
+                el.innerHTML = `<option value="">Todos</option>`;
+                [...new Set(values)].filter(v => v).sort().forEach(v => {
+                    el.innerHTML += `<option value="${v}" ${currentValue === v ? 'selected' : ''}>${v}</option>`;
                 });
+            };
 
-            if (relatedPeople.length > 0) {
-                const table = document.createElement('table');
-                table.className = 'min-w-full divide-y divide-gray-200 mt-4';
-                table.innerHTML = `
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome Completo</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Telefone</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Envolvimento</th>
-                        </tr>
-                    </thead>
+            populateSelect(ui.filters.municipio, state.allCrimeData.map(c => c.nome_municipio));
+            if(state.geojsonData) {
+                // Filtros em cascata
+                const selectedCia = ui.filters.cia.value;
+                const selectedPel = ui.filters.pel.value;
+
+                const availableCias = state.allCrimeData.map(c => c.cia_pm);
+                populateSelect(ui.filters.cia, availableCias);
+
+                const availablePels = state.allCrimeData
+                    .filter(c => !selectedCia || c.cia_pm === selectedCia)
+                    .map(c => c.pel_pm);
+                populateSelect(ui.filters.pel, availablePels, true);
+
+                const availableSubsetores = state.allCrimeData
+                    .filter(c => (!selectedCia || c.cia_pm === selectedCia) && (!selectedPel || c.pel_pm === selectedPel))
+                    .map(c => c.subsetor);
+                populateSelect(ui.filters.subsetor, availableSubsetores, true);
+            }
+        }
+        
+        // --- Funções de Atualização da UI (Dashboard, Select, Tabela) ---
+
+        function updateDashboard(crimes, visitas) {
+            const uniqueOccurrences = [...new Set(crimes.map(c => String(c.numero_ocorrencia)))];
+            document.getElementById('total-crimes').textContent = uniqueOccurrences.length;
+            const visitCounts = visitas.reduce((acc, v) => {
+                const id = String(v.numero_reds_furto);
+                if (id) acc[id] = (acc[id] || 0) + 1;
+                return acc;
+            }, {});
+            let counters = { no: 0, one: 0, two: 0 };
+            uniqueOccurrences.forEach(id => {
+                const count = visitCounts[id] || 0;
+                if (count === 0) counters.no++; else if (count === 1) counters.one++; else counters.two++;
+            });
+            document.getElementById('no-visits').textContent = counters.no;
+            document.getElementById('one-visit').textContent = counters.one;
+            document.getElementById('two-plus-visits').textContent = counters.two;
+        }
+
+        function populateOccurrenceDropdown(crimes) {
+            const unique = [...new Set(crimes.map(c => String(c.numero_ocorrencia)))].sort();
+            ui.occurrenceSelect.innerHTML = '<option value="">-- Selecione uma ocorrência --</option>';
+            unique.forEach(occ => ui.occurrenceSelect.innerHTML += `<option value="${occ}">${occ}</option>`);
+            ui.resultsArea.innerHTML = '';
+        }
+        
+        function displayOccurrenceDetails() {
+            const selected = ui.occurrenceSelect.value;
+            ui.resultsArea.innerHTML = '';
+            if (!selected) return;
+
+            const people = state.filteredCrimeData
+                .filter(r => String(r.numero_ocorrencia) === selected)
+                .filter(r => !palavrasExcluidas.some(p => String(r.envolvimento_descricao || '').toLowerCase().includes(p)));
+            
+            if (people.length > 0) {
+                ui.resultsArea.innerHTML = `<table class="min-w-full divide-y divide-gray-200 mt-4">
+                    <thead class="bg-gray-50"><tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nome Completo</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Telefone</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Envolvimento</th>
+                    </tr></thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        ${relatedPeople.map(person => `
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">${person.nome_completo_envolvido || 'N/A'}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${person.numero_telefone_residencial || 'N/A'}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${person.envolvimento_descricao || 'N/A'}</td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                `;
-                resultsArea.appendChild(table);
+                        ${people.map(p => `<tr>
+                            <td class="px-6 py-4 text-sm text-gray-800">${p.nome_completo_envolvido || 'N/A'}</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">${p.numero_telefone_residencial || 'N/A'}</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">${p.envolvimento_descricao || 'N/A'}</td>
+                        </tr>`).join('')}
+                    </tbody></table>`;
             } else {
-                resultsArea.innerHTML = `<p class="text-gray-600 mt-4 p-4 bg-yellow-50 rounded-md">Nenhum envolvido (que não seja autor/suspeito) encontrado para esta ocorrência.</p>`;
+                ui.resultsArea.innerHTML = `<p class="text-gray-600 mt-4 p-4 bg-yellow-50 rounded-md">Nenhum envolvido encontrado.</p>`;
             }
         }
 
-        // --- Funções Auxiliares e de Geoanálise ---
+        // --- Funções Geoespaciais e de Mapa ---
 
-        /**
-         * Adiciona dados geográficos a cada registro de crime.
-         */
+        function findProperty(props, name) {
+            const key = Object.keys(props).find(k => k.trim().toLowerCase() === name.trim().toLowerCase());
+            return key ? props[key] : null;
+        }
+
         function tagCrimesWithGeoData() {
-            if (!geojsonData) return;
-            allCrimeData.forEach(crime => {
+            if (!state.geojsonData) return;
+            state.allCrimeData.forEach(crime => {
                 const lat = parseFloat(String(crime.numero_latitude).replace(',', '.'));
                 const lon = parseFloat(String(crime.numero_longitude).replace(',', '.'));
-                if (!isNaN(lat) && !isNaN(lon)) {
-                    const point = turf.point([lon, lat]);
-                    for (const feature of geojsonData.features) {
-                        if (turf.booleanPointInPolygon(point, feature)) {
-                            crime.cia_pm = feature.properties['CIA PM'];
-                            crime.pel_pm = feature.properties['PEL PM'];
-                            crime.subsetor = feature.properties.SubSetor;
-                            break;
-                        }
+                if (isNaN(lat) || isNaN(lon)) return;
+                const point = turf.point([lon, lat]);
+                for (const feature of state.geojsonData.features) {
+                    if (turf.booleanPointInPolygon(point, feature)) {
+                        crime.cia_pm = findProperty(feature.properties, 'CIA PM');
+                        crime.pel_pm = findProperty(feature.properties, 'PEL PM');
+                        crime.subsetor = findProperty(feature.properties, 'SubSetor');
+                        return;
                     }
                 }
             });
         }
+        
+        function updateMapLayers() {
+            if (!state.map) return;
 
-        /**
-         * Popula todos os menus de filtro com base nos dados carregados.
-         */
-        function populateAllFilters() {
-            // Função genérica para popular um select
-            const populateSelect = (selectElement, values) => {
-                selectElement.innerHTML = `<option value="">Todos</option>`;
-                [...new Set(values)].filter(v => v).sort().forEach(value => {
-                    selectElement.innerHTML += `<option value="${value}">${value}</option>`;
-                });
-            };
+            // Limpa camadas antigas
+            state.crimeMarkersLayer.clearLayers();
+            if (state.sectorLayer) state.sectorLayer.clearLayers();
+            
+            // Desenha setores do GeoJSON
+            if (state.geojsonData) {
+                state.sectorLayer = L.geoJSON(state.geojsonData, {
+                    style: { color: "#3b82f6", weight: 2, opacity: 0.6, fillOpacity: 0.1 },
+                    onEachFeature: (feature, layer) => {
+                        const cia = findProperty(feature.properties, 'CIA PM');
+                        const pel = findProperty(feature.properties, 'PEL PM');
+                        const subsetor = findProperty(feature.properties, 'SubSetor');
+                        layer.bindTooltip(`<b>Setor:</b> ${subsetor || pel || cia}`);
+                        
+                        layer.on('click', () => {
+                            ui.filters.cia.value = cia || '';
+                            populateAllFilters(); // Atualiza PEL e SubSetor em cascata
+                            ui.filters.pel.value = pel || '';
+                            populateAllFilters();
+                            ui.filters.subsetor.value = subsetor || '';
+                            applyFiltersAndRedraw();
+                        });
+                    }
+                }).addTo(state.map);
+            }
 
-            populateSelect(municipioFilter, allCrimeData.map(c => c.nome_municipio));
-            if (geojsonData) {
-                populateSelect(ciaFilter, allCrimeData.map(c => c.cia_pm));
-                populateSelect(pelFilter, allCrimeData.map(c => c.pel_pm));
-                populateSelect(subsetorFilter, allCrimeData.map(c => c.subsetor));
+            // Desenha marcadores de crimes
+            const markers = [];
+            state.filteredCrimeData.forEach(crime => {
+                const lat = parseFloat(String(crime.numero_latitude).replace(',', '.'));
+                const lon = parseFloat(String(crime.numero_longitude).replace(',', '.'));
+                if (!isNaN(lat) && !isNaN(lon)) {
+                    const marker = L.marker([lat, lon]).bindPopup(`<b>Ocorrência:</b> ${crime.numero_ocorrencia}<br><b>Município:</b> ${crime.nome_municipio}`);
+                    state.crimeMarkersLayer.addLayer(marker);
+                    markers.push([lat, lon]);
+                }
+            });
+
+            if (markers.length > 0) {
+                state.map.fitBounds(L.latLngBounds(markers), { padding: [50, 50], maxZoom: 15 });
+            } else if (state.sectorLayer) {
+                state.map.fitBounds(state.sectorLayer.getBounds());
             }
         }
-
-        /**
-         * Converte data do Excel (que pode ser número ou texto) para um objeto Date.
-         */
-        function parseExcelDate(excelDate) {
-            if (!excelDate) return null;
-            if (typeof excelDate === 'number') {
-                // Converte data serial do Excel para JS Date
-                return new Date(Math.round((excelDate - 25569) * 86400 * 1000));
-            }
-            // Tenta parsear datas em formatos de texto comuns (ex: DD/MM/YYYY HH:MM:SS)
-            const parts = String(excelDate).match(/(\d+)/g);
-            if (parts && parts.length >= 3) {
-                // Assumindo formato DD/MM/YYYY
-                return new Date(parts[2], parts[1] - 1, parts[0]);
-            }
-            return new Date(excelDate); // Fallback para o parser nativo
+        
+        // --- Funções Auxiliares ---
+        function parseExcelDate(d) {
+            if (!d) return null;
+            if (typeof d === 'number') return new Date(Math.round((d - 25569) * 86400 * 1000));
+            const p = String(d).match(/(\d+)/g);
+            return (p && p.length >= 3) ? new Date(p[2], p[1] - 1, p[0]) : new Date(d);
         }
-
-        /**
-         * Mostra uma mensagem de erro na UI.
-         */
-        function showError(message) {
-            errorMessage.textContent = message;
-            errorMessage.classList.remove('hidden');
-        }
+        function showError(msg) { ui.errorMsg.textContent = msg; ui.errorMsg.classList.remove('hidden'); }
+        function showLoader(show) { ui.loader.classList.toggle('hidden', !show); ui.processBtn.disabled = show; }
 
         // --- Event Listeners ---
-        processButton.addEventListener('click', processFilesAndAnalyze);
-        applyFiltersButton.addEventListener('click', applyFiltersAndRedraw);
-        occurrenceSelect.addEventListener('change', displayOccurrenceDetails);
+        ui.processBtn.addEventListener('click', processFilesAndAnalyze);
+        ui.applyFiltersBtn.addEventListener('click', applyFiltersAndRedraw);
+        ui.clearDataBtn.addEventListener('click', async () => {
+            if (confirm("Tem certeza? Todos os dados salvos serão removidos.")) {
+                await db.clear();
+                location.reload();
+            }
+        });
+        ui.occurrenceSelect.addEventListener('change', displayOccurrenceDetails);
+        ui.filters.cia.addEventListener('change', populateAllFilters);
+        ui.filters.pel.addEventListener('change', populateAllFilters);
 
+        // Inicia a aplicação
+        initializeApp();
     </script>
 </body>
-
 </html>
