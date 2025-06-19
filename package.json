@@ -1,0 +1,21 @@
+{
+  "name": "gdo_2025_python",
+  "version": "1.0.0",
+  "description": "Script para upload de dados para o painel de análise",
+  "main": "uploadData.js",
+  "scripts": {
+    "start": "node uploadData.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "firebase",
+    "gis",
+    "analysis"
+  ],
+  "author": "Valfrido Novais",
+  "license": "ISC",
+  "dependencies": {
+    "firebase-admin": "^12.1.1",
+    "xlsx": "^0.18.5"
+  }
+}

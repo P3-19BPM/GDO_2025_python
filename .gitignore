@@ -43,3 +43,8 @@ __pycache__/
 
 # Ignorar outros arquivos indesejados
 *.log
+
+vtcrime-d6a61-firebase-adminsdk-fbsvc-86c34e822c.json
+*node_module*
+
+Interacao_Dados.xlsx
