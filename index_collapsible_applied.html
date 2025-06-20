@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Painel de Análise de Ocorrências</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-4">
+
+  <!-- Painel de Gerenciamento de Usuários -->
+  <div id="admin-panel-container" class="mb-8">
+    <button class="collapsible-trigger w-full flex justify-between items-center bg-indigo-100 p-4 rounded-xl shadow-md text-xl font-semibold text-indigo-800">
+      <span>Painel de Gerenciamento de Usuários</span>
+      <svg class="chevron-icon w-6 h-6 transform transition-transform duration-300" fill="none" stroke="currentColor"
+        viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+      </svg>
+    </button>
+    <div class="collapsible-content hidden bg-indigo-50 p-6 rounded-b-xl -mt-2">
+      <div id="admin-user-list" class="space-y-4">
+        <div class="text-gray-600">Nenhum usuário nesta categoria.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filtros de Análise -->
+  <div id="filter-section-container" class="mb-8">
+    <button class="collapsible-trigger w-full flex justify-between items-center bg-yellow-100 p-4 rounded-xl shadow-md text-xl font-semibold text-yellow-800">
+      <span>Filtros de Análise</span>
+      <svg class="chevron-icon w-6 h-6 transform transition-transform duration-300" fill="none" stroke="currentColor"
+        viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+      </svg>
+    </button>
+    <div class="collapsible-content hidden bg-yellow-50 p-6 rounded-b-xl -mt-2">
+      <div id="filter-section" class="grid grid-cols-1 md:grid-cols-3 gap-4">Filtros aqui...</div>
+    </div>
+  </div>
+
+  <!-- Mapa de Ocorrências -->
+  <div id="map-section-container" class="mb-8">
+    <button class="collapsible-trigger w-full flex justify-between items-center bg-green-100 p-4 rounded-xl shadow-md text-xl font-semibold text-green-800">
+      <span>Mapa de Ocorrências</span>
+      <svg class="chevron-icon w-6 h-6 transform transition-transform duration-300" fill="none" stroke="currentColor"
+        viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+      </svg>
+    </button>
+    <div class="collapsible-content hidden bg-green-50 p-4 rounded-b-xl -mt-2">
+      <div id="map" class="rounded-lg bg-white text-center p-10 text-gray-500">[MAPA AQUI]</div>
+    </div>
+  </div>
+
+  <!-- Consultar Detalhes da Ocorrência -->
+  <div id="lookup-section-container" class="mb-8">
+    <button class="collapsible-trigger w-full flex justify-between items-center bg-blue-100 p-4 rounded-xl shadow-md text-xl font-semibold text-blue-800">
+      <span>Consultar Detalhes da Ocorrência</span>
+      <svg class="chevron-icon w-6 h-6 transform transition-transform duration-300" fill="none" stroke="currentColor"
+        viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+      </svg>
+    </button>
+    <div class="collapsible-content hidden bg-blue-50 p-6 rounded-b-xl -mt-2">
+      <div id="lookup-section" class="text-gray-700">
+        <p>Data do Fato: <span id="data-fato">09 de Janeiro de 2025</span></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function setupCollapsibles() {
+      const triggers = document.querySelectorAll('.collapsible-trigger');
+      triggers.forEach(trigger => {
+        trigger.addEventListener('click', () => {
+          const content = trigger.nextElementSibling;
+          const icon = trigger.querySelector('.chevron-icon');
+
+          content.classList.toggle('hidden');
+          icon.classList.toggle('rotate-180');
+
+          if (!content.classList.contains('hidden') && content.querySelector('#map')) {
+            setTimeout(() => window.dispatchEvent(new Event('resize')), 300);
+          }
+        });
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', setupCollapsibles);
+  </script>
+</body>
+</html>

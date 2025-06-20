@@ -5,15 +5,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel de Análise Criminal</title>
+    <!-- Bibliotecas -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://npmcdn.com/@turf/turf/turf.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+    <!-- Firebase -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, onSnapshot, collection, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, onSnapshot, collection, updateDoc, serverTimestamp, increment, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
         // --- CONFIGURAÇÃO OBRIGATÓRIA ---
         const firebaseConfig = {
@@ -25,8 +27,12 @@
             appId: "1:261046458856:web:3226ca9b456619c85cac5d"
         };
 
-        // --- LISTA DE PERMISSÕES ---
-        const adminEmails = ['novaisufvjm@gmail.com', '19bpm.3@gmail.com'];
+        // --- INICIALIZAÇÃO E LÓGICA ---
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const provider = new GoogleAuthProvider();
+
         const preApprovedViewerEmails = [
             'brunoaavelino@gmail.com', '19bpm.155cia@gmail.com', '19bpm.47cia@gmail.com', '42cia19@gmail.com', 'camposmauro1.MR@gmail.com',
             'diegorricardo78@gmail.com', 'diretor2007@gmail.com', 'dstcatuji@gmail.com', 'dstjampruca@gmail.com', 'dstnovamodica@gmail.com',
@@ -37,71 +43,105 @@
             'vicenzodartanhandasilva@gmail.com', 'webjao@gmail.com', 'welingtondasilvacampos@gmail.com', 'weuler@gmail.com', 'willianlms1@gmail.com'
         ];
 
-        // --- INICIALIZAÇÃO E LÓGICA ---
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const provider = new GoogleAuthProvider();
+        async function isCurrentUserAdmin() {
+            try {
+                const adminConfigRef = doc(db, "config", "admin_users");
+                const adminConfigSnap = await getDoc(adminConfigRef);
+                if (adminConfigSnap.exists()) {
+                    const adminEmails = adminConfigSnap.data().emails || [];
+                    const user = auth.currentUser;
+                    return user ? adminEmails.includes(user.email) : false;
+                }
+                console.warn("Documento de configuração de admin ('/config/admin_users') não encontrado no Firestore.");
+                return false;
+            } catch (error) {
+                console.error("Erro ao verificar status de admin:", error);
+                return false;
+            }
+        }
+
+        async function logUserAccess(user) {
+            if (!user) return;
+            const activityDocRef = doc(db, "user_activity", user.uid);
+            try {
+                await updateDoc(activityDocRef, { loginCount: increment(1), lastLogin: serverTimestamp(), displayName: user.displayName, email: user.email });
+            } catch (error) {
+                if (error.code === 'not-found') {
+                    await setDoc(activityDocRef, { loginCount: 1, lastLogin: serverTimestamp(), displayName: user.displayName, email: user.email, eventCounts: {} });
+                } else { console.error("Erro ao registrar acesso do usuário:", error); }
+            }
+        }
+
+        window.logUserEvent = async (eventName) => {
+            const user = auth.currentUser;
+            if (!user || !eventName) return;
+            const activityDocRef = doc(db, "user_activity", user.uid);
+            const updatePayload = { [`eventCounts.${eventName}`]: increment(1) };
+            try {
+                await updateDoc(activityDocRef, updatePayload);
+            } catch (error) {
+                console.error(`Erro ao registrar evento '${eventName}':`, error);
+                if (error.code === 'not-found') { await logUserAccess(user); await updateDoc(activityDocRef, updatePayload); }
+            }
+        };
 
         window.authFunctions = { signInWithPopup: () => signInWithPopup(auth, provider), signOut: () => signOut(auth) };
         window.adminFunctions = {
             updateUserStatus: async (uid, newStatus) => {
                 const action = newStatus === 'approved' ? 'aprovar' : 'revogar';
-                if (!confirm(`Tem certeza que deseja ${action} este usuário?`)) return;
+                if (!window.confirm(`Tem certeza que deseja ${action} este usuário?`)) return;
                 try { await updateDoc(doc(db, "user_permissions", uid), { status: newStatus }); alert('Permissão atualizada!'); }
                 catch (error) { console.error("Erro ao atualizar status:", error); alert('Falha ao atualizar status.'); }
             }
         };
         window.dbFunctions = {
-            getDbInstance: () => db, getFirestoreLibs: () => ({ collection, onSnapshot }),
+            getDbInstance: () => db, getFirestoreLibs: () => ({ collection, onSnapshot, getDocs }),
             fetchSummaryData: async () => { const docSnap = await getDoc(doc(db, "app_data", "summary")); if (docSnap.exists()) return docSnap.data(); throw new Error("Dados de resumo não encontrados."); },
             fetchMainData: async () => { const docSnap = await getDoc(doc(db, "app_data", "main")); if (docSnap.exists()) { const data = docSnap.data(); if (data.geojsonUrl) { const geojsonResponse = await fetch(data.geojsonUrl); if (!geojsonResponse.ok) throw new Error('Falha ao baixar o arquivo de mapa.'); data.geojson = await geojsonResponse.json(); } return data; } throw new Error("Dados completos não encontrados."); }
         };
 
-        async function handleUserAccess(user) {
+        async function handleUserAccess(user, isAdmin) {
             const userDocRef = doc(db, "user_permissions", user.uid);
             const userDocSnap = await getDoc(userDocRef);
             if (!userDocSnap.exists()) {
-                const isAdmin = adminEmails.includes(user.email);
                 const isPreApproved = preApprovedViewerEmails.includes(user.email);
                 let initialStatus = (isAdmin || isPreApproved) ? 'approved' : 'pending';
                 await setDoc(userDocRef, { email: user.email, displayName: user.displayName, photoURL: user.photoURL, status: initialStatus, requestedAt: serverTimestamp() });
             }
         }
 
-        onAuthStateChanged(auth, (user) => {
-            const ui = { login: document.getElementById('login-container'), app: document.getElementById('app-container'), limited: document.getElementById('limited-access-view'), adminPanel: document.getElementById('admin-panel-container'), mainAnalysis: document.getElementById('full-analysis-section'), loading: document.getElementById('loading-data-section'), dashboard: document.getElementById('dashboard-cards') };
-            Object.values(ui).forEach(el => el && el.classList.add('hidden'));
+        onAuthStateChanged(auth, async (user) => {
+            const uiElements = { login: document.getElementById('login-container'), app: document.getElementById('app-container'), limited: document.getElementById('limited-access-view'), adminPanel: document.getElementById('admin-panel-container'), activityPanel: document.getElementById('activity-panel-container'), mainAnalysis: document.getElementById('full-analysis-section'), loading: document.getElementById('loading-data-section'), dashboard: document.getElementById('dashboard-cards') };
+            Object.values(uiElements).forEach(el => el && el.classList.add('hidden'));
 
             if (user) {
-                const isAdmin = adminEmails.includes(user.email);
+                logUserAccess(user);
+                const isAdmin = await isCurrentUserAdmin();
                 const userDocRef = doc(db, "user_permissions", user.uid);
 
                 onSnapshot(userDocRef, (userDocSnap) => {
                     let status = 'new';
                     if (userDocSnap.exists()) { status = userDocSnap.data().status; }
-                    else { handleUserAccess(user); return; }
+                    else { handleUserAccess(user, isAdmin); return; }
 
-                    Object.values(ui).forEach(el => el && el.classList.add('hidden'));
-
+                    Object.values(uiElements).forEach(el => el && el.classList.add('hidden'));
                     const photoURL = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || user.email)}&background=random&color=fff&size=32`;
                     document.getElementById('user-info').innerHTML = `<div class="flex items-center"><span class="text-sm mr-3">Logado como: <strong>${user.displayName}</strong></span><img src="${photoURL}" class="w-8 h-8 rounded-full"><button onclick="window.authFunctions.signOut()" class="ml-4 bg-red-500 text-white text-xs font-bold py-1 px-3 rounded-md hover:bg-red-600">Sair</button></div>`;
-
-                    ui.app.classList.remove('hidden');
-                    let eventName = 'user-authenticated-limited'; // Evento padrão para acesso limitado
+                    uiElements.app.classList.remove('hidden');
+                    let eventName = 'user-authenticated-limited';
 
                     if (isAdmin || status === 'approved') {
-                        ui.mainAnalysis.classList.remove('hidden');
-                        if (isAdmin) { ui.adminPanel.classList.remove('hidden'); window.dispatchEvent(new CustomEvent('admin-authenticated')); }
-                        eventName = 'user-authenticated-full'; // Evento para acesso completo
-                    } else {
-                        ui.limited.classList.remove('hidden');
-                    }
+                        uiElements.mainAnalysis.classList.remove('hidden');
+                        if (isAdmin) {
+                            uiElements.adminPanel.classList.remove('hidden');
+                            uiElements.activityPanel.classList.remove('hidden');
+                            window.dispatchEvent(new CustomEvent('admin-authenticated'));
+                        }
+                        eventName = 'user-authenticated-full';
+                    } else { uiElements.limited.classList.remove('hidden'); }
                     window.dispatchEvent(new CustomEvent(eventName));
                 });
-            } else {
-                ui.login.classList.remove('hidden');
-            }
+            } else { uiElements.login.classList.remove('hidden'); }
         });
     </script>
     <style>
@@ -153,9 +193,29 @@
             background: #fff;
         }
 
-        /* NOVO: Estilos para o ícone do accordion */
-        .chevron-icon {
-            transition: transform 0.3s ease-in-out;
+        .info-legend {
+            padding: 6px 8px;
+            font: 12px Arial, Helvetica, sans-serif;
+            background: white;
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+        }
+
+        .info-legend i {
+            width: 18px;
+            height: 18px;
+            float: left;
+            margin-right: 8px;
+            opacity: 0.7;
+        }
+
+        details>summary {
+            list-style: none;
+        }
+
+        details>summary::-webkit-details-marker {
+            display: none;
         }
     </style>
 </head>
@@ -185,19 +245,22 @@
                 <h1 class="text-3xl font-bold text-gray-800">Painel de Análise de Ocorrências</h1>
                 <div id="user-info" class="text-right"></div>
             </header>
+            <div id="admin-panel-container" class="hidden bg-indigo-100 p-6 rounded-xl shadow-md mb-8">
+                <h2 class="text-xl font-semibold text-indigo-800 mb-4">Painel de Gerenciamento de Usuários</h2>
+                <div id="admin-user-list" class="space-y-4">
+                    <div class="loader mx-auto"></div>
+                </div>
+            </div>
 
-            <div id="admin-panel-container" class="hidden mb-8">
-                <button
-                    class="collapsible-trigger w-full flex justify-between items-center bg-indigo-100 p-4 rounded-xl shadow-md text-xl font-semibold text-indigo-800">
-                    <span>Painel de Gerenciamento de Usuários</span>
-                    <svg class="chevron-icon w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                </button>
-                <div class="collapsible-content hidden bg-indigo-50 p-6 rounded-b-xl -mt-2">
-                    <div id="admin-user-list" class="space-y-4">
-                        <div class="loader mx-auto"></div>
-                    </div>
+            <div id="activity-panel-container" class="hidden bg-gray-100 p-6 rounded-xl shadow-md mb-8">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold text-gray-800">Painel de Atividades do Usuário</h2>
+                    <!-- NOVO: Campo de filtro/busca -->
+                    <input type="text" id="activity-filter-input" placeholder="Filtrar por nome ou e-mail..."
+                        class="w-1/3 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div id="activity-user-list" class="space-y-4">
+                    <div class="loader mx-auto"></div>
                 </div>
             </div>
 
@@ -209,204 +272,205 @@
                 <p class="font-bold">Erro ao carregar dados.</p>
                 <p id="error-message-content"></p>
             </div>
-
-            <div id="dashboard-cards" class="hidden grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                <div class="bg-red-400 text-white p-4 rounded-xl shadow-lg">
-                    <h3 class="text-sm md:text-base">Total de Crimes</h3>
-                    <p id="total-crimes" class="text-3xl md:text-4xl font-bold mt-1">0</p>
+            <div id="dashboard-cards" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-red-400 text-white p-6 rounded-xl shadow-lg">
+                    <h3>Total de Crimes</h3>
+                    <p id="total-crimes" class="text-4xl font-bold mt-2">0</p>
                 </div>
-                <div class="bg-gray-300 text-gray-800 p-4 rounded-xl shadow-lg">
-                    <h3 class="text-sm md:text-base">Sem Visitas</h3>
-                    <p id="no-visits" class="text-3xl md:text-4xl font-bold mt-1">0</p>
+                <div class="bg-gray-300 text-gray-800 p-6 rounded-xl shadow-lg">
+                    <h3>Sem Visitas</h3>
+                    <p id="no-visits" class="text-4xl font-bold mt-2">0</p>
                 </div>
-                <div class="bg-green-300 text-gray-800 p-4 rounded-xl shadow-lg">
-                    <h3 class="text-sm md:text-base">Com 1 Visita</h3>
-                    <p id="one-visit" class="text-3xl md:text-4xl font-bold mt-1">0</p>
+                <div class="bg-green-300 text-gray-800 p-6 rounded-xl shadow-lg">
+                    <h3>Com 1 Visita</h3>
+                    <p id="one-visit" class="text-4xl font-bold mt-2">0</p>
                 </div>
-                <div class="bg-green-600 text-white p-4 rounded-xl shadow-lg">
-                    <h3 class="text-sm md:text-base">Com 2+ Visitas</h3>
-                    <p id="two-plus-visits" class="text-3xl md:text-4xl font-bold mt-1">0</p>
+                <div class="bg-green-600 text-white p-6 rounded-xl shadow-lg">
+                    <h3>Com 2+ Visitas</h3>
+                    <p id="two-plus-visits" class="text-4xl font-bold mt-2">0</p>
                 </div>
             </div>
-
             <div id="limited-access-view"
                 class="hidden text-center bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 p-6 rounded-lg my-8">
                 <h3 class="font-bold text-lg">Acesso Limitado</h3>
-                <p class="mt-2">Você possui acesso apenas às estatísticas gerais. Para visualizar os
-                    detalhes do mapa e das ocorrências, por favor, entre em contato com a P3 do 19BPM para
-                    solicitar a sua liberação.</p>
+                <p class="mt-2">Você possui acesso apenas às estatísticas gerais. Para visualizar os detalhes do mapa e
+                    das ocorrências, por favor, entre em contato com a P3 do 19BPM para solicitar a sua liberação.</p>
             </div>
-
-            <main id="full-analysis-section" class="hidden space-y-8">
-                <div>
-                    <button
-                        class="collapsible-trigger w-full flex justify-between items-center bg-white p-4 rounded-xl shadow-md text-xl font-semibold text-gray-700">
-                        <span>Filtros de Análise</span>
-                        <svg class="chevron-icon w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
-                            </path>
-                        </svg>
-                    </button>
-                    <div id="filter-section" class="collapsible-content hidden bg-gray-50 p-6 rounded-b-xl -mt-2">
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                            <div><label for="cia-filter" class="block text-sm font-medium">CIA
-                                    PM</label><select id="cia-filter"
-                                    class="mt-1 block w-full border-gray-300 rounded-md"></select></div>
-                            <div><label for="pel-filter" class="block text-sm font-medium">Pelotão</label><select
-                                    id="pel-filter" class="mt-1 block w-full border-gray-300 rounded-md"></select></div>
-                            <div><label for="subsetor-filter" class="block text-sm font-medium">Sub
-                                    Setor</label><select id="subsetor-filter"
-                                    class="mt-1 block w-full border-gray-300 rounded-md"></select></div>
-                            <div><label for="municipio-filter"
-                                    class="block text-sm font-medium">Município</label><select id="municipio-filter"
-                                    class="mt-1 block w-full border-gray-300 rounded-md"></select></div>
+            <main id="full-analysis-section" class="hidden">
+                <div id="filter-section" class="bg-white p-6 rounded-xl shadow-md mb-8 fade-in">
+                    <h2 class="text-xl font-semibold text-gray-700 mb-4">Filtros de Análise</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div><label for="cia-filter" class="block text-sm font-medium">CIA PM</label><select
+                                id="cia-filter" class="mt-1 block w-full border-gray-300 rounded-md"></select></div>
+                        <div><label for="pel-filter" class="block text-sm font-medium">Pelotão</label><select
+                                id="pel-filter" class="mt-1 block w-full border-gray-300 rounded-md"></select></div>
+                        <div><label for="subsetor-filter" class="block text-sm font-medium">Sub Setor</label><select
+                                id="subsetor-filter" class="mt-1 block w-full border-gray-300 rounded-md"></select>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
-                            <div><label for="visit-status-filter" class="block text-sm font-medium">Status
-                                    da Visita</label><select id="visit-status-filter"
-                                    class="mt-1 block w-full border-gray-300 rounded-md">
-                                    <option value="">Todos</option>
-                                    <option value="sem_visita">Sem Visitas</option>
-                                    <option value="1_visita">Com 1 Visita</option>
-                                    <option value="2_mais_visitas">Com 2 ou Mais Visitas</option>
-                                </select></div>
-                            <div><label for="start-date-filter" class="block text-sm font-medium">Data
-                                    Início</label><input type="date" id="start-date-filter"
-                                    class="mt-1 block w-full border-gray-300 rounded-md"></div>
-                            <div><label for="end-date-filter" class="block text-sm font-medium">Data
-                                    Fim</label><input type="date" id="end-date-filter"
-                                    class="mt-1 block w-full border-gray-300 rounded-md"></div>
-                            <div class="flex items-end"><button id="apply-filters-button"
-                                    class="bg-green-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-green-700 w-full">Aplicar
-                                    Filtros</button></div>
+                        <div><label for="municipio-filter" class="block text-sm font-medium">Município</label><select
+                                id="municipio-filter" class="mt-1 block w-full border-gray-300 rounded-md"></select>
                         </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
+                        <div><label for="visit-status-filter" class="block text-sm font-medium">Status da
+                                Visita</label><select id="visit-status-filter"
+                                class="mt-1 block w-full border-gray-300 rounded-md">
+                                <option value="">Todos</option>
+                                <option value="sem_visita">Sem Visitas</option>
+                                <option value="1_visita">Com 1 Visita</option>
+                                <option value="2_mais_visitas">Com 2 ou Mais Visitas</option>
+                            </select></div>
+                        <div><label for="start-date-filter" class="block text-sm font-medium">Data Início</label><input
+                                type="date" id="start-date-filter" class="mt-1 block w-full border-gray-300 rounded-md">
+                        </div>
+                        <div><label for="end-date-filter" class="block text-sm font-medium">Data Fim</label><input
+                                type="date" id="end-date-filter" class="mt-1 block w-full border-gray-300 rounded-md">
+                        </div>
+                        <div class="flex items-end"><button id="apply-filters-button"
+                                onclick="window.logUserEvent('aplicar_filtros')"
+                                class="bg-green-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-green-700 w-full">Aplicar
+                                Filtros</button></div>
                     </div>
                 </div>
-
-                <div>
-                    <button
-                        class="collapsible-trigger w-full flex justify-between items-center bg-white p-4 rounded-xl shadow-md text-xl font-semibold text-gray-700">
-                        <span>Mapa e Consulta de Ocorrências</span>
-                        <svg class="chevron-icon w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
-                            </path>
-                        </svg>
-                    </button>
-                    <div class="collapsible-content hidden bg-gray-50 p-6 rounded-b-xl -mt-2 space-y-8">
-                        <div class="bg-white p-6 rounded-xl shadow-md">
-                            <h2 class="text-xl font-semibold text-gray-700 mb-4">Mapa de Ocorrências</h2>
-                            <div id="map" style="height: 500px;" class="rounded-lg z-0"></div>
-                        </div>
-                        <div id="lookup-section" class="bg-white p-6 rounded-xl shadow-md">
-                            <h2 class="text-xl font-semibold text-gray-700 mb-4">Consultar Detalhes da
-                                Ocorrência</h2>
-                            <div><label for="occurrence-select"
-                                    class="block text-sm font-medium text-gray-700">Selecione a
-                                    Ocorrência:</label><select id="occurrence-select"
-                                    class="mt-1 block w-full pl-3 pr-10 py-2 border-gray-300 rounded-md"></select>
-                            </div>
-                            <div id="results-area" class="mt-6 overflow-x-auto"></div>
-                        </div>
+                <div class="grid lg:grid-cols-3 gap-8 mb-8 fade-in">
+                    <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-md">
+                        <h2 class="text-xl font-semibold text-gray-700 mb-4">Mapa de Ocorrências</h2>
+                        <div id="map" style="height: 500px;" class="rounded-lg z-0"></div>
                     </div>
+                    <div class="lg:col-span-1"></div>
+                </div>
+                <div id="lookup-section" class="bg-white p-6 rounded-xl shadow-md fade-in">
+                    <h2 class="text-xl font-semibold text-gray-700 mb-4">Consultar Detalhes da Ocorrência</h2>
+                    <div><label for="occurrence-select" class="block text-sm font-medium text-gray-700">Selecione a
+                            Ocorrência:</label><select id="occurrence-select"
+                            class="mt-1 block w-full pl-3 pr-10 py-2 border-gray-300 rounded-md"></select></div>
+                    <div id="results-area" class="mt-6 overflow-x-auto"></div>
                 </div>
             </main>
         </div>
     </div>
 
     <script>
-        // --- NOVO: LÓGICA PARA AS SEÇÕES RECOLHÍVEIS ---
-        function setupCollapsibles() {
-            const triggers = document.querySelectorAll('.collapsible-trigger');
-            triggers.forEach(trigger => {
-                trigger.addEventListener('click', () => {
-                    const content = trigger.nextElementSibling;
-                    const icon = trigger.querySelector('.chevron-icon');
-
-                    content.classList.toggle('hidden');
-
-                    if (content.classList.contains('hidden')) {
-                        icon.style.transform = 'rotate(0deg)';
-                    } else {
-                        icon.style.transform = 'rotate(180deg)';
-                        // Se o mapa estiver dentro da seção, precisamos forçar a atualização do tamanho dele
-                        if (content.querySelector('#map')) {
-                            setTimeout(() => window.dispatchEvent(new Event('resize')), 300);
-                        }
-                    }
-                });
-            });
-        }
-        document.addEventListener('DOMContentLoaded', setupCollapsibles);
-        // ---------------------------------------------------
-
         const ui = {
-            loading: document.getElementById('loading-data-section'), error: document.getElementById('error-loading-data'), mainAnalysis: document.getElementById('full-analysis-section'), adminList: document.getElementById('admin-user-list'), dashboardCards: document.getElementById('dashboard-cards'), limited: document.getElementById('limited-access-view'),
+            loading: document.getElementById('loading-data-section'), error: document.getElementById('error-loading-data'), mainAnalysis: document.getElementById('full-analysis-section'), adminList: document.getElementById('admin-user-list'), activityList: document.getElementById('activity-user-list'), dashboardCards: document.getElementById('dashboard-cards'), limited: document.getElementById('limited-access-view'), activityFilter: document.getElementById('activity-filter-input'),
             filters: { municipio: document.getElementById('municipio-filter'), visitStatus: document.getElementById('visit-status-filter'), startDate: document.getElementById('start-date-filter'), endDate: document.getElementById('end-date-filter'), cia: document.getElementById('cia-filter'), pel: document.getElementById('pel-filter'), subsetor: document.getElementById('subsetor-filter'), },
             map: document.getElementById('map'), occurrenceSelect: document.getElementById('occurrence-select'), resultsArea: document.getElementById('results-area'), applyFiltersBtn: document.getElementById('apply-filters-button'),
         };
-        let state = { allCrimeData: [], allVisitaData: [], visitCounts: {}, filteredCrimeData: [], map: null, crimeMarkersLayer: null, sectorLayer: null };
+        let state = { allCrimeData: [], allVisitaData: [], visitCounts: {}, filteredCrimeData: [], allUserActivity: [], map: null, crimeMarkersLayer: null, sectorLayer: null, activeChoropleth: null };
         const palavrasExcluidas = ['autor', 'suspeito', 'co-autor'];
+
+        // --- LÓGICA DO PAINEL DE ATIVIDADE ---
+        function renderActivityList(activitiesToRender) {
+            const container = ui.activityList;
+            container.innerHTML = '';
+            let html = `<div class="overflow-x-auto"><table class="min-w-full divide-y divide-gray-300"><thead class="bg-gray-200"><tr><th class="px-4 py-2 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Usuário</th><th class="px-4 py-2 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Último Login</th><th class="px-4 py-2 text-center text-xs font-medium text-gray-600 uppercase tracking-wider">Acessos</th><th class="px-4 py-2 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Eventos Contabilizados</th></tr></thead><tbody class="bg-white divide-y divide-gray-200">`;
+
+            if (activitiesToRender.length === 0) {
+                html += `<tr><td colspan="4" class="text-center py-4 text-gray-500">Nenhum usuário encontrado.</td></tr>`;
+            } else {
+                activitiesToRender.forEach(userActivity => {
+                    const lastLoginDate = userActivity.lastLogin ? userActivity.lastLogin.toDate().toLocaleString('pt-BR') : 'N/A';
+                    const loginCount = userActivity.loginCount || 0;
+
+                    let eventsHtml = '';
+                    const eventCounts = userActivity.eventCounts || {};
+                    const hasEvents = Object.keys(eventCounts).length > 0;
+
+                    if (hasEvents) {
+                        eventsHtml += `<details><summary class="cursor-pointer text-indigo-600 hover:text-indigo-800 text-sm font-semibold">Mostrar/Ocultar Eventos</summary><ul class="text-xs mt-2 space-y-1 pl-2 border-l-2 border-gray-200">`;
+                        for (const [event, count] of Object.entries(eventCounts)) {
+                            eventsHtml += `<li><span class="font-semibold">${event.replace(/_/g, ' ')}:</span> ${count}</li>`;
+                        }
+                        eventsHtml += `</ul></details>`;
+                    } else {
+                        eventsHtml += '<span class="text-xs text-gray-400 italic">Nenhum evento</span>';
+                    }
+
+                    html += `<tr class="hover:bg-gray-50"><td class="px-4 py-3 whitespace-nowrap"><div class="text-sm font-semibold text-gray-900">${userActivity.displayName || 'N/A'}</div><div class="text-xs text-gray-500">${userActivity.email || 'N/A'}</div></td><td class="px-4 py-3 whitespace-nowrap text-sm text-gray-700">${lastLoginDate}</td><td class="px-4 py-3 whitespace-nowrap text-lg text-center font-bold text-gray-700">${loginCount}</td><td class="px-4 py-3">${eventsHtml}</td></tr>`;
+                });
+            }
+            html += `</tbody></table></div>`;
+            container.innerHTML = html;
+        }
+
+        ui.activityFilter.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            if (!searchTerm) {
+                renderActivityList(state.allUserActivity);
+                return;
+            }
+            const filteredActivities = state.allUserActivity.filter(activity =>
+                (activity.displayName || '').toLowerCase().includes(searchTerm) ||
+                (activity.email || '').toLowerCase().includes(searchTerm)
+            );
+            renderActivityList(filteredActivities);
+        });
+        // --- FIM DA LÓGICA ---
 
         function showLoader(show, container) { container.style.display = show ? 'block' : 'none'; }
         function initMap() { if (state.map) { state.map.invalidateSize(); return; } state.map = L.map(ui.map).setView([-18.22, -41.50], 10); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap' }).addTo(state.map); state.crimeMarkersLayer = L.layerGroup().addTo(state.map); }
+        function addMapControls() {
+            if (state.map.mapControls) return;
+            const MapControl = L.Control.extend({
+                onAdd: function () {
+                    const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control bg-white p-2 rounded-md shadow-lg');
+                    container.innerHTML = `<div class="space-y-1"><p class="font-bold text-xs mb-1">Colorir por:</p><button data-level="CIA_PM" class="map-control-btn w-full text-xs px-2 py-1 bg-gray-200 rounded">CIA</button><button data-level="PELOTAO" class="map-control-btn w-full text-xs px-2 py-1 bg-gray-200 rounded">Pelotão</button><button data-level="SUB_SETOR" class="map-control-btn w-full text-xs px-2 py-1 bg-gray-200 rounded">Sub Setor</button></div>`;
+                    container.querySelectorAll('.map-control-btn').forEach(btn => {
+                        btn.onclick = (e) => {
+                            e.stopPropagation();
+                            document.querySelectorAll('.map-control-btn').forEach(b => b.classList.remove('bg-blue-500', 'text-white'));
+                            e.target.classList.add('bg-blue-500', 'text-white');
+                            const level = e.target.dataset.level;
+                            window.logUserEvent(`mapa_colorir_por_${level.toLowerCase()}`);
+                            updateChoroplethMap(level);
+                        };
+                    });
+                    return container;
+                }
+            });
+            state.map.mapControls = new MapControl({ position: 'topright' });
+            state.map.mapControls.addTo(state.map);
+            const legend = L.control({ position: 'bottomright' });
+            legend.onAdd = function () {
+                const div = L.DomUtil.create('div', 'info-legend');
+                const colors = ['#68d391', '#f6e05e', '#f56565', '#a0aec0'];
+                const labels = ['≥ 1.0 (Ótimo)', '0.5 - 0.99 (Atenção)', '< 0.5 (Crítico)', 'Sem Ocorrências'];
+                div.innerHTML += '<h4 class="font-bold text-xs">Visitas / Crime</h4>';
+                for (let i = 0; i < colors.length; i++) { div.innerHTML += `<i style="background:${colors[i]}"></i> ${labels[i]}<br>`; }
+                return div;
+            };
+            legend.addTo(state.map);
+        }
         function runFullAnalysis() { calculateVisitCounts(); populateAllFilters(); applyFiltersAndRedraw(); }
         function calculateVisitCounts() { const counts = {}; state.allVisitaData.forEach(v => { const id = String(v.numero_reds_furto); if (id) counts[id] = (counts[id] || 0) + 1; }); state.visitCounts = counts; }
         function applyFiltersAndRedraw() { let data = [...state.allCrimeData]; const visitStatus = ui.filters.visitStatus.value; if (visitStatus) { data = data.filter(crime => { const count = state.visitCounts[String(crime.numero_ocorrencia)] || 0; if (visitStatus === 'sem_visita') return count === 0; if (visitStatus === '1_visita') return count === 1; if (visitStatus === '2_mais_visitas') return count >= 2; return true; }); } const municipio = ui.filters.municipio.value; if (municipio) data = data.filter(c => c.nome_municipio === municipio); const startDate = ui.filters.startDate.valueAsDate, endDate = ui.filters.endDate.valueAsDate; if (startDate || endDate) { data = data.filter(c => { const crimeDate = parseExcelDate(c.data_hora_fato); if (!crimeDate) return false; if (startDate && crimeDate < startDate) return false; if (endDate) { const endOfDay = new Date(endDate); endOfDay.setHours(23, 59, 59, 999); if (crimeDate > endOfDay) return false; } return true; }); } const cia = ui.filters.cia.value; if (cia) data = data.filter(c => c.CIA_PM == cia); const pel = ui.filters.pel.value; if (pel) data = data.filter(c => c.PELOTAO == pel); const subsetor = ui.filters.subsetor.value; if (subsetor) data = data.filter(c => c.SUB_SETOR == subsetor); state.filteredCrimeData = data; updateDashboard(state.filteredCrimeData); populateOccurrenceDropdown(state.filteredCrimeData); updateMapLayers(); }
         function updateDashboard(crimes) { ui.dashboardCards.classList.remove('hidden'); const uniqueOccurrences = [...new Set(crimes.map(c => String(c.numero_ocorrencia)))]; document.getElementById('total-crimes').textContent = uniqueOccurrences.length; let counters = { no: 0, one: 0, two: 0 }; uniqueOccurrences.forEach(id => { const count = state.visitCounts[id] || 0; if (count === 0) counters.no++; else if (count === 1) counters.one++; else counters.two++; }); document.getElementById('no-visits').textContent = counters.no; document.getElementById('one-visit').textContent = counters.one; document.getElementById('two-plus-visits').textContent = counters.two; }
         function populateAllFilters() { const populateSelect = (element, values, selectedValue) => { const uniqueSorted = [...new Set(values)].filter(Boolean).sort(); element.innerHTML = '<option value="">Todos</option>'; uniqueSorted.forEach(value => { const option = document.createElement('option'); option.value = value; option.textContent = value; if (value === selectedValue) option.selected = true; element.appendChild(option); }); }; const selectedCia = ui.filters.cia.value; const selectedPel = ui.filters.pel.value; const selectedSubsetor = ui.filters.subsetor.value; let dataForNextFilter = state.allCrimeData; populateSelect(ui.filters.cia, dataForNextFilter.map(c => c.CIA_PM), selectedCia); if (selectedCia) dataForNextFilter = dataForNextFilter.filter(c => c.CIA_PM === selectedCia); populateSelect(ui.filters.pel, dataForNextFilter.map(c => c.PELOTAO), selectedPel); if (selectedPel) dataForNextFilter = dataForNextFilter.filter(c => c.PELOTAO === selectedPel); populateSelect(ui.filters.subsetor, dataForNextFilter.map(c => c.SUB_SETOR), selectedSubsetor); if (selectedSubsetor) dataForNextFilter = dataForNextFilter.filter(c => c.SUB_SETOR === selectedSubsetor); populateSelect(ui.filters.municipio, dataForNextFilter.map(c => c.nome_municipio), ui.filters.municipio.value); }
         function populateOccurrenceDropdown(crimes) { const unique = [...new Set(crimes.map(c => String(c.numero_ocorrencia)))].sort(); ui.occurrenceSelect.innerHTML = '<option value="">-- Selecione --</option>'; unique.forEach(occ => { const count = state.visitCounts[occ] || 0; let bgColor = ''; if (count === 0) bgColor = 'bg-red-100'; else if (count === 1) bgColor = 'bg-yellow-100'; else bgColor = 'bg-green-100'; ui.occurrenceSelect.innerHTML += `<option value="${occ}" class="${bgColor}">${occ}</option>`; }); ui.resultsArea.innerHTML = ''; }
-        function displayOccurrenceDetails() { const selected = ui.occurrenceSelect.value; ui.resultsArea.innerHTML = ''; if (!selected) return; const people = state.allCrimeData.filter(r => String(r.numero_ocorrencia) === selected).filter(r => !palavrasExcluidas.some(p => String(r.envolvimento_descricao || '').toLowerCase().includes(p))); if (people.length > 0) { ui.resultsArea.innerHTML = `<table class="min-w-full divide-y divide-gray-200 mt-4"><thead class="bg-gray-50"><tr><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nome</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Envolvimento</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tel. Residencial</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tel. Comercial</th></tr></thead><tbody class="bg-white divide-y divide-gray-200">${people.map(p => `<tr><td class="px-6 py-4 text-sm">${p.nome_completo_envolvido || 'N/A'}</td><td class="px-6 py-4 text-sm">${p.envolvimento_descricao || 'N/A'}</td><td class="px-6 py-4 text-sm">${p.numero_telefone_residencial || 'N/A'}</td><td class="px-6 py-4 text-sm">${p.numero_telefone_comercial || 'N/A'}</td></tr>`).join('')}</tbody></table>`; } else { ui.resultsArea.innerHTML = `<p class="text-gray-600 mt-4 p-4 bg-yellow-50 rounded-md">Nenhum envolvido (diferente de autor/suspeito) encontrado.</p>`; } }
+        function displayOccurrenceDetails() { const selected = ui.occurrenceSelect.value; ui.resultsArea.innerHTML = ''; if (!selected) return; const people = state.allCrimeData.filter(r => String(r.numero_ocorrencia) === selected).filter(r => !palavrasExcluidas.some(p => String(r.envolvimento_descricao || '').toLowerCase().includes(p))); const crime = state.allCrimeData.find(r => String(r.numero_ocorrencia) === selected); let dataFato = 'Não informada'; if (crime?.data_hora_fato) { const dataObj = parseExcelDate(crime.data_hora_fato); dataFato = dataObj.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' }); } ui.resultsArea.innerHTML = `<p class="mb-4 text-gray-700"><strong>Data do Fato:</strong> ${dataFato}</p>`; if (people.length > 0) { ui.resultsArea.innerHTML += `<table class="min-w-full divide-y divide-gray-200 mt-2"><thead class="bg-gray-50"><tr><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nome</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Envolvimento</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tel. Residencial</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tel. Comercial</th></tr></thead><tbody class="bg-white divide-y divide-gray-200">${people.map(p => `<tr><td class="px-6 py-4 text-sm">${p.nome_completo_envolvido || 'N/A'}</td><td class="px-6 py-4 text-sm">${p.envolvimento_descricao || 'N/A'}</td><td class="px-6 py-4 text-sm">${p.numero_telefone_residencial || 'N/A'}</td><td class="px-6 py-4 text-sm">${p.numero_telefone_comercial || 'N/A'}</td></tr>`).join('')}</tbody></table>`; } else { ui.resultsArea.innerHTML += `<p class="text-gray-600 mt-4 p-4 bg-yellow-50 rounded-md">Nenhum envolvido (diferente de autor/suspeito) encontrado.</p>`; } }
         function findProperty(props, name) { const key = Object.keys(props).find(k => k.trim().toLowerCase() === name.trim().toLowerCase()); return key ? props[key] : null; }
         function tagCrimesWithGeoData() { if (!state.geojsonData) return; state.allCrimeData.forEach(crime => { const lat = parseFloat(String(crime.numero_latitude).replace(',', '.')), lon = parseFloat(String(crime.numero_longitude).replace(',', '.')); if (isNaN(lat) || isNaN(lon)) return; const point = turf.point([lon, lat]); for (const feature of state.geojsonData.features) { if (turf.booleanPointInPolygon(point, feature)) { crime.CIA_PM = findProperty(feature.properties, 'CIA_PM'); crime.PELOTAO = findProperty(feature.properties, 'PELOTAO'); crime.SUB_SETOR = findProperty(feature.properties, 'SUB_SETOR'); return; } } }); }
-        function updateMapLayers() { if (!state.map) return; state.crimeMarkersLayer.clearLayers(); if (state.sectorLayer) state.map.removeLayer(state.sectorLayer); if (state.geojsonData) { state.sectorLayer = L.geoJSON(state.geojsonData, { style: { color: "#3b82f6", weight: 2, opacity: 0.7, fillOpacity: 0.1, }, onEachFeature: (feature, layer) => { const cia = findProperty(feature.properties, 'CIA_PM'), pel = findProperty(feature.properties, 'PELOTAO'), subsetor = findProperty(feature.properties, 'SUB_SETOR'); layer.bindTooltip(`<b>CIA:</b> ${cia}<br><b>Pelotão:</b> ${pel}<br><b>Sub Setor:</b> ${subsetor}`); layer.on('click', () => { ui.filters.cia.value = cia || ''; resetAndPopulateFilters('cia'); }); } }).addTo(state.map); } const markers = []; state.filteredCrimeData.forEach(crime => { const lat = parseFloat(String(crime.numero_latitude).replace(',', '.')), lon = parseFloat(String(crime.numero_longitude).replace(',', '.')); if (!isNaN(lat) && !isNaN(lon)) { const marker = L.marker([lat, lon]).bindPopup(`<b>Ocorrência:</b> ${crime.numero_ocorrencia}<br><b>Município:</b> ${crime.nome_municipio}`); state.crimeMarkersLayer.addLayer(marker); markers.push([lat, lon]); } }); if (markers.length > 0) { state.map.fitBounds(L.latLngBounds(markers), { padding: [50, 50], maxZoom: 15 }); } else if (state.sectorLayer && state.sectorLayer.getBounds().isValid()) { state.map.fitBounds(state.sectorLayer.getBounds()); } }
+        function updateMapLayers() { if (!state.map) return; state.crimeMarkersLayer.clearLayers(); if (state.sectorLayer) state.map.removeLayer(state.sectorLayer); if (state.geojsonData) { state.sectorLayer = L.geoJSON(state.geojsonData, { style: { color: "#3b82f6", weight: 2, opacity: 0.7, fillOpacity: 0.1, }, onEachFeature: (feature, layer) => { const cia = findProperty(feature.properties, 'CIA_PM'), pel = findProperty(feature.properties, 'PELOTAO'), subsetor = findProperty(feature.properties, 'SUB_SETOR'); layer.bindTooltip(`<b>CIA:</b> ${cia}<br><b>Pelotão:</b> ${pel}<br><b>Sub Setor:</b> ${subsetor}`); layer.on('click', () => { ui.filters.cia.value = cia || ''; resetAndPopulateFilters('cia'); }); } }).addTo(state.map); } const markers = []; state.filteredCrimeData.forEach(crime => { const lat = parseFloat(String(crime.numero_latitude).replace(',', '.')), lon = parseFloat(String(crime.numero_longitude).replace(',', '.')); if (!isNaN(lat) && !isNaN(lon)) { const marker = L.marker([lat, lon]).bindPopup(`<b>Ocorrência:</b> ${crime.numero_ocorrencia}<br><b>Município:</b> ${crime.nome_municipio}`); state.crimeMarkersLayer.addLayer(marker); markers.push([lat, lon]); } }); if (markers.length > 0) { state.map.fitBounds(L.latLngBounds(markers), { padding: [50, 50], maxZoom: 15 }); } else if (state.sectorLayer && state.sectorLayer.getBounds().isValid()) { state.map.fitBounds(state.sectorLayer.getBounds()); } if (state.activeChoropleth) updateChoroplethMap(state.activeChoropleth); }
         function parseExcelDate(d) { if (!d) return null; if (typeof d === 'number') return new Date(Math.round((d - 25569) * 86400 * 1000)); const p = String(d).match(/(\d+)/g); return (p && p.length >= 3) ? new Date(p[2], p[1] - 1, p[0]) : new Date(d); }
+        function updateChoroplethMap(aggregationLevel) { if (!state.map || !state.geojsonData || !state.sectorLayer) return; state.activeChoropleth = aggregationLevel; const getIdentifier = (feature) => findProperty(feature.properties, aggregationLevel); const areaStats = {}; state.filteredCrimeData.forEach(crime => { const areaId = crime[aggregationLevel]; if (!areaId) return; if (!areaStats[areaId]) areaStats[areaId] = { crimes: new Set(), visits: 0 }; areaStats[areaId].crimes.add(String(crime.numero_ocorrencia)); }); Object.keys(areaStats).forEach(areaId => { let visitCountForArea = 0; areaStats[areaId].crimes.forEach(crimeId => { visitCountForArea += (state.visitCounts[crimeId] || 0); }); areaStats[areaId].visits = visitCountForArea; }); state.sectorLayer.eachLayer(layer => { const areaId = getIdentifier(layer.feature); const stats = areaStats[areaId]; let color = '#a0aec0'; if (stats && stats.crimes.size > 0) { const ratio = stats.visits / stats.crimes.size; if (ratio < 0.5) color = '#f56565'; else if (ratio < 1) color = '#f6e05e'; else color = '#68d391'; } layer.setStyle({ fillColor: color, fillOpacity: 0.7, weight: 1.5, color: 'white' }); }); }
         function resetAndPopulateFilters(level) { if (level === 'cia') { ui.filters.pel.value = ''; ui.filters.subsetor.value = ''; ui.filters.municipio.value = ''; } if (level === 'pel') { ui.filters.subsetor.value = ''; ui.filters.municipio.value = ''; } if (level === 'subsetor') { ui.filters.municipio.value = ''; } populateAllFilters(); }
-
-        async function loadAndDisplayData(isFullAccess) {
-            const { loading, error, mainAnalysis, dashboardCards } = ui;
-            showLoader(true, loading);
-            try {
-                const summaryData = await window.dbFunctions.fetchSummaryData();
-                document.getElementById('total-crimes').textContent = summaryData.total || 0;
-                document.getElementById('no-visits').textContent = summaryData.semVisita || 0;
-                document.getElementById('one-visit').textContent = summaryData.comUma || 0;
-                document.getElementById('two-plus-visits').textContent = summaryData.comDuasOuMais || 0;
-                dashboardCards.classList.remove('hidden');
-
-                if (isFullAccess) {
-                    const mainData = await window.dbFunctions.fetchMainData();
-                    state.allCrimeData = mainData.crimes || [];
-                    state.allVisitaData = mainData.visitas || [];
-                    state.geojsonData = mainData.geojson || null;
-                    tagCrimesWithGeoData();
-                    initMap();
-                    runFullAnalysis();
-                }
-            } catch (err) {
-                document.getElementById('error-message-content').textContent = err.message; error.classList.remove('hidden');
-            } finally { showLoader(false, loading); }
-        }
-
+        async function loadAndDisplayData(isFullAccess) { const { loading, error, dashboardCards } = ui; showLoader(true, loading); try { const summaryData = await window.dbFunctions.fetchSummaryData(); document.getElementById('total-crimes').textContent = summaryData.total || 0; document.getElementById('no-visits').textContent = summaryData.semVisita || 0; document.getElementById('one-visit').textContent = summaryData.comUma || 0; document.getElementById('two-plus-visits').textContent = summaryData.comDuasOuMais || 0; dashboardCards.classList.remove('hidden'); if (isFullAccess) { const mainData = await window.dbFunctions.fetchMainData(); state.allCrimeData = mainData.crimes || []; state.allVisitaData = mainData.visitas || []; state.geojsonData = mainData.geojson || null; tagCrimesWithGeoData(); initMap(); addMapControls(); runFullAnalysis(); } } catch (err) { document.getElementById('error-message-content').textContent = err.message; error.classList.remove('hidden'); } finally { showLoader(false, loading); } }
         window.addEventListener('user-authenticated-full', () => loadAndDisplayData(true));
         window.addEventListener('user-authenticated-limited', () => loadAndDisplayData(false));
-        window.addEventListener('admin-authenticated', () => {
-            const db = window.dbFunctions.getDbInstance(); const { collection, onSnapshot } = window.dbFunctions.getFirestoreLibs();
-            onSnapshot(collection(db, "user_permissions"), (snapshot) => {
-                const userListContainer = document.getElementById('admin-user-list'); userListContainer.innerHTML = '';
-                const users = []; snapshot.forEach(doc => users.push({ uid: doc.id, ...doc.data() }));
-                const pending = users.filter(u => u.status === 'pending');
-                const approved = users.filter(u => u.status === 'approved');
-                const revoked = users.filter(u => u.status === 'revoked');
-                const renderUserList = (title, userArray, colorClass) => { let html = `<h3 class="text-lg font-bold ${colorClass}">${title} (${userArray.length})</h3>`; if (userArray.length === 0) { html += `<p class="text-gray-500 italic">Nenhum usuário nesta categoria.</p>`; } else { html += `<ul class="space-y-2 mt-2">`; userArray.forEach(u => { const photoURL = u.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(u.displayName || u.email)}&background=random&color=fff&size=32`; html += `<li class="flex items-center justify-between p-2 bg-white rounded-md shadow-sm"><div class="flex items-center"><img src="${photoURL}" class="w-8 h-8 rounded-full mr-3"><div><p class="font-semibold">${u.displayName}</p><p class="text-sm text-gray-500">${u.email}</p></div></div><div class="space-x-2">${u.status !== 'approved' ? `<button onclick="window.adminFunctions.updateUserStatus('${u.uid}', 'approved')" class="bg-green-500 text-white px-3 py-1 text-sm rounded-md hover:bg-green-600">Aprovar</button>` : ''}${u.status !== 'revoked' ? `<button onclick="window.adminFunctions.updateUserStatus('${u.uid}', 'revoked')" class="bg-red-500 text-white px-3 py-1 text-sm rounded-md hover:bg-red-600">Revogar</button>` : ''}</div></li>`; }); html += `</ul>`; } return html; };
-                userListContainer.innerHTML += renderUserList('Solicitações Pendentes', pending, 'text-yellow-700');
-                userListContainer.innerHTML += `<hr class="my-4 border-indigo-200">`;
-                userListContainer.innerHTML += renderUserList('Usuários Aprovados', approved, 'text-green-700');
-                userListContainer.innerHTML += `<hr class="my-4 border-indigo-200">`;
-                userListContainer.innerHTML += renderUserList('Usuários Revogados', revoked, 'text-red-700');
-            });
+        window.addEventListener('admin-authenticated', async () => {
+            const db = window.dbFunctions.getDbInstance(); const { collection, onSnapshot, getDocs } = window.dbFunctions.getFirestoreLibs();
+            onSnapshot(collection(db, "user_permissions"), (snapshot) => { const userListContainer = document.getElementById('admin-user-list'); userListContainer.innerHTML = ''; const users = []; snapshot.forEach(doc => users.push({ uid: doc.id, ...doc.data() })); const pending = users.filter(u => u.status === 'pending'); const approved = users.filter(u => u.status === 'approved'); const revoked = users.filter(u => u.status === 'revoked'); const renderUserList = (title, userArray, colorClass) => { let html = `<h3 class="text-lg font-bold ${colorClass}">${title} (${userArray.length})</h3>`; if (userArray.length === 0) { html += `<p class="text-gray-500 italic">Nenhum usuário nesta categoria.</p>`; } else { html += `<ul class="space-y-2 mt-2">`; userArray.forEach(u => { const photoURL = u.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(u.displayName || u.email)}&background=random&color=fff&size=32`; html += `<li class="flex items-center justify-between p-2 bg-white rounded-md shadow-sm"><div class="flex items-center"><img src="${photoURL}" class="w-8 h-8 rounded-full mr-3"><div><p class="font-semibold">${u.displayName}</p><p class="text-sm text-gray-500">${u.email}</p></div></div><div class="space-x-2">${u.status !== 'approved' ? `<button onclick="window.adminFunctions.updateUserStatus('${u.uid}', 'approved')" class="bg-green-500 text-white px-3 py-1 text-sm rounded-md hover:bg-green-600">Aprovar</button>` : ''}${u.status !== 'revoked' ? `<button onclick="window.adminFunctions.updateUserStatus('${u.uid}', 'revoked')" class="bg-red-500 text-white px-3 py-1 text-sm rounded-md hover:bg-red-600">Revogar</button>` : ''}</div></li>`; }); html += `</ul>`; } return html; }; userListContainer.innerHTML += renderUserList('Solicitações Pendentes', pending, 'text-yellow-700'); userListContainer.innerHTML += `<hr class="my-4 border-indigo-200">`; userListContainer.innerHTML += renderUserList('Usuários Aprovados', approved, 'text-green-700'); userListContainer.innerHTML += `<hr class="my-4 border-indigo-200">`; userListContainer.innerHTML += renderUserList('Usuários Revogados', revoked, 'text-red-700'); });
+            try {
+                const activityCollectionRef = collection(db, "user_activity");
+                const activitySnapshot = await getDocs(activityCollectionRef);
+                let activities = []; activitySnapshot.forEach(doc => activities.push({ id: doc.id, ...doc.data() }));
+                activities.sort((a, b) => (b.lastLogin?.toDate() || 0) - (a.lastLogin?.toDate() || 0));
+                state.allUserActivity = activities;
+                renderActivityList(state.allUserActivity);
+            } catch (error) { console.error("Erro ao carregar dados de atividade:", error); document.getElementById('activity-user-list').innerHTML = `<p class="text-red-500">Falha ao carregar dados de atividade. Verifique as regras de segurança do Firebase e o console para erros.</p>`; }
         });
         ui.applyFiltersBtn.addEventListener('click', applyFiltersAndRedraw);
-        ui.occurrenceSelect.addEventListener('change', displayOccurrenceDetails);
+        ui.occurrenceSelect.addEventListener('change', () => { if (ui.occurrenceSelect.value) { window.logUserEvent('consultar_ocorrencia'); } displayOccurrenceDetails(); });
         ui.filters.cia.addEventListener('change', () => resetAndPopulateFilters('cia'));
         ui.filters.pel.addEventListener('change', () => resetAndPopulateFilters('pel'));
         ui.filters.subsetor.addEventListener('change', () => resetAndPopulateFilters('subsetor'));
