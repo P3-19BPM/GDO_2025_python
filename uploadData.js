@@ -1,87 +1,80 @@
 // Arquivo: uploadData.js
-// Versão 4 - Converte o GeoJSON para string para contornar limitações do Firestore.
+// Versão 5 - Faz upload do GeoJSON para o Firebase Storage e salva o link no Firestore.
 
 const admin = require('firebase-admin');
 const xlsx = require('xlsx');
 const fs = require('fs');
 const path = require('path');
+const { Storage } = require('@google-cloud/storage'); // <-- Ferramenta para o Storage
 
 // --- CONFIGURAÇÃO ---
 const serviceAccountKeyFilename = 'vtcrime-d6a61-firebase-adminsdk-fbsvc-86c34e822c.json';
 const excelFilename = 'Interacao_Dados.xlsx';
 const geojsonFilename = 'SubSetores_19_13-01-2025.geojson';
+const serviceAccount = require(path.resolve(__dirname, serviceAccountKeyFilename));
 
-// --- Validação Inicial dos Arquivos ---
-console.log('--- Verificando Arquivos de Configuração ---');
-const serviceAccountPath = path.resolve(__dirname, serviceAccountKeyFilename);
-const excelFilePath = path.resolve(__dirname, excelFilename);
-const geojsonFilePath = path.resolve(__dirname, geojsonFilename);
+// --- INICIALIZAÇÃO DO FIREBASE E STORAGE ---
+// A configuração agora inclui o 'storageBucket'
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  storageBucket: `${serviceAccount.project_id}.appspot.com` 
+});
 
-if (!fs.existsSync(serviceAccountPath)) {
-    console.error(`\nERRO CRÍTICO: Arquivo de chave do Firebase não encontrado: ${serviceAccountPath}`);
-    process.exit(1);
-}
-if (!fs.existsSync(excelFilePath)) {
-    console.error(`\nERRO CRÍTICO: Arquivo Excel não encontrado: ${excelFilePath}`);
-    process.exit(1);
-}
-if (!fs.existsSync(geojsonFilePath)) {
-    console.error(`\nERRO CRÍTICO: Arquivo GeoJSON não encontrado: ${geojsonFilePath}`);
-    process.exit(1);
-}
-console.log('Todos os arquivos necessários foram encontrados.\n');
+const db = admin.firestore();
+const bucket = admin.storage().bucket(); // Acessa o bucket de armazenamento padrão
 
-// --- INICIALIZAÇÃO DO FIREBASE ---
-try {
-    const serviceAccount = require(serviceAccountPath);
-    admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount)
-    });
+console.log('Firebase Admin e Storage inicializados com sucesso.\n');
 
-    const db = admin.firestore();
-    console.log('--- Conexão com Firebase ---');
-    console.log('Firebase Admin inicializado com sucesso.\n');
+// --- FUNÇÃO PRINCIPAL ---
+async function uploadData() {
+    try {
+        // --- 1. Upload do GeoJSON para o Storage ---
+        console.log('--- Etapa 1: Fazendo upload do GeoJSON para o Storage ---');
+        const geojsonFilePath = path.resolve(__dirname, geojsonFilename);
+        const destinationPath = `mapas/${geojsonFilename}`; // Salva em uma pasta 'mapas'
 
-    // --- FUNÇÃO PRINCIPAL ---
-    async function uploadData() {
-        try {
-            console.log('--- Processamento de Dados ---');
-            const workbook = xlsx.readFile(excelFilePath);
-            const crimeSheet = workbook.Sheets['VT_CRIME'];
-            const visitaSheet = workbook.Sheets['VT_VISITA'];
-            
-            if (!crimeSheet || !visitaSheet) {
-                throw new Error('As abas "VT_CRIME" ou "VT_VISITA" não foram encontradas no arquivo Excel.');
-            }
+        await bucket.upload(geojsonFilePath, {
+            destination: destinationPath,
+            public: true // Torna o arquivo publicamente legível
+        });
 
-            const crimes = xlsx.utils.sheet_to_json(crimeSheet);
-            const visitas = xlsx.utils.sheet_to_json(visitaSheet);
-            const geojsonData = JSON.parse(fs.readFileSync(geojsonFilePath, 'utf-8'));
-            
-            console.log(`Dados processados: ${crimes.length} crimes, ${visitas.length} visitas.`);
-            console.log('Iniciando upload para o Firestore...\n');
-            
-            const appDataRef = db.collection('app_data').doc('main');
-            
-            // CORREÇÃO: Converte o objeto GeoJSON em uma string antes de enviar.
-            await appDataRef.set({
-                crimes,
-                visitas,
-                geojson: JSON.stringify(geojsonData), // AQUI ESTÁ A MUDANÇA
-                lastUpdated: admin.firestore.FieldValue.serverTimestamp()
-            });
+        // Gera a URL pública para o arquivo
+        const publicUrl = `https://storage.googleapis.com/${bucket.name}/${destinationPath}`;
+        console.log(`GeoJSON enviado com sucesso. URL pública: ${publicUrl}\n`);
 
-            console.log('----------------------------------------------------');
-            console.log('SUCESSO! Dados atualizados no Firestore.');
-            console.log('----------------------------------------------------');
-
-        } catch (error) {
-            console.error('ERRO DURANTE O PROCESSAMENTO OU UPLOAD:', error.message);
+        // --- 2. Processamento dos Dados do Excel ---
+        console.log('--- Etapa 2: Processando dados do Excel ---');
+        const excelFilePath = path.resolve(__dirname, excelFilename);
+        const workbook = xlsx.readFile(excelFilePath);
+        const crimeSheet = workbook.Sheets['VT_CRIME'];
+        const visitaSheet = workbook.Sheets['VT_VISITA'];
+        
+        if (!crimeSheet || !visitaSheet) {
+            throw new Error('As abas "VT_CRIME" ou "VT_VISITA" não foram encontradas no Excel.');
         }
+
+        const crimes = xlsx.utils.sheet_to_json(crimeSheet);
+        const visitas = xlsx.utils.sheet_to_json(visitaSheet);
+        console.log(`Dados processados: ${crimes.length} crimes, ${visitas.length} visitas.\n`);
+
+        // --- 3. Salva os dados e o LINK no Firestore ---
+        console.log('--- Etapa 3: Salvando dados no Firestore ---');
+        const appDataRef = db.collection('app_data').doc('main');
+        
+        await appDataRef.set({
+            crimes,
+            visitas,
+            geojsonUrl: publicUrl, // Salva APENAS a URL do arquivo GeoJSON
+            lastUpdated: admin.firestore.FieldValue.serverTimestamp()
+        });
+
+        console.log('----------------------------------------------------');
+        console.log('SUCESSO! Dados e link do mapa atualizados no Firestore.');
+        console.log('----------------------------------------------------');
+
+    } catch (error) {
+        console.error('ERRO DURANTE O PROCESSO:', error.message);
     }
-
-    uploadData();
-
-} catch (initError) {
-    console.error('\nERRO CRÍTICO AO INICIALIZAR O FIREBASE:', initError.message);
 }
+
+uploadData();
