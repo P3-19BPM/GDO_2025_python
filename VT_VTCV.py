@@ -6,8 +6,8 @@ from openpyxl import load_workbook
 # --- Configurações dos Caminhos ---
 geojson_path = r"E:\QGis\csv\Mapas_Tratados\SubSetores_19BPM_GeoJSON.json"
 # "E:\Painel_PowerBI\BASE_GDO\BD_2025\Query.xlsx" # "E:\GDO\GDO_2025\Monitoramento_INT_Comunitaria_2025.xlsx"
-output_excel_path = r"G:\Meu Drive\Análise Criminal e Estatística\GDO\InteracaoComunitaria\Interacao_Dados.xlsx"
-
+#output_excel_path = r"G:\Meu Drive\Análise Criminal e Estatística\GDO\InteracaoComunitaria\Interacao_Dados.xlsx"
+output_excel_path = r"E:\GitHub\GDO_2025_python\Interacao_Dados.xlsx"
 
 # Arquivos CSV e os nomes das abas correspondentes
 csv_files = {
