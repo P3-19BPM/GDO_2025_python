@@ -1,0 +1,15 @@
+<!-- Arquivo: partials/admin_panel.html -->
+<div id="admin-panel-container" class="hidden mb-8">
+    <button
+        class="collapsible-trigger w-full flex justify-between items-center bg-indigo-100 p-4 rounded-xl shadow-md text-xl font-semibold text-indigo-800">
+        <span>Painel de Gerenciamento de Usuários</span>
+        <svg class="chevron-icon w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+    </button>
+    <div class="collapsible-content hidden bg-indigo-50 p-6 rounded-b-xl -mt-2">
+        <div id="admin-user-list" class="space-y-4">
+            <div class="loader mx-auto"></div>
+        </div>
+    </div>
+</div>
