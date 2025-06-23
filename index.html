@@ -94,10 +94,40 @@
                 catch (error) { console.error("Erro ao atualizar status:", error); alert('Falha ao atualizar status.'); }
             }
         };
+
         window.dbFunctions = {
             getDbInstance: () => db, getFirestoreLibs: () => ({ collection, onSnapshot, getDocs }),
             fetchSummaryData: async () => { const docSnap = await getDoc(doc(db, "app_data", "summary")); if (docSnap.exists()) return docSnap.data(); throw new Error("Dados de resumo não encontrados."); },
-            fetchMainData: async () => { const docSnap = await getDoc(doc(db, "app_data", "main")); if (docSnap.exists()) { const data = docSnap.data(); if (data.geojsonUrl) { const geojsonResponse = await fetch(data.geojsonUrl); if (!geojsonResponse.ok) throw new Error('Falha ao baixar o arquivo de mapa.'); data.geojson = await geojsonResponse.json(); } return data; } throw new Error("Dados completos não encontrados."); }
+            fetchMainData: async () => {
+                console.log("Buscando dados das coleções 'crimes' e 'visitas'...");
+                const mainMetaRef = doc(db, "app_data", "main");
+                const crimesCollectionRef = collection(db, "crimes");
+                const visitasCollectionRef = collection(db, "visitas");
+
+                const [mainMetaSnap, crimesSnap, visitasSnap] = await Promise.all([
+                    getDoc(mainMetaRef),
+                    getDocs(crimesCollectionRef),
+                    getDocs(visitasCollectionRef)
+                ]);
+
+                const crimesData = crimesSnap.docs.map(doc => doc.data());
+                const visitasData = visitasSnap.docs.map(doc => doc.data());
+
+                const mainData = {
+                    crimes: crimesData,
+                    visitas: visitasData,
+                    geojson: null
+                };
+
+                if (mainMetaSnap.exists() && mainMetaSnap.data().geojsonUrl) {
+                    const geojsonResponse = await fetch(mainMetaSnap.data().geojsonUrl);
+                    if (!geojsonResponse.ok) throw new Error('Falha ao baixar o arquivo de mapa.');
+                    mainData.geojson = await geojsonResponse.json();
+                }
+
+                console.log(`Dados carregados: ${mainData.crimes.length} registros de crimes, ${mainData.visitas.length} registros de visitas.`);
+                return mainData;
+            }
         };
 
         async function handleUserAccess(user, isAdmin) {
@@ -217,6 +247,14 @@
         details>summary::-webkit-details-marker {
             display: none;
         }
+
+        .summary-chevron {
+            transition: transform 0.2s;
+        }
+
+        details[open] .summary-chevron {
+            transform: rotate(90deg);
+        }
     </style>
 </head>
 
@@ -245,23 +283,43 @@
                 <h1 class="text-3xl font-bold text-gray-800">Painel de Análise de Ocorrências</h1>
                 <div id="user-info" class="text-right"></div>
             </header>
-            <div id="admin-panel-container" class="hidden bg-indigo-100 p-6 rounded-xl shadow-md mb-8">
-                <h2 class="text-xl font-semibold text-indigo-800 mb-4">Painel de Gerenciamento de Usuários</h2>
-                <div id="admin-user-list" class="space-y-4">
-                    <div class="loader mx-auto"></div>
-                </div>
+
+            <div id="admin-panel-container" class="hidden bg-indigo-100 p-4 rounded-xl shadow-md mb-8">
+                <details open>
+                    <summary
+                        class="flex justify-between items-center font-semibold text-xl text-indigo-800 cursor-pointer">
+                        Painel de Gerenciamento de Usuários
+                        <svg class="w-6 h-6 summary-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                            </path>
+                        </svg>
+                    </summary>
+                    <div id="admin-user-list" class="mt-4 space-y-4">
+                        <div class="loader mx-auto"></div>
+                    </div>
+                </details>
             </div>
 
-            <div id="activity-panel-container" class="hidden bg-gray-100 p-6 rounded-xl shadow-md mb-8">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-semibold text-gray-800">Painel de Atividades do Usuário</h2>
-                    <!-- NOVO: Campo de filtro/busca -->
-                    <input type="text" id="activity-filter-input" placeholder="Filtrar por nome ou e-mail..."
-                        class="w-1/3 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                </div>
-                <div id="activity-user-list" class="space-y-4">
-                    <div class="loader mx-auto"></div>
-                </div>
+            <div id="activity-panel-container" class="hidden bg-gray-100 p-4 rounded-xl shadow-md mb-8">
+                <details open>
+                    <summary
+                        class="flex justify-between items-center font-semibold text-xl text-gray-800 cursor-pointer">
+                        Painel de Atividades do Usuário
+                        <svg class="w-6 h-6 summary-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                            </path>
+                        </svg>
+                    </summary>
+                    <div class="mt-4">
+                        <input type="text" id="activity-filter-input" placeholder="Filtrar por nome ou e-mail..."
+                            class="w-full mb-4 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <div id="activity-user-list" class="space-y-4">
+                            <div class="loader mx-auto"></div>
+                        </div>
+                    </div>
+                </details>
             </div>
 
             <div id="loading-data-section" class="text-center py-10">
@@ -359,33 +417,22 @@
         let state = { allCrimeData: [], allVisitaData: [], visitCounts: {}, filteredCrimeData: [], allUserActivity: [], map: null, crimeMarkersLayer: null, sectorLayer: null, activeChoropleth: null };
         const palavrasExcluidas = ['autor', 'suspeito', 'co-autor'];
 
-        // --- LÓGICA DO PAINEL DE ATIVIDADE ---
         function renderActivityList(activitiesToRender) {
-            const container = ui.activityList;
-            container.innerHTML = '';
+            const container = ui.activityList; container.innerHTML = '';
             let html = `<div class="overflow-x-auto"><table class="min-w-full divide-y divide-gray-300"><thead class="bg-gray-200"><tr><th class="px-4 py-2 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Usuário</th><th class="px-4 py-2 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Último Login</th><th class="px-4 py-2 text-center text-xs font-medium text-gray-600 uppercase tracking-wider">Acessos</th><th class="px-4 py-2 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Eventos Contabilizados</th></tr></thead><tbody class="bg-white divide-y divide-gray-200">`;
-
-            if (activitiesToRender.length === 0) {
-                html += `<tr><td colspan="4" class="text-center py-4 text-gray-500">Nenhum usuário encontrado.</td></tr>`;
-            } else {
+            if (activitiesToRender.length === 0) { html += `<tr><td colspan="4" class="text-center py-4 text-gray-500">Nenhum usuário encontrado.</td></tr>`; }
+            else {
                 activitiesToRender.forEach(userActivity => {
                     const lastLoginDate = userActivity.lastLogin ? userActivity.lastLogin.toDate().toLocaleString('pt-BR') : 'N/A';
                     const loginCount = userActivity.loginCount || 0;
-
                     let eventsHtml = '';
                     const eventCounts = userActivity.eventCounts || {};
                     const hasEvents = Object.keys(eventCounts).length > 0;
-
                     if (hasEvents) {
                         eventsHtml += `<details><summary class="cursor-pointer text-indigo-600 hover:text-indigo-800 text-sm font-semibold">Mostrar/Ocultar Eventos</summary><ul class="text-xs mt-2 space-y-1 pl-2 border-l-2 border-gray-200">`;
-                        for (const [event, count] of Object.entries(eventCounts)) {
-                            eventsHtml += `<li><span class="font-semibold">${event.replace(/_/g, ' ')}:</span> ${count}</li>`;
-                        }
+                        for (const [event, count] of Object.entries(eventCounts)) { eventsHtml += `<li><span class="font-semibold">${event.replace(/_/g, ' ')}:</span> ${count}</li>`; }
                         eventsHtml += `</ul></details>`;
-                    } else {
-                        eventsHtml += '<span class="text-xs text-gray-400 italic">Nenhum evento</span>';
-                    }
-
+                    } else { eventsHtml += '<span class="text-xs text-gray-400 italic">Nenhum evento</span>'; }
                     html += `<tr class="hover:bg-gray-50"><td class="px-4 py-3 whitespace-nowrap"><div class="text-sm font-semibold text-gray-900">${userActivity.displayName || 'N/A'}</div><div class="text-xs text-gray-500">${userActivity.email || 'N/A'}</div></td><td class="px-4 py-3 whitespace-nowrap text-sm text-gray-700">${lastLoginDate}</td><td class="px-4 py-3 whitespace-nowrap text-lg text-center font-bold text-gray-700">${loginCount}</td><td class="px-4 py-3">${eventsHtml}</td></tr>`;
                 });
             }
@@ -395,17 +442,25 @@
 
         ui.activityFilter.addEventListener('input', (e) => {
             const searchTerm = e.target.value.toLowerCase();
-            if (!searchTerm) {
-                renderActivityList(state.allUserActivity);
-                return;
-            }
-            const filteredActivities = state.allUserActivity.filter(activity =>
-                (activity.displayName || '').toLowerCase().includes(searchTerm) ||
-                (activity.email || '').toLowerCase().includes(searchTerm)
-            );
+            if (!searchTerm) { renderActivityList(state.allUserActivity); return; }
+            const filteredActivities = state.allUserActivity.filter(activity => (activity.displayName || '').toLowerCase().includes(searchTerm) || (activity.email || '').toLowerCase().includes(searchTerm));
             renderActivityList(filteredActivities);
         });
-        // --- FIM DA LÓGICA ---
+
+        // CORRIGIDO: Função para criar o ícone de pino com cores diferentes via SVG
+        function createStyledMarkerIcon(color) {
+            const iconHtml = `
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${color}" class="w-8 h-8" style="filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5));">
+                    <path fill-rule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 005.16-4.242 12.082 12.082 0 00-4.044-13.844A12.082 12.082 0 0012 2.03a12.082 12.082 0 00-7.72 4.242 12.082 12.082 0 00-4.044 13.844 16.975 16.975 0 005.16 4.242zM12 10a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" clip-rule="evenodd" />
+                </svg>`;
+            return L.divIcon({
+                html: iconHtml,
+                className: '', // Sem classe extra para não interferir
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32]
+            });
+        }
 
         function showLoader(show, container) { container.style.display = show ? 'block' : 'none'; }
         function initMap() { if (state.map) { state.map.invalidateSize(); return; } state.map = L.map(ui.map).setView([-18.22, -41.50], 10); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap' }).addTo(state.map); state.crimeMarkersLayer = L.layerGroup().addTo(state.map); }
@@ -416,14 +471,7 @@
                     const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control bg-white p-2 rounded-md shadow-lg');
                     container.innerHTML = `<div class="space-y-1"><p class="font-bold text-xs mb-1">Colorir por:</p><button data-level="CIA_PM" class="map-control-btn w-full text-xs px-2 py-1 bg-gray-200 rounded">CIA</button><button data-level="PELOTAO" class="map-control-btn w-full text-xs px-2 py-1 bg-gray-200 rounded">Pelotão</button><button data-level="SUB_SETOR" class="map-control-btn w-full text-xs px-2 py-1 bg-gray-200 rounded">Sub Setor</button></div>`;
                     container.querySelectorAll('.map-control-btn').forEach(btn => {
-                        btn.onclick = (e) => {
-                            e.stopPropagation();
-                            document.querySelectorAll('.map-control-btn').forEach(b => b.classList.remove('bg-blue-500', 'text-white'));
-                            e.target.classList.add('bg-blue-500', 'text-white');
-                            const level = e.target.dataset.level;
-                            window.logUserEvent(`mapa_colorir_por_${level.toLowerCase()}`);
-                            updateChoroplethMap(level);
-                        };
+                        btn.onclick = (e) => { e.stopPropagation(); document.querySelectorAll('.map-control-btn').forEach(b => b.classList.remove('bg-blue-500', 'text-white')); e.target.classList.add('bg-blue-500', 'text-white'); const level = e.target.dataset.level; window.logUserEvent(`mapa_colorir_por_${level.toLowerCase()}`); updateChoroplethMap(level); };
                     });
                     return container;
                 }
@@ -443,15 +491,80 @@
         }
         function runFullAnalysis() { calculateVisitCounts(); populateAllFilters(); applyFiltersAndRedraw(); }
         function calculateVisitCounts() { const counts = {}; state.allVisitaData.forEach(v => { const id = String(v.numero_reds_furto); if (id) counts[id] = (counts[id] || 0) + 1; }); state.visitCounts = counts; }
-        function applyFiltersAndRedraw() { let data = [...state.allCrimeData]; const visitStatus = ui.filters.visitStatus.value; if (visitStatus) { data = data.filter(crime => { const count = state.visitCounts[String(crime.numero_ocorrencia)] || 0; if (visitStatus === 'sem_visita') return count === 0; if (visitStatus === '1_visita') return count === 1; if (visitStatus === '2_mais_visitas') return count >= 2; return true; }); } const municipio = ui.filters.municipio.value; if (municipio) data = data.filter(c => c.nome_municipio === municipio); const startDate = ui.filters.startDate.valueAsDate, endDate = ui.filters.endDate.valueAsDate; if (startDate || endDate) { data = data.filter(c => { const crimeDate = parseExcelDate(c.data_hora_fato); if (!crimeDate) return false; if (startDate && crimeDate < startDate) return false; if (endDate) { const endOfDay = new Date(endDate); endOfDay.setHours(23, 59, 59, 999); if (crimeDate > endOfDay) return false; } return true; }); } const cia = ui.filters.cia.value; if (cia) data = data.filter(c => c.CIA_PM == cia); const pel = ui.filters.pel.value; if (pel) data = data.filter(c => c.PELOTAO == pel); const subsetor = ui.filters.subsetor.value; if (subsetor) data = data.filter(c => c.SUB_SETOR == subsetor); state.filteredCrimeData = data; updateDashboard(state.filteredCrimeData); populateOccurrenceDropdown(state.filteredCrimeData); updateMapLayers(); }
+
+        function applyFiltersAndRedraw() {
+            let data = [...state.allCrimeData];
+            const visitStatus = ui.filters.visitStatus.value;
+            if (visitStatus) { data = data.filter(crime => { const count = state.visitCounts[String(crime.numero_ocorrencia)] || 0; if (visitStatus === 'sem_visita') return count === 0; if (visitStatus === '1_visita') return count === 1; if (visitStatus === '2_mais_visitas') return count >= 2; return true; }); }
+            const municipio = ui.filters.municipio.value; if (municipio) data = data.filter(c => c.nome_municipio === municipio);
+
+            const startDate = ui.filters.startDate.valueAsDate;
+            const endDate = ui.filters.endDate.valueAsDate;
+            if (startDate || endDate) {
+                data = data.filter(c => {
+                    const crimeDate = parseExcelDate(c.data_fato);
+                    if (!crimeDate) return false;
+
+                    if (startDate && crimeDate < startDate) return false;
+                    if (endDate) {
+                        const endOfDay = new Date(endDate);
+                        endOfDay.setHours(23, 59, 59, 999);
+                        if (crimeDate > endOfDay) return false;
+                    }
+                    return true;
+                });
+            }
+
+            const cia = ui.filters.cia.value; if (cia) data = data.filter(c => c.CIA_PM == cia);
+            const pel = ui.filters.pel.value; if (pel) data = data.filter(c => c.PELOTAO == pel);
+            const subsetor = ui.filters.subsetor.value; if (subsetor) data = data.filter(c => c.SUB_SETOR == subsetor);
+
+            state.filteredCrimeData = data;
+            updateDashboard(state.filteredCrimeData);
+            populateOccurrenceDropdown(state.filteredCrimeData);
+            updateMapLayers();
+        }
+
         function updateDashboard(crimes) { ui.dashboardCards.classList.remove('hidden'); const uniqueOccurrences = [...new Set(crimes.map(c => String(c.numero_ocorrencia)))]; document.getElementById('total-crimes').textContent = uniqueOccurrences.length; let counters = { no: 0, one: 0, two: 0 }; uniqueOccurrences.forEach(id => { const count = state.visitCounts[id] || 0; if (count === 0) counters.no++; else if (count === 1) counters.one++; else counters.two++; }); document.getElementById('no-visits').textContent = counters.no; document.getElementById('one-visit').textContent = counters.one; document.getElementById('two-plus-visits').textContent = counters.two; }
         function populateAllFilters() { const populateSelect = (element, values, selectedValue) => { const uniqueSorted = [...new Set(values)].filter(Boolean).sort(); element.innerHTML = '<option value="">Todos</option>'; uniqueSorted.forEach(value => { const option = document.createElement('option'); option.value = value; option.textContent = value; if (value === selectedValue) option.selected = true; element.appendChild(option); }); }; const selectedCia = ui.filters.cia.value; const selectedPel = ui.filters.pel.value; const selectedSubsetor = ui.filters.subsetor.value; let dataForNextFilter = state.allCrimeData; populateSelect(ui.filters.cia, dataForNextFilter.map(c => c.CIA_PM), selectedCia); if (selectedCia) dataForNextFilter = dataForNextFilter.filter(c => c.CIA_PM === selectedCia); populateSelect(ui.filters.pel, dataForNextFilter.map(c => c.PELOTAO), selectedPel); if (selectedPel) dataForNextFilter = dataForNextFilter.filter(c => c.PELOTAO === selectedPel); populateSelect(ui.filters.subsetor, dataForNextFilter.map(c => c.SUB_SETOR), selectedSubsetor); if (selectedSubsetor) dataForNextFilter = dataForNextFilter.filter(c => c.SUB_SETOR === selectedSubsetor); populateSelect(ui.filters.municipio, dataForNextFilter.map(c => c.nome_municipio), ui.filters.municipio.value); }
         function populateOccurrenceDropdown(crimes) { const unique = [...new Set(crimes.map(c => String(c.numero_ocorrencia)))].sort(); ui.occurrenceSelect.innerHTML = '<option value="">-- Selecione --</option>'; unique.forEach(occ => { const count = state.visitCounts[occ] || 0; let bgColor = ''; if (count === 0) bgColor = 'bg-red-100'; else if (count === 1) bgColor = 'bg-yellow-100'; else bgColor = 'bg-green-100'; ui.occurrenceSelect.innerHTML += `<option value="${occ}" class="${bgColor}">${occ}</option>`; }); ui.resultsArea.innerHTML = ''; }
-        function displayOccurrenceDetails() { const selected = ui.occurrenceSelect.value; ui.resultsArea.innerHTML = ''; if (!selected) return; const people = state.allCrimeData.filter(r => String(r.numero_ocorrencia) === selected).filter(r => !palavrasExcluidas.some(p => String(r.envolvimento_descricao || '').toLowerCase().includes(p))); const crime = state.allCrimeData.find(r => String(r.numero_ocorrencia) === selected); let dataFato = 'Não informada'; if (crime?.data_hora_fato) { const dataObj = parseExcelDate(crime.data_hora_fato); dataFato = dataObj.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' }); } ui.resultsArea.innerHTML = `<p class="mb-4 text-gray-700"><strong>Data do Fato:</strong> ${dataFato}</p>`; if (people.length > 0) { ui.resultsArea.innerHTML += `<table class="min-w-full divide-y divide-gray-200 mt-2"><thead class="bg-gray-50"><tr><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nome</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Envolvimento</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tel. Residencial</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tel. Comercial</th></tr></thead><tbody class="bg-white divide-y divide-gray-200">${people.map(p => `<tr><td class="px-6 py-4 text-sm">${p.nome_completo_envolvido || 'N/A'}</td><td class="px-6 py-4 text-sm">${p.envolvimento_descricao || 'N/A'}</td><td class="px-6 py-4 text-sm">${p.numero_telefone_residencial || 'N/A'}</td><td class="px-6 py-4 text-sm">${p.numero_telefone_comercial || 'N/A'}</td></tr>`).join('')}</tbody></table>`; } else { ui.resultsArea.innerHTML += `<p class="text-gray-600 mt-4 p-4 bg-yellow-50 rounded-md">Nenhum envolvido (diferente de autor/suspeito) encontrado.</p>`; } }
+        function displayOccurrenceDetails() { const selected = ui.occurrenceSelect.value; ui.resultsArea.innerHTML = ''; if (!selected) return; const people = state.allCrimeData.filter(r => String(r.numero_ocorrencia) === selected).filter(r => !palavrasExcluidas.some(p => String(r.envolvimento_descricao || '').toLowerCase().includes(p))); const crime = state.allCrimeData.find(r => String(r.numero_ocorrencia) === selected); let dataFato = 'Não informada'; if (crime?.data_fato) { const dataObj = parseExcelDate(crime.data_fato); if (!isNaN(dataObj.getTime())) { dataFato = dataObj.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' }); } } ui.resultsArea.innerHTML = `<p class="mb-4 text-gray-700"><strong>Data do Fato:</strong> ${dataFato}</p>`; if (people.length > 0) { ui.resultsArea.innerHTML += `<table class="min-w-full divide-y divide-gray-200 mt-2"><thead class="bg-gray-50"><tr><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nome</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Envolvimento</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tel. Residencial</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tel. Comercial</th></tr></thead><tbody class="bg-white divide-y divide-gray-200">${people.map(p => `<tr><td class="px-6 py-4 text-sm">${p.nome_completo_envolvido || 'N/A'}</td><td class="px-6 py-4 text-sm">${p.envolvimento_descricao || 'N/A'}</td><td class="px-6 py-4 text-sm">${p.numero_telefone_residencial || 'N/A'}</td><td class="px-6 py-4 text-sm">${p.numero_telefone_comercial || 'N/A'}</td></tr>`).join('')}</tbody></table>`; } else { ui.resultsArea.innerHTML += `<p class="text-gray-600 mt-4 p-4 bg-yellow-50 rounded-md">Nenhum envolvido (diferente de autor/suspeito) encontrado.</p>`; } }
         function findProperty(props, name) { const key = Object.keys(props).find(k => k.trim().toLowerCase() === name.trim().toLowerCase()); return key ? props[key] : null; }
         function tagCrimesWithGeoData() { if (!state.geojsonData) return; state.allCrimeData.forEach(crime => { const lat = parseFloat(String(crime.numero_latitude).replace(',', '.')), lon = parseFloat(String(crime.numero_longitude).replace(',', '.')); if (isNaN(lat) || isNaN(lon)) return; const point = turf.point([lon, lat]); for (const feature of state.geojsonData.features) { if (turf.booleanPointInPolygon(point, feature)) { crime.CIA_PM = findProperty(feature.properties, 'CIA_PM'); crime.PELOTAO = findProperty(feature.properties, 'PELOTAO'); crime.SUB_SETOR = findProperty(feature.properties, 'SUB_SETOR'); return; } } }); }
-        function updateMapLayers() { if (!state.map) return; state.crimeMarkersLayer.clearLayers(); if (state.sectorLayer) state.map.removeLayer(state.sectorLayer); if (state.geojsonData) { state.sectorLayer = L.geoJSON(state.geojsonData, { style: { color: "#3b82f6", weight: 2, opacity: 0.7, fillOpacity: 0.1, }, onEachFeature: (feature, layer) => { const cia = findProperty(feature.properties, 'CIA_PM'), pel = findProperty(feature.properties, 'PELOTAO'), subsetor = findProperty(feature.properties, 'SUB_SETOR'); layer.bindTooltip(`<b>CIA:</b> ${cia}<br><b>Pelotão:</b> ${pel}<br><b>Sub Setor:</b> ${subsetor}`); layer.on('click', () => { ui.filters.cia.value = cia || ''; resetAndPopulateFilters('cia'); }); } }).addTo(state.map); } const markers = []; state.filteredCrimeData.forEach(crime => { const lat = parseFloat(String(crime.numero_latitude).replace(',', '.')), lon = parseFloat(String(crime.numero_longitude).replace(',', '.')); if (!isNaN(lat) && !isNaN(lon)) { const marker = L.marker([lat, lon]).bindPopup(`<b>Ocorrência:</b> ${crime.numero_ocorrencia}<br><b>Município:</b> ${crime.nome_municipio}`); state.crimeMarkersLayer.addLayer(marker); markers.push([lat, lon]); } }); if (markers.length > 0) { state.map.fitBounds(L.latLngBounds(markers), { padding: [50, 50], maxZoom: 15 }); } else if (state.sectorLayer && state.sectorLayer.getBounds().isValid()) { state.map.fitBounds(state.sectorLayer.getBounds()); } if (state.activeChoropleth) updateChoroplethMap(state.activeChoropleth); }
-        function parseExcelDate(d) { if (!d) return null; if (typeof d === 'number') return new Date(Math.round((d - 25569) * 86400 * 1000)); const p = String(d).match(/(\d+)/g); return (p && p.length >= 3) ? new Date(p[2], p[1] - 1, p[0]) : new Date(d); }
+
+        function updateMapLayers() {
+            if (!state.map) return;
+            state.crimeMarkersLayer.clearLayers();
+            if (state.sectorLayer) state.map.removeLayer(state.sectorLayer);
+            if (state.geojsonData) {
+                state.sectorLayer = L.geoJSON(state.geojsonData, { style: { color: "#3b82f6", weight: 2, opacity: 0.7, fillOpacity: 0.1, }, onEachFeature: (feature, layer) => { const cia = findProperty(feature.properties, 'CIA_PM'), pel = findProperty(feature.properties, 'PELOTAO'), subsetor = findProperty(feature.properties, 'SUB_SETOR'); layer.bindTooltip(`<b>CIA:</b> ${cia}<br><b>Pelotão:</b> ${pel}<br><b>Sub Setor:</b> ${subsetor}`); layer.on('click', () => { ui.filters.cia.value = cia || ''; resetAndPopulateFilters('cia'); }); } }).addTo(state.map);
+            }
+            const markers = [];
+            state.filteredCrimeData.forEach(crime => {
+                const lat = parseFloat(String(crime.numero_latitude).replace(',', '.'));
+                const lon = parseFloat(String(crime.numero_longitude).replace(',', '.'));
+                if (!isNaN(lat) && !isNaN(lon)) {
+                    const count = state.visitCounts[String(crime.numero_ocorrencia)] || 0;
+                    let color = '#ef4444'; // Vermelho (padrão para 0 visitas)
+                    if (count >= 1) color = '#22c55e'; // Verde (para 1 ou mais visitas)
+
+                    const marker = L.marker([lat, lon], { icon: createStyledMarkerIcon(color) }).bindPopup(`<b>Ocorrência:</b> ${crime.numero_ocorrencia}<br><b>Município:</b> ${crime.nome_municipio}`);
+                    state.crimeMarkersLayer.addLayer(marker);
+                    markers.push([lat, lon]);
+                }
+            });
+            if (markers.length > 0) { state.map.fitBounds(L.latLngBounds(markers), { padding: [50, 50], maxZoom: 15 }); }
+            else if (state.sectorLayer && state.sectorLayer.getBounds().isValid()) { state.map.fitBounds(state.sectorLayer.getBounds()); }
+
+            if (state.activeChoropleth) updateChoroplethMap(state.activeChoropleth);
+        }
+
+        function parseExcelDate(excelDate) {
+            if (!excelDate) return null;
+            const date = !isNaN(excelDate) ? new Date(Math.round((excelDate - 25569) * 86400 * 1000)) : new Date(excelDate);
+            return isNaN(date.getTime()) ? null : date;
+        }
+
         function updateChoroplethMap(aggregationLevel) { if (!state.map || !state.geojsonData || !state.sectorLayer) return; state.activeChoropleth = aggregationLevel; const getIdentifier = (feature) => findProperty(feature.properties, aggregationLevel); const areaStats = {}; state.filteredCrimeData.forEach(crime => { const areaId = crime[aggregationLevel]; if (!areaId) return; if (!areaStats[areaId]) areaStats[areaId] = { crimes: new Set(), visits: 0 }; areaStats[areaId].crimes.add(String(crime.numero_ocorrencia)); }); Object.keys(areaStats).forEach(areaId => { let visitCountForArea = 0; areaStats[areaId].crimes.forEach(crimeId => { visitCountForArea += (state.visitCounts[crimeId] || 0); }); areaStats[areaId].visits = visitCountForArea; }); state.sectorLayer.eachLayer(layer => { const areaId = getIdentifier(layer.feature); const stats = areaStats[areaId]; let color = '#a0aec0'; if (stats && stats.crimes.size > 0) { const ratio = stats.visits / stats.crimes.size; if (ratio < 0.5) color = '#f56565'; else if (ratio < 1) color = '#f6e05e'; else color = '#68d391'; } layer.setStyle({ fillColor: color, fillOpacity: 0.7, weight: 1.5, color: 'white' }); }); }
         function resetAndPopulateFilters(level) { if (level === 'cia') { ui.filters.pel.value = ''; ui.filters.subsetor.value = ''; ui.filters.municipio.value = ''; } if (level === 'pel') { ui.filters.subsetor.value = ''; ui.filters.municipio.value = ''; } if (level === 'subsetor') { ui.filters.municipio.value = ''; } populateAllFilters(); }
         async function loadAndDisplayData(isFullAccess) { const { loading, error, dashboardCards } = ui; showLoader(true, loading); try { const summaryData = await window.dbFunctions.fetchSummaryData(); document.getElementById('total-crimes').textContent = summaryData.total || 0; document.getElementById('no-visits').textContent = summaryData.semVisita || 0; document.getElementById('one-visit').textContent = summaryData.comUma || 0; document.getElementById('two-plus-visits').textContent = summaryData.comDuasOuMais || 0; dashboardCards.classList.remove('hidden'); if (isFullAccess) { const mainData = await window.dbFunctions.fetchMainData(); state.allCrimeData = mainData.crimes || []; state.allVisitaData = mainData.visitas || []; state.geojsonData = mainData.geojson || null; tagCrimesWithGeoData(); initMap(); addMapControls(); runFullAnalysis(); } } catch (err) { document.getElementById('error-message-content').textContent = err.message; error.classList.remove('hidden'); } finally { showLoader(false, loading); } }
