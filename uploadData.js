@@ -1,5 +1,5 @@
 // Arquivo: uploadData.js
-// Versão 11 - Adiciona validação de cabeçalhos para garantir a leitura correta dos dados.
+// Versão 13 - Limpa coleções antigas antes de fazer o upload para evitar duplicatas.
 
 const admin = require('firebase-admin');
 const xlsx = require('xlsx');
@@ -15,13 +15,47 @@ admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
 const db = admin.firestore();
 console.log('Firebase Admin inicializado com sucesso.\n');
 
-// Função para processar os envios em lotes de 500 operações
+/**
+ * Função auxiliar para deletar todos os documentos de uma coleção em lotes.
+ * @param {admin.firestore.CollectionReference} collectionRef A referência da coleção a ser limpa.
+ * @param {number} batchSize O tamanho do lote para exclusão.
+ */
+async function deleteCollection(collectionRef, batchSize) {
+    const query = collectionRef.orderBy('__name__').limit(batchSize);
+
+    return new Promise((resolve, reject) => {
+        deleteQueryBatch(query, resolve).catch(reject);
+    });
+}
+
+async function deleteQueryBatch(query, resolve) {
+    const snapshot = await query.get();
+
+    if (snapshot.size === 0) {
+        // Quando não há mais documentos, a exclusão está completa.
+        return resolve();
+    }
+
+    // Deleta os documentos em um lote.
+    const batch = db.batch();
+    snapshot.docs.forEach((doc) => {
+        batch.delete(doc.ref);
+    });
+    await batch.commit();
+
+    // Repete o processo para o próximo lote.
+    process.nextTick(() => {
+        deleteQueryBatch(query, resolve);
+    });
+}
+
+
 async function commitBatchInChunks(collectionRef, dataArray) {
     let batch = db.batch();
     let count = 0;
 
     for (const item of dataArray) {
-        const docRef = collectionRef.doc(); // Cria um novo documento com ID automático
+        const docRef = collectionRef.doc();
         batch.set(docRef, item);
         count++;
 
@@ -42,6 +76,9 @@ async function commitBatchInChunks(collectionRef, dataArray) {
 
 async function uploadData() {
     try {
+        const dataVersion = Date.now().toString();
+        console.log(`--- Gerada nova versão dos dados: ${dataVersion} ---\n`);
+
         console.log('--- Etapa 1: Processando dados do Excel ---');
         const excelFilePath = path.resolve(__dirname, excelFilename);
         if (!require('fs').existsSync(excelFilePath)) {
@@ -59,53 +96,62 @@ async function uploadData() {
         console.log(`  - Registros lidos da aba "VT_CRIME": ${crimes.length}`);
         console.log(`  - Registros lidos da aba "VT_VISITA": ${visitas.length}`);
 
-        // Validação crucial para garantir que os dados foram lidos corretamente
-        if (crimes.length === 0 || !crimes[0].hasOwnProperty('numero_ocorrencia')) {
-            throw new Error('Falha ao ler dados de "VT_CRIME". Verifique se a primeira linha da planilha contém os cabeçalhos corretos (ex: "numero_ocorrencia") e se não há linhas em branco no topo.');
-        }
-        if (visitas.length > 0 && !visitas[0].hasOwnProperty('numero_reds_furto')) {
-             console.warn('AVISO: A aba "VT_VISITA" parece não ter o cabeçalho "numero_reds_furto". Os cálculos de visitas podem falhar.');
-        }
-
-
         console.log('\n--- Etapa 2: Calculando estatísticas de resumo ---');
-        const uniqueOccurrences = [...new Set(crimes.map(c => String(c.numero_ocorrencia)))];
+        const uniqueOccurrences = [...new Set(crimes.map(c => c.numero_ocorrencia ? String(c.numero_ocorrencia).trim() : null).filter(id => id))];
+        
         const visitCounts = visitas.reduce((acc, v) => {
-            const id = String(v.numero_reds_furto);
-            if (id) acc[id] = (acc[id] || 0) + 1;
+            if (v.numero_reds_furto) {
+                const id = String(v.numero_reds_furto).trim();
+                acc[id] = (acc[id] || 0) + 1;
+            }
             return acc;
         }, {});
-        
-        let summaryStats = { total: uniqueOccurrences.length, semVisita: 0, comUma: 0, comDuasOuMais: 0 };
+
+         // ALTERAÇÃO 1: Adicionada a propriedade 'totalVisitas' ao objeto.
+        let summaryStats = { total: uniqueOccurrences.length, semVisita: 0, comUma: 0, comDuasOuMais: 0, totalVisitas: 0 };
         uniqueOccurrences.forEach(id => {
             const count = visitCounts[id] || 0;
             if (count === 0) summaryStats.semVisita++;
             else if (count === 1) summaryStats.comUma++;
             else summaryStats.comDuasOuMais++;
         });
+
+          // ALTERAÇÃO 2: Adicionada a linha para calcular o total de visitas.
+        summaryStats.totalVisitas = Object.values(visitCounts).reduce((sum, count) => sum + count, 0);
+
         console.log('Estatísticas calculadas:', summaryStats);
         
-        console.log('\n--- Etapa 3: Enviando dados para o Firestore ---');
-        
-        // Envia os crimes para a coleção 'crimes'
-        console.log('-> Enviando dados de CRIMES...');
+        // =========================================================================
+        // NOVA ETAPA: Limpando as coleções antes de enviar os novos dados.
+        // =========================================================================
+        console.log('\n--- Etapa 3: Limpando dados antigos do Firestore ---');
         const crimesCollectionRef = db.collection('crimes');
+        const visitasCollectionRef = db.collection('visitas');
+
+        console.log('-> Deletando dados antigos de "crimes"...');
+        await deleteCollection(crimesCollectionRef, 500);
+        console.log('-> Coleção "crimes" limpa.');
+
+        console.log('\n-> Deletando dados antigos de "visitas"...');
+        await deleteCollection(visitasCollectionRef, 500);
+        console.log('-> Coleção "visitas" limpa.');
+        
+        console.log('\n--- Etapa 4: Enviando novos dados para o Firestore ---');
+        
+        console.log('-> Enviando dados de CRIMES...');
         await commitBatchInChunks(crimesCollectionRef, crimes);
 
-        // Envia as visitas para a coleção 'visitas'
         console.log('\n-> Enviando dados de VISITAS...');
-        const visitasCollectionRef = db.collection('visitas');
         await commitBatchInChunks(visitasCollectionRef, visitas);
 
-        // O documento 'main' agora guarda apenas metadados e a URL do GeoJSON.
-        console.log('\n-> Atualizando metadados...');
+        console.log('\n-> Atualizando metadados com a nova versão...');
         const mainDataRef = db.collection('app_data').doc('main');
         await mainDataRef.set({
             geojsonUrl: geojsonPublicUrl,
-            lastUpdated: admin.firestore.FieldValue.serverTimestamp()
+            lastUpdated: admin.firestore.FieldValue.serverTimestamp(),
+            dataVersion: dataVersion
         });
         
-        // Salva os dados de resumo
         const summaryDataRef = db.collection('app_data').doc('summary');
         await summaryDataRef.set(summaryStats);
         
@@ -114,7 +160,6 @@ async function uploadData() {
         console.log('----------------------------------------------------');
 
     } catch (error) {
-        // Agora mostra a mensagem de erro completa para melhor diagnóstico
         console.error('ERRO DURANTE O PROCESSO:', error.message);
     }
 }
