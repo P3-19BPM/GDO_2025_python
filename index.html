@@ -9,187 +9,36 @@
     <script src="https://npmcdn.com/@turf/turf/turf.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
+    <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css'
+        rel='stylesheet' />
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, onSnapshot, collection, updateDoc, serverTimestamp, increment, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, onSnapshot, collection, updateDoc, serverTimestamp, increment, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        // --- CONFIGURAÇÃO OBRIGATÓRIA ---
-        const firebaseConfig = {
-            apiKey: "AIzaSyCQeD0V91NbUjuhg7-6BRwNOIjw_mdkL24",
-            authDomain: "vtcrime-d6a61.firebaseapp.com",
-            projectId: "vtcrime-d6a61",
-            storageBucket: "vtcrime-d6a61.appspot.com",
-            messagingSenderId: "261046458856",
-            appId: "1:261046458856:web:3226ca9b456619c85cac5d"
-        };
-
-        // --- INICIALIZAÇÃO E LÓGICA ---
+        const firebaseConfig = { apiKey: "AIzaSyCQeD0V91NbUjuhg7-6BRwNOIjw_mdkL24", authDomain: "vtcrime-d6a61.firebaseapp.com", projectId: "vtcrime-d6a61", storageBucket: "vtcrime-d6a61.appspot.com", messagingSenderId: "261046458856", appId: "1:261046458856:web:3226ca9b456619c85cac5d" };
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+        window.auth = auth;
         const provider = new GoogleAuthProvider();
+        const preApprovedViewerEmails = ['brunoaavelino@gmail.com', '19bpm.155cia@gmail.com', '19bpm.47cia@gmail.com', '42cia19@gmail.com', 'camposmauro1.MR@gmail.com', 'diegorricardo78@gmail.com', 'diretor2007@gmail.com', 'dstcatuji@gmail.com', 'dstjampruca@gmail.com', 'dstnovamodica@gmail.com', 'dstouroverde@gmail.com', 'dstpavao@gmail.com', 'dstsjdivino@gmail.com', 'gisuelguimaraes138@gmail.com', 'guilherme.vls08@gmail.com', 'guinaforte@gmail.com', 'ivotorresjr@gmail.com', 'jglangholz@gmail.com', 'kaiserhigher@gmail.com', 'liviolouzada@gmail.com', 'maiarapm09@gmail.com', 'mossensantiagojoao@gmail.com', 'oflucasdeoliveira@gmail.com', 'p424ciaind@gmail.com', 'pedrowta@gmail.com', 'pelnovocruzeiro@gmail.com', 'phBRANT@gmail.com', 'romariogmiranda@gmail.com', 'secinteligenciap2@gmail.com', 'teomidia@gmail.com', 'vicenzodartanhandasilva@gmail.com', 'webjao@gmail.com', 'welingtondasilvacampos@gmail.com', 'weuler@gmail.com', 'willianlms1@gmail.com'];
 
-        const preApprovedViewerEmails = [
-            'brunoaavelino@gmail.com', '19bpm.155cia@gmail.com', '19bpm.47cia@gmail.com', '42cia19@gmail.com', 'camposmauro1.MR@gmail.com',
-            'diegorricardo78@gmail.com', 'diretor2007@gmail.com', 'dstcatuji@gmail.com', 'dstjampruca@gmail.com', 'dstnovamodica@gmail.com',
-            'dstouroverde@gmail.com', 'dstpavao@gmail.com', 'dstsjdivino@gmail.com', 'gisuelguimaraes138@gmail.com', 'guilherme.vls08@gmail.com',
-            'guinaforte@gmail.com', 'ivotorresjr@gmail.com', 'jglangholz@gmail.com', 'kaiserhigher@gmail.com', 'liviolouzada@gmail.com',
-            'maiarapm09@gmail.com', 'mossensantiagojoao@gmail.com', 'oflucasdeoliveira@gmail.com', 'p424ciaind@gmail.com', 'pedrowta@gmail.com',
-            'pelnovocruzeiro@gmail.com', 'phBRANT@gmail.com', 'romariogmiranda@gmail.com', 'secinteligenciap2@gmail.com', 'teomidia@gmail.com',
-            'vicenzodartanhandasilva@gmail.com', 'webjao@gmail.com', 'welingtondasilvacampos@gmail.com', 'weuler@gmail.com', 'willianlms1@gmail.com'
-        ];
-
-        async function isCurrentUserAdmin() {
-            try {
-                const adminConfigRef = doc(db, "config", "admin_users");
-                const adminConfigSnap = await getDoc(adminConfigRef);
-                if (adminConfigSnap.exists()) {
-                    const adminEmails = adminConfigSnap.data().emails || [];
-                    const user = auth.currentUser;
-                    return user ? adminEmails.includes(user.email) : false;
-                }
-                console.warn("Documento de configuração de admin ('/config/admin_users') não encontrado no Firestore.");
-                return false;
-            } catch (error) {
-                console.error("Erro ao verificar status de admin:", error);
-                return false;
-            }
-        }
-
-        async function logUserAccess(user) {
-            if (!user) return;
-            const activityDocRef = doc(db, "user_activity", user.uid);
-            try {
-                await updateDoc(activityDocRef, { loginCount: increment(1), lastLogin: serverTimestamp(), displayName: user.displayName, email: user.email });
-            } catch (error) {
-                if (error.code === 'not-found') {
-                    await setDoc(activityDocRef, { loginCount: 1, lastLogin: serverTimestamp(), displayName: user.displayName, email: user.email, eventCounts: {} });
-                } else { console.error("Erro ao registrar acesso do usuário:", error); }
-            }
-        }
-
-        window.logUserEvent = async (eventName) => {
-            const user = auth.currentUser;
-            if (!user || !eventName) return;
-            const activityDocRef = doc(db, "user_activity", user.uid);
-            const updatePayload = { [`eventCounts.${eventName}`]: increment(1) };
-            try {
-                await updateDoc(activityDocRef, updatePayload);
-            } catch (error) {
-                console.error(`Erro ao registrar evento '${eventName}':`, error);
-                if (error.code === 'not-found') { await logUserAccess(user); await updateDoc(activityDocRef, updatePayload); }
-            }
-        };
-
+        async function isCurrentUserAdmin() { try { const adminConfigRef = doc(db, "config", "admin_users"); const adminConfigSnap = await getDoc(adminConfigRef); if (adminConfigSnap.exists()) { const adminEmails = adminConfigSnap.data().emails || []; const user = auth.currentUser; return user ? adminEmails.includes(user.email) : false; } console.warn("Documento de configuração de admin ('/config/admin_users') não encontrado no Firestore."); return false; } catch (error) { console.error("Erro ao verificar status de admin:", error); return false; } }
+        async function logUserAccess(user) { if (!user) return; const activityDocRef = doc(db, "user_activity", user.uid); try { await updateDoc(activityDocRef, { loginCount: increment(1), lastLogin: serverTimestamp(), displayName: user.displayName, email: user.email }); } catch (error) { if (error.code === 'not-found') { await setDoc(activityDocRef, { loginCount: 1, lastLogin: serverTimestamp(), displayName: user.displayName, email: user.email, eventCounts: {} }); } else { console.error("Erro ao registrar acesso do usuário:", error); } } }
+        window.logUserEvent = async (eventName) => { const user = auth.currentUser; if (!user || !eventName) return; const activityDocRef = doc(db, "user_activity", user.uid); const updatePayload = { [`eventCounts.${eventName}`]: increment(1) }; try { await updateDoc(activityDocRef, updatePayload); } catch (error) { console.error(`Erro ao registrar evento '${eventName}':`, error); if (error.code === 'not-found') { await logUserAccess(user); await updateDoc(activityDocRef, updatePayload); } } };
         window.authFunctions = { signInWithPopup: () => signInWithPopup(auth, provider), signOut: () => signOut(auth) };
-        window.adminFunctions = {
-            updateUserStatus: async (uid, newStatus) => {
-                const action = newStatus === 'approved' ? 'aprovar' : 'revogar';
-                if (!window.confirm(`Tem certeza que deseja ${action} este usuário?`)) return;
-                try { await updateDoc(doc(db, "user_permissions", uid), { status: newStatus }); alert('Permissão atualizada!'); }
-                catch (error) { console.error("Erro ao atualizar status:", error); alert('Falha ao atualizar status.'); }
-            }
-        };
-
+        window.adminFunctions = { updateUserStatus: async (uid, newStatus) => { const action = newStatus === 'approved' ? 'aprovar' : 'revogar'; if (!window.confirm(`Tem certeza que deseja ${action} este usuário?`)) return; try { await updateDoc(doc(db, "user_permissions", uid), { status: newStatus }); alert('Permissão atualizada!'); } catch (error) { console.error("Erro ao atualizar status:", error); alert('Falha ao atualizar status.'); } } };
         window.dbFunctions = {
-            getDbInstance: () => db, getFirestoreLibs: () => ({ collection, onSnapshot, getDocs }),
+            getDbInstance: () => db,
+            getFirestoreLibs: () => ({ collection, onSnapshot, getDocs, addDoc, serverTimestamp }),
             fetchSummaryData: async () => { const docSnap = await getDoc(doc(db, "app_data", "summary")); if (docSnap.exists()) return docSnap.data(); throw new Error("Dados de resumo não encontrados."); },
-
-            fetchMainData: async () => {
-                const mainMetaRef = doc(db, "app_data", "main");
-                const mainMetaSnap = await getDoc(mainMetaRef); // 1 leitura
-                const serverDataVersion = mainMetaSnap.exists() ? mainMetaSnap.data().dataVersion : null;
-
-                const localDataVersion = localStorage.getItem('localDataVersion');
-                const cachedDataStr = localStorage.getItem('mainDataCache');
-
-                if (serverDataVersion && localDataVersion === serverDataVersion && cachedDataStr) {
-                    console.log(`CACHE HIT: Versão dos dados (${serverDataVersion}) é a mais recente. Carregando do cache local.`);
-                    return JSON.parse(cachedDataStr);
-                }
-
-                console.log(`CACHE MISS: Versão local (${localDataVersion}) é diferente da do servidor (${serverDataVersion}). Buscando dados do Firestore...`);
-                const crimesCollectionRef = collection(db, "crimes");
-                const visitasCollectionRef = collection(db, "visitas");
-
-                const [crimesSnap, visitasSnap] = await Promise.all([
-                    getDocs(crimesCollectionRef),
-                    getDocs(visitasCollectionRef)
-                ]);
-
-                const crimesData = crimesSnap.docs.map(doc => doc.data());
-                const visitasData = visitasSnap.docs.map(doc => doc.data());
-
-                const mainData = {
-                    crimes: crimesData,
-                    visitas: visitasData,
-                    geojson: null
-                };
-
-                if (mainMetaSnap.exists() && mainMetaSnap.data().geojsonUrl) {
-                    const geojsonResponse = await fetch(mainMetaSnap.data().geojsonUrl);
-                    if (!geojsonResponse.ok) throw new Error('Falha ao baixar o arquivo de mapa.');
-                    mainData.geojson = await geojsonResponse.json();
-                }
-
-                try {
-                    localStorage.setItem('mainDataCache', JSON.stringify(mainData));
-                    localStorage.setItem('localDataVersion', serverDataVersion);
-                    console.log(`CACHE POPULATED: Novos dados (versão ${serverDataVersion}) salvos no cache local.`);
-                } catch (e) {
-                    console.error("Erro ao salvar dados no cache local. Limite de armazenamento pode ter sido atingido.", e);
-                }
-
-                console.log(`Dados carregados do Firestore: ${mainData.crimes.length} crimes, ${mainData.visitas.length} visitas.`);
-                return mainData;
-            }
+            fetchMainData: async () => { const mainMetaRef = doc(db, "app_data", "main"); const mainMetaSnap = await getDoc(mainMetaRef); const serverDataVersion = mainMetaSnap.exists() ? mainMetaSnap.data().dataVersion : null; const localDataVersion = localStorage.getItem('localDataVersion'); const cachedDataStr = localStorage.getItem('mainDataCache'); if (serverDataVersion && localDataVersion === serverDataVersion && cachedDataStr) { console.log(`CACHE HIT: Versão dos dados (${serverDataVersion}) é a mais recente. Carregando do cache local.`); return JSON.parse(cachedDataStr); } console.log(`CACHE MISS: Versão local (${localDataVersion}) é diferente da do servidor (${serverDataVersion}). Buscando dados do Firestore...`); const crimesCollectionRef = collection(db, "crimes"); const visitasCollectionRef = collection(db, "visitas"); const [crimesSnap, visitasSnap] = await Promise.all([getDocs(crimesCollectionRef), getDocs(visitasCollectionRef)]); const crimesData = crimesSnap.docs.map(doc => doc.data()); const visitasData = visitasSnap.docs.map(doc => doc.data()); const mainData = { crimes: crimesData, visitas: visitasData, geojson: null }; if (mainMetaSnap.exists() && mainMetaSnap.data().geojsonUrl) { const geojsonResponse = await fetch(mainMetaSnap.data().geojsonUrl); if (!geojsonResponse.ok) throw new Error('Falha ao baixar o arquivo de mapa.'); mainData.geojson = await geojsonResponse.json(); } try { localStorage.setItem('mainDataCache', JSON.stringify(mainData)); localStorage.setItem('localDataVersion', serverDataVersion); console.log(`CACHE POPULATED: Novos dados (versão ${serverDataVersion}) salvos no cache local.`); } catch (e) { console.error("Erro ao salvar dados no cache local. Limite de armazenamento pode ter sido atingido.", e); } console.log(`Dados carregados do Firestore: ${mainData.crimes.length} crimes, ${mainData.visitas.length} visitas.`); return mainData; }
         };
-
-        async function handleUserAccess(user, isAdmin) {
-            const userDocRef = doc(db, "user_permissions", user.uid);
-            const userDocSnap = await getDoc(userDocRef);
-            if (!userDocSnap.exists()) {
-                const isPreApproved = preApprovedViewerEmails.includes(user.email);
-                let initialStatus = (isAdmin || isPreApproved) ? 'approved' : 'pending';
-                await setDoc(userDocRef, { email: user.email, displayName: user.displayName, photoURL: user.photoURL, status: initialStatus, requestedAt: serverTimestamp() });
-            }
-        }
-
-        onAuthStateChanged(auth, async (user) => {
-            const uiElements = { login: document.getElementById('login-container'), app: document.getElementById('app-container'), limited: document.getElementById('limited-access-view'), adminPanel: document.getElementById('admin-panel-container'), activityPanel: document.getElementById('activity-panel-container'), mainAnalysis: document.getElementById('full-analysis-section'), loading: document.getElementById('loading-data-section'), dashboard: document.getElementById('dashboard-cards') };
-            Object.values(uiElements).forEach(el => el && el.classList.add('hidden'));
-
-            if (user) {
-                logUserAccess(user);
-                const isAdmin = await isCurrentUserAdmin();
-                const userDocRef = doc(db, "user_permissions", user.uid);
-
-                onSnapshot(userDocRef, (userDocSnap) => {
-                    let status = 'new';
-                    if (userDocSnap.exists()) { status = userDocSnap.data().status; }
-                    else { handleUserAccess(user, isAdmin); return; }
-
-                    Object.values(uiElements).forEach(el => el && el.classList.add('hidden'));
-                    const photoURL = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || user.email)}&background=random&color=fff&size=32`;
-                    document.getElementById('user-info').innerHTML = `<div class="flex items-center"><span class="text-sm mr-3">Logado como: <strong>${user.displayName}</strong></span><img src="${photoURL}" class="w-8 h-8 rounded-full"><button onclick="window.authFunctions.signOut()" class="ml-4 bg-red-500 text-white text-xs font-bold py-1 px-3 rounded-md hover:bg-red-600">Sair</button></div>`;
-                    uiElements.app.classList.remove('hidden');
-                    let eventName = 'user-authenticated-limited';
-
-                    if (isAdmin || status === 'approved') {
-                        uiElements.mainAnalysis.classList.remove('hidden');
-                        if (isAdmin) {
-                            uiElements.adminPanel.classList.remove('hidden');
-                            uiElements.activityPanel.classList.remove('hidden');
-                            window.dispatchEvent(new CustomEvent('admin-authenticated'));
-                        }
-                        eventName = 'user-authenticated-full';
-                    } else { uiElements.limited.classList.remove('hidden'); }
-                    window.dispatchEvent(new CustomEvent(eventName));
-                });
-            } else { uiElements.login.classList.remove('hidden'); }
-        });
+        async function handleUserAccess(user, isAdmin) { const userDocRef = doc(db, "user_permissions", user.uid); const userDocSnap = await getDoc(userDocRef); if (!userDocSnap.exists()) { const isPreApproved = preApprovedViewerEmails.includes(user.email); let initialStatus = (isAdmin || isPreApproved) ? 'approved' : 'pending'; await setDoc(userDocRef, { email: user.email, displayName: user.displayName, photoURL: user.photoURL, status: initialStatus, requestedAt: serverTimestamp() }); } }
+        onAuthStateChanged(auth, async (user) => { const uiElements = { login: document.getElementById('login-container'), app: document.getElementById('app-container'), limited: document.getElementById('limited-access-view'), adminPanel: document.getElementById('admin-panel-container'), activityPanel: document.getElementById('activity-panel-container'), mainAnalysis: document.getElementById('full-analysis-section'), loading: document.getElementById('loading-data-section'), dashboard: document.getElementById('dashboard-cards') }; Object.values(uiElements).forEach(el => el && el.classList.add('hidden')); if (user) { logUserAccess(user); const isAdmin = await isCurrentUserAdmin(); const userDocRef = doc(db, "user_permissions", user.uid); onSnapshot(userDocRef, (userDocSnap) => { let status = 'new'; if (userDocSnap.exists()) { status = userDocSnap.data().status; } else { handleUserAccess(user, isAdmin); return; } Object.values(uiElements).forEach(el => el && el.classList.add('hidden')); const photoURL = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || user.email)}&background=random&color=fff&size=32`; document.getElementById('user-info').innerHTML = `<div class="flex items-center"><span class="text-sm mr-3">Logado como: <strong>${user.displayName}</strong></span><img src="${photoURL}" class="w-8 h-8 rounded-full"><button onclick="window.authFunctions.signOut()" class="ml-4 bg-red-500 text-white text-xs font-bold py-1 px-3 rounded-md hover:bg-red-600">Sair</button></div>`; uiElements.app.classList.remove('hidden'); let eventName = 'user-authenticated-limited'; if (isAdmin || status === 'approved') { uiElements.mainAnalysis.classList.remove('hidden'); if (isAdmin) { uiElements.adminPanel.classList.remove('hidden'); uiElements.activityPanel.classList.remove('hidden'); window.dispatchEvent(new CustomEvent('admin-authenticated')); } eventName = 'user-authenticated-full'; } else { uiElements.limited.classList.remove('hidden'); } window.dispatchEvent(new CustomEvent(eventName)); }); } else { uiElements.login.classList.remove('hidden'); } });
     </script>
     <style>
         body {
@@ -279,8 +128,8 @@
     <div id="login-container" class="flex items-center justify-center h-screen">
         <div class="text-center bg-white p-10 rounded-xl shadow-lg max-w-md">
             <h1 class="text-2xl font-bold text-gray-800 mb-2">Painel de Análise Criminal</h1>
-            <p class="text-gray-600 mb-6">Por favor, faça login para continuar.</p>
-            <button onclick="window.authFunctions.signInWithPopup()"
+            <p class="text-gray-600 mb-6">Por favor, faça login para continuar.</p><button
+                onclick="window.authFunctions.signInWithPopup()"
                 class="bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 flex items-center mx-auto"><svg
                     class="w-6 h-6 mr-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
                     <path fill="#FFC107"
@@ -300,37 +149,31 @@
                 <h1 class="text-3xl font-bold text-gray-800">Painel de Análise de Ocorrências</h1>
                 <div id="user-info" class="text-right"></div>
             </header>
-
             <div id="admin-panel-container" class="hidden bg-indigo-100 p-4 rounded-xl shadow-md mb-8">
                 <details open>
                     <summary
                         class="flex justify-between items-center font-semibold text-xl text-indigo-800 cursor-pointer">
-                        Painel de Gerenciamento de Usuários
-                        <svg class="w-6 h-6 summary-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                            xmlns="http://www.w3.org/2000/svg">
+                        Painel de Gerenciamento de Usuários<svg class="w-6 h-6 summary-chevron" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
                             </path>
-                        </svg>
-                    </summary>
+                        </svg></summary>
                     <div id="admin-user-list" class="mt-4 space-y-4">
                         <div class="loader mx-auto"></div>
                     </div>
                 </details>
             </div>
-
             <div id="activity-panel-container" class="hidden bg-gray-100 p-4 rounded-xl shadow-md mb-8">
                 <details open>
                     <summary
                         class="flex justify-between items-center font-semibold text-xl text-gray-800 cursor-pointer">
-                        Painel de Atividades do Usuário
-                        <svg class="w-6 h-6 summary-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                            xmlns="http://www.w3.org/2000/svg">
+                        Painel de Atividades do Usuário<svg class="w-6 h-6 summary-chevron" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
                             </path>
-                        </svg>
-                    </summary>
-                    <div class="mt-4">
-                        <input type="text" id="activity-filter-input" placeholder="Filtrar por nome ou e-mail..."
+                        </svg></summary>
+                    <div class="mt-4"><input type="text" id="activity-filter-input"
+                            placeholder="Filtrar por nome ou e-mail..."
                             class="w-full mb-4 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
                         <div id="activity-user-list" class="space-y-4">
                             <div class="loader mx-auto"></div>
@@ -338,7 +181,6 @@
                     </div>
                 </details>
             </div>
-
             <div id="loading-data-section" class="text-center py-10">
                 <div class="loader inline-block"></div>
                 <p class="mt-4 text-gray-600">Buscando dados no servidor...</p>
@@ -347,7 +189,7 @@
                 <p class="font-bold">Erro ao carregar dados.</p>
                 <p id="error-message-content"></p>
             </div>
-            <div id="dashboard-cards" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div id="dashboard-cards" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
                 <div class="bg-red-400 text-white p-6 rounded-xl shadow-lg">
                     <h3>Total de Crimes</h3>
                     <p id="total-crimes" class="text-4xl font-bold mt-2">0</p>
@@ -363,6 +205,10 @@
                 <div class="bg-green-600 text-white p-6 rounded-xl shadow-lg">
                     <h3>Com 2+ Visitas</h3>
                     <p id="two-plus-visits" class="text-4xl font-bold mt-2">0</p>
+                </div>
+                <div class="bg-blue-500 text-white p-6 rounded-xl shadow-lg">
+                    <h3>Total de Visitas</h3>
+                    <p id="total-visitas" class="text-4xl font-bold mt-2">0</p>
                 </div>
             </div>
             <div id="limited-access-view"
@@ -386,25 +232,49 @@
                                 id="municipio-filter" class="mt-1 block w-full border-gray-300 rounded-md"></select>
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
-                        <div><label for="visit-status-filter" class="block text-sm font-medium">Status da
-                                Visita</label><select id="visit-status-filter"
-                                class="mt-1 block w-full border-gray-300 rounded-md">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mt-4">
+                        <div>
+                            <label for="visit-status-filter" class="block text-sm font-medium">Status da Visita</label>
+                            <select id="visit-status-filter" class="mt-1 block w-full border-gray-300 rounded-md">
                                 <option value="">Todos</option>
                                 <option value="sem_visita">Sem Visitas</option>
                                 <option value="1_visita">Com 1 Visita</option>
                                 <option value="2_mais_visitas">Com 2 ou Mais Visitas</option>
-                            </select></div>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Contatos</label>
+                            <div class="mt-1 flex items-center h-full">
+                                <div class="flex items-center">
+                                    <input id="no-success-contact-filter" type="checkbox"
+                                        class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                                    <label for="no-success-contact-filter"
+                                        class="ml-2 block text-sm text-gray-900">Apenas falhas</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Tipo de Vítima</label>
+                            <div class="mt-1 flex items-center h-full">
+                                <div class="flex items-center">
+                                    <input id="juridica-filter" type="checkbox"
+                                        class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                                    <label for="juridica-filter" class="ml-2 block text-sm text-gray-900">Apenas Vítima
+                                        Jurídica</label>
+                                </div>
+                            </div>
+                        </div>
                         <div><label for="start-date-filter" class="block text-sm font-medium">Data Início</label><input
                                 type="date" id="start-date-filter" class="mt-1 block w-full border-gray-300 rounded-md">
                         </div>
                         <div><label for="end-date-filter" class="block text-sm font-medium">Data Fim</label><input
                                 type="date" id="end-date-filter" class="mt-1 block w-full border-gray-300 rounded-md">
                         </div>
-                        <div class="flex items-end"><button id="apply-filters-button"
-                                onclick="window.logUserEvent('aplicar_filtros')"
-                                class="bg-green-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-green-700 w-full">Aplicar
-                                Filtros</button></div>
+                    </div>
+                    <div class="mt-4 flex justify-end">
+                        <button id="apply-filters-button" onclick="window.logUserEvent('aplicar_filtros')"
+                            class="bg-green-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-green-700">Aplicar
+                            Filtros</button>
                     </div>
                 </div>
                 <div class="grid lg:grid-cols-3 gap-8 mb-8 fade-in">
@@ -428,52 +298,403 @@
     <script>
         const ui = {
             loading: document.getElementById('loading-data-section'), error: document.getElementById('error-loading-data'), mainAnalysis: document.getElementById('full-analysis-section'), adminList: document.getElementById('admin-user-list'), activityList: document.getElementById('activity-user-list'), dashboardCards: document.getElementById('dashboard-cards'), limited: document.getElementById('limited-access-view'), activityFilter: document.getElementById('activity-filter-input'),
-            filters: { municipio: document.getElementById('municipio-filter'), visitStatus: document.getElementById('visit-status-filter'), startDate: document.getElementById('start-date-filter'), endDate: document.getElementById('end-date-filter'), cia: document.getElementById('cia-filter'), pel: document.getElementById('pel-filter'), subsetor: document.getElementById('subsetor-filter'), },
+            filters: { municipio: document.getElementById('municipio-filter'), visitStatus: document.getElementById('visit-status-filter'), startDate: document.getElementById('start-date-filter'), endDate: document.getElementById('end-date-filter'), cia: document.getElementById('cia-filter'), pel: document.getElementById('pel-filter'), subsetor: document.getElementById('subsetor-filter'), juridica: document.getElementById('juridica-filter'), noSuccessContact: document.getElementById('no-success-contact-filter') },
             map: document.getElementById('map'), occurrenceSelect: document.getElementById('occurrence-select'), resultsArea: document.getElementById('results-area'), applyFiltersBtn: document.getElementById('apply-filters-button'),
         };
-        let state = { allCrimeData: [], allVisitaData: [], visitCounts: {}, filteredCrimeData: [], allUserActivity: [], map: null, crimeMarkersLayer: null, sectorLayer: null, activeChoropleth: null };
+        // No início do seu <script>, modifique a declaração da variável state
+        let state = {
+            allCrimeData: [],
+            allVisitaData: [],
+            visitCounts: {},
+            filteredCrimeData: [],
+            allUserActivity: [],
+            map: null,
+            crimeMarkersLayer: null,
+            sectorLayer: null,
+            activeChoropleth: null,
+            juridicalCrimeIds: new Set(),
+            contactAttempts: {},
+            redsWithNoPhones: new Set() // <-- ADICIONE ESTA LINHA
+        };
         const palavrasExcluidas = ['autor', 'suspeito', 'co-autor'];
+
+        // Substitua sua função handleContactAttempt por esta versão
+        window.handleContactAttempt = async (envolvidoData, status) => {
+            const db = window.dbFunctions.getDbInstance();
+            const { collection, addDoc, serverTimestamp } = window.dbFunctions.getFirestoreLibs();
+            const user = window.auth.currentUser;
+
+            if (!user) {
+                alert("Erro: Usuário não autenticado. Faça login novamente.");
+                return;
+            }
+
+            const dadosEnvolvido = JSON.parse(unescape(envolvidoData));
+
+            // Lógica para o texto de confirmação
+            let statusText = '';
+            if (status === 'atendeu') {
+                statusText = 'Atendido com Sucesso';
+            } else if (status === 'nao_atendeu') {
+                statusText = 'Falha no Contato';
+            } else if (status === 'no_phone') {
+                statusText = 'Sem Contato Telefônico'; // Novo status
+            }
+
+            const confirmationMessage = `Você confirma o registro da seguinte tentativa de contato?\n\n• Envolvido: ${dadosEnvolvido.nome}\n• Ocorrência: ${dadosEnvolvido.reds}\n• Status: ${statusText}`;
+
+            if (window.confirm(confirmationMessage)) {
+                const logData = {
+                    usuario: { uid: user.uid, nome: user.displayName, email: user.email },
+                    envolvido: { nome: dadosEnvolvido.nome, tipoEnvolvimento: dadosEnvolvido.envolvimento, tipoPessoa: dadosEnvolvido.tipoPessoa },
+                    ocorrencia: { reds: dadosEnvolvido.reds },
+                    statusContato: status, // Salvará 'atendeu', 'nao_atendeu', ou 'no_phone'
+                    timestamp: serverTimestamp()
+                };
+                try {
+                    await addDoc(collection(db, "tentativas_contato"), logData);
+                    alert(`Registro salvo com sucesso!`);
+                    window.logUserEvent(`registro_contato_${status}`);
+                } catch (error) {
+                    console.error("Erro ao salvar o log de contato: ", error);
+                    alert("Ocorreu um erro ao salvar o registro.");
+                }
+            } else {
+                console.log("Registro de contato cancelado pelo usuário.");
+            }
+        }
 
         function renderActivityList(activitiesToRender) { const container = ui.activityList; container.innerHTML = ''; let html = `<div class="overflow-x-auto"><table class="min-w-full divide-y divide-gray-300"><thead class="bg-gray-200"><tr><th class="px-4 py-2 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Usuário</th><th class="px-4 py-2 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Último Login</th><th class="px-4 py-2 text-center text-xs font-medium text-gray-600 uppercase tracking-wider">Acessos</th><th class="px-4 py-2 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Eventos Contabilizados</th></tr></thead><tbody class="bg-white divide-y divide-gray-200">`; if (activitiesToRender.length === 0) { html += `<tr><td colspan="4" class="text-center py-4 text-gray-500">Nenhum usuário encontrado.</td></tr>`; } else { activitiesToRender.forEach(userActivity => { const lastLoginDate = userActivity.lastLogin ? userActivity.lastLogin.toDate().toLocaleString('pt-BR') : 'N/A'; const loginCount = userActivity.loginCount || 0; let eventsHtml = ''; const eventCounts = userActivity.eventCounts || {}; const hasEvents = Object.keys(eventCounts).length > 0; if (hasEvents) { eventsHtml += `<details><summary class="cursor-pointer text-indigo-600 hover:text-indigo-800 text-sm font-semibold">Mostrar/Ocultar Eventos</summary><ul class="text-xs mt-2 space-y-1 pl-2 border-l-2 border-gray-200">`; for (const [event, count] of Object.entries(eventCounts)) { eventsHtml += `<li><span class="font-semibold">${event.replace(/_/g, ' ')}:</span> ${count}</li>`; } eventsHtml += `</ul></details>`; } else { eventsHtml += '<span class="text-xs text-gray-400 italic">Nenhum evento</span>'; } html += `<tr class="hover:bg-gray-50"><td class="px-4 py-3 whitespace-nowrap"><div class="text-sm font-semibold text-gray-900">${userActivity.displayName || 'N/A'}</div><div class="text-xs text-gray-500">${userActivity.email || 'N/A'}</div></td><td class="px-4 py-3 whitespace-nowrap text-sm text-gray-700">${lastLoginDate}</td><td class="px-4 py-3 whitespace-nowrap text-lg text-center font-bold text-gray-700">${loginCount}</td><td class="px-4 py-3">${eventsHtml}</td></tr>`; }); } html += `</tbody></table></div>`; container.innerHTML = html; }
         ui.activityFilter.addEventListener('input', (e) => { const searchTerm = e.target.value.toLowerCase(); if (!searchTerm) { renderActivityList(state.allUserActivity); return; } const filteredActivities = state.allUserActivity.filter(activity => (activity.displayName || '').toLowerCase().includes(searchTerm) || (activity.email || '').toLowerCase().includes(searchTerm)); renderActivityList(filteredActivities); });
-        function createStyledMarkerIcon(color) {
-            const iconHtml = `
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${color}" class="w-8 h-8" style="filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5));">
-      <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C7.857 2 4.5 5.357 4.5 9.5c0 4.172 3.384 7.67 6.203 10.802.41.457.82.914 1.223 1.367.042.048.084.096.126.143.291.329.808.329 1.099 0 .042-.047.084-.095.126-.143.403-.453.813-.91 1.223-1.367C16.116 17.17 19.5 13.672 19.5 9.5 19.5 5.357 16.143 2 12 2zm0 10a2.5 2.5 0 100-5 2.5 2.5 0 000 5z"/>
-    </svg>
-  `;
-            return L.divIcon({
-                html: iconHtml,
-                className: '',
-                iconSize: [32, 32],
-                iconAnchor: [16, 32],
-                popupAnchor: [0, -32]
+        function createStyledMarkerIcon(color) { const iconHtml = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${color}" class="w-8 h-8" style="filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5));"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C7.857 2 4.5 5.357 4.5 9.5c0 4.172 3.384 7.67 6.203 10.802.41.457.82.914 1.223 1.367.042.048.084.096.126.143.291.329.808.329 1.099 0 .042-.047.084-.095.126-.143.403-.453.813-.91 1.223-1.367C16.116 17.17 19.5 13.672 19.5 9.5 19.5 5.357 16.143 2 12 2zm0 10a2.5 2.5 0 100-5 2.5 2.5 0 000 5z"/></svg>`; return L.divIcon({ html: iconHtml, className: '', iconSize: [32, 32], iconAnchor: [16, 32], popupAnchor: [0, -32] }); }
+        function showLoader(show, container) { container.style.display = show ? 'block' : 'none'; }
+
+        function initMap() {
+            if (state.map) {
+                state.map.invalidateSize();
+                return;
+            }
+            state.map = L.map(ui.map, {
+                fullscreenControl: true,
+            }).setView([-18.22, -41.50], 10);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap' }).addTo(state.map);
+            state.crimeMarkersLayer = L.layerGroup().addTo(state.map);
+        }
+
+        // Adicione esta nova função em qualquer lugar junto com as outras funções
+        function precomputeRedsStatus() {
+            console.log("Pré-calculando status dos REDS (sem telefone)...");
+            state.redsWithNoPhones.clear(); // Limpa para garantir que não haja dados antigos
+
+            // 1. Agrupa todos os envolvidos por número de ocorrência
+            const groupedByReds = state.allCrimeData.reduce((acc, crime) => {
+                const reds = crime.numero_ocorrencia ? String(crime.numero_ocorrencia).trim() : null;
+                if (!reds) return acc;
+                if (!acc[reds]) {
+                    acc[reds] = [];
+                }
+                acc[reds].push(crime);
+                return acc;
+            }, {});
+
+            // 2. Itera sobre cada grupo de REDS
+            for (const reds in groupedByReds) {
+                const envolvidos = groupedByReds[reds];
+
+                // 3. Verifica se TODOS os envolvidos no grupo não têm telefone
+                const allHaveNoPhone = envolvidos.every(p =>
+                    !p.numero_telefone_residencial && !p.numero_telefone_comercial
+                );
+
+                // 4. Se a condição for verdadeira, adiciona o REDS ao nosso Set
+                if (allHaveNoPhone) {
+                    state.redsWithNoPhones.add(reds);
+                }
+            }
+
+            console.log(`${state.redsWithNoPhones.size} REDS foram identificados como 'sem contato telefônico'.`);
+        }
+
+        function processContactAttempts(attemptsData) {
+            const attemptsByReds = {};
+            attemptsData.forEach(attempt => {
+                const reds = attempt.ocorrencia.reds;
+                const nome = attempt.envolvido.nome;
+                const isSuccess = attempt.statusContato === 'atendeu';
+                if (!reds || !nome) return;
+                if (!attemptsByReds[reds]) {
+                    attemptsByReds[reds] = { _hasSuccess: false, _totalAttempts: 0, envolvidos: {} };
+                }
+                if (!attemptsByReds[reds].envolvidos[nome]) {
+                    attemptsByReds[reds].envolvidos[nome] = { count: 0, success: 0, failed: 0 };
+                }
+                attemptsByReds[reds].envolvidos[nome].count++;
+                attemptsByReds[reds]._totalAttempts++;
+                if (isSuccess) {
+                    attemptsByReds[reds].envolvidos[nome].success++;
+                    attemptsByReds[reds]._hasSuccess = true;
+                } else {
+                    attemptsByReds[reds].envolvidos[nome].failed++;
+                }
+            });
+            state.contactAttempts = attemptsByReds;
+            console.log('Dados de tentativas de contato processados.', state.contactAttempts);
+        }
+
+        function addMapControls() { if (state.map.mapControls) return; const MapControl = L.Control.extend({ onAdd: function () { const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control bg-white p-2 rounded-md shadow-lg'); container.innerHTML = `<div class="space-y-1"><p class="font-bold text-xs mb-1">Colorir por:</p><button data-level="CIA_PM" class="map-control-btn w-full text-xs px-2 py-1 bg-gray-200 rounded">CIA</button><button data-level="PELOTAO" class="map-control-btn w-full text-xs px-2 py-1 bg-gray-200 rounded">Pelotão</button><button data-level="SUB_SETOR" class="map-control-btn w-full text-xs px-2 py-1 bg-gray-200 rounded">Sub Setor</button></div>`; container.querySelectorAll('.map-control-btn').forEach(btn => { btn.onclick = (e) => { e.stopPropagation(); document.querySelectorAll('.map-control-btn').forEach(b => b.classList.remove('bg-blue-500', 'text-white')); e.target.classList.add('bg-blue-500', 'text-white'); const level = e.target.dataset.level; window.logUserEvent(`mapa_colorir_por_${level.toLowerCase()}`); updateChoroplethMap(level); }; }); return container; } }); state.map.mapControls = new MapControl({ position: 'topright' }); state.map.mapControls.addTo(state.map); const legend = L.control({ position: 'bottomright' }); legend.onAdd = function () { const div = L.DomUtil.create('div', 'info-legend'); const colors = ['#68d391', '#f6e05e', '#f56565', '#a0aec0']; const labels = ['≥ 1.0 (Ótimo)', '0.5 - 0.99 (Atenção)', '< 0.5 (Crítico)', 'Sem Ocorrências']; div.innerHTML += '<h4 class="font-bold text-xs">Visitas / Crime</h4>'; for (let i = 0; i < colors.length; i++) { div.innerHTML += `<i style="background:${colors[i]}"></i> ${labels[i]}<br>`; } return div; }; legend.addTo(state.map); }
+        function precomputeCrimeTypes() { state.juridicalCrimeIds.clear(); const juridicalVictims = state.allCrimeData.filter(p => p.envolvimento_descricao === 'VITIMA DE ACAO CRIMINAL / CIVEL' && p.ind_fisica_juridica === 'J'); juridicalVictims.forEach(v => { if (v.numero_ocorrencia) { state.juridicalCrimeIds.add(String(v.numero_ocorrencia).trim()); } }); console.log(`${state.juridicalCrimeIds.size} crimes com vítima jurídica foram pré-calculados.`); }
+        // Modifique a função runFullAnalysis para incluir a nova chamada
+        function runFullAnalysis() {
+            precomputeCrimeTypes();
+            precomputeRedsStatus(); // <-- ADICIONE ESTA LINHA
+            calculateVisitCounts();
+            populateAllFilters();
+            applyFiltersAndRedraw();
+        }
+        function calculateVisitCounts() { const counts = {}; const processedVisits = new Set(); state.allVisitaData.forEach(v => { const visitKey = JSON.stringify(v); if (!processedVisits.has(visitKey)) { processedVisits.add(visitKey); if (v.numero_reds_furto) { const id = String(v.numero_reds_furto).trim(); counts[id] = (counts[id] || 0) + 1; } } }); state.visitCounts = counts; }
+
+        function applyFiltersAndRedraw() {
+            let data = [...state.allCrimeData];
+            const apenasJuridica = ui.filters.juridica.checked;
+            if (apenasJuridica) {
+                data = data.filter(crime =>
+                    crime.numero_ocorrencia && state.juridicalCrimeIds.has(String(crime.numero_ocorrencia).trim())
+                );
+            }
+            const visitStatus = ui.filters.visitStatus.value;
+            if (visitStatus) {
+                data = data.filter(crime => {
+                    const id = crime.numero_ocorrencia ? String(crime.numero_ocorrencia).trim() : null;
+                    if (!id) return false;
+                    const count = state.visitCounts[id] || 0;
+                    if (visitStatus === 'sem_visita') return count === 0;
+                    if (visitStatus === '1_visita') return count === 1;
+                    if (visitStatus === '2_mais_visitas') return count >= 2;
+                    return true;
+                });
+            }
+            const municipio = ui.filters.municipio.value; if (municipio) data = data.filter(c => c.nome_municipio === municipio);
+            const startDate = ui.filters.startDate.valueAsDate; const endDate = ui.filters.endDate.valueAsDate;
+            if (startDate || endDate) { data = data.filter(c => { const crimeDate = parseExcelDate(c.data_fato); if (!crimeDate) return false; if (startDate && crimeDate < startDate) return false; if (endDate) { const endOfDay = new Date(endDate); endOfDay.setHours(23, 59, 59, 999); if (crimeDate > endOfDay) return false; } return true; }); }
+            const cia = ui.filters.cia.value; if (cia) data = data.filter(c => c.CIA_PM == cia);
+            const pel = ui.filters.pel.value; if (pel) data = data.filter(c => c.PELOTAO == pel);
+            const subsetor = ui.filters.subsetor.value; if (subsetor) data = data.filter(c => c.SUB_SETOR == subsetor);
+
+            const noSuccessOnly = ui.filters.noSuccessContact.checked;
+            if (noSuccessOnly) {
+                const uniqueRedsInData = [...new Set(data.map(c => c.numero_ocorrencia ? String(c.numero_ocorrencia).trim() : null).filter(id => id))];
+                const redsWithFailedContacts = uniqueRedsInData.filter(reds => {
+                    const contactInfo = state.contactAttempts[reds];
+                    return contactInfo && contactInfo._totalAttempts > 0 && !contactInfo._hasSuccess;
+                });
+                const redsWithFailedContactsSet = new Set(redsWithFailedContacts);
+                data = data.filter(c => c.numero_ocorrencia && redsWithFailedContactsSet.has(String(c.numero_ocorrencia).trim()));
+            }
+
+            state.filteredCrimeData = data;
+            updateDashboard(state.filteredCrimeData);
+            populateOccurrenceDropdown(state.filteredCrimeData);
+            updateMapLayers();
+        }
+
+        function updateDashboard(crimes) {
+            ui.dashboardCards.classList.remove('hidden');
+            const uniqueOccurrences = [...new Set(crimes.map(c => c.numero_ocorrencia ? String(c.numero_ocorrencia).trim() : null).filter(id => id))];
+            const uniqueOccurrencesSet = new Set(uniqueOccurrences);
+            document.getElementById('total-crimes').textContent = uniqueOccurrences.length;
+            let counters = { no: 0, one: 0, two: 0 };
+            uniqueOccurrences.forEach(id => {
+                const count = state.visitCounts[id] || 0;
+                if (count === 0) { counters.no++; } else if (count === 1) { counters.one++; } else { counters.two++; }
+            });
+            const deDupedVisits = [];
+            const processedVisits = new Set();
+            state.allVisitaData.forEach(v => {
+                const visitKey = JSON.stringify(v);
+                if (!processedVisits.has(visitKey)) {
+                    processedVisits.add(visitKey);
+                    deDupedVisits.push(v);
+                }
+            });
+            const filteredVisits = deDupedVisits.filter(v => v.numero_reds_furto && uniqueOccurrencesSet.has(String(v.numero_reds_furto).trim()));
+            const totalVisitasFiltradas = filteredVisits.length;
+            document.getElementById('no-visits').textContent = counters.no;
+            document.getElementById('one-visit').textContent = counters.one;
+            document.getElementById('two-plus-visits').textContent = counters.two;
+            document.getElementById('total-visitas').textContent = totalVisitasFiltradas;
+        }
+
+        function populateAllFilters() { const populateSelect = (element, values, selectedValue) => { const uniqueSorted = [...new Set(values)].filter(Boolean).sort(); element.innerHTML = '<option value="">Todos</option>'; uniqueSorted.forEach(value => { const option = document.createElement('option'); option.value = value; option.textContent = value; if (value === selectedValue) option.selected = true; element.appendChild(option); }); }; const selectedCia = ui.filters.cia.value; const selectedPel = ui.filters.pel.value; const selectedSubsetor = ui.filters.subsetor.value; let dataForNextFilter = state.allCrimeData; populateSelect(ui.filters.cia, dataForNextFilter.map(c => c.CIA_PM), selectedCia); if (selectedCia) dataForNextFilter = dataForNextFilter.filter(c => c.CIA_PM === selectedCia); populateSelect(ui.filters.pel, dataForNextFilter.map(c => c.PELOTAO), selectedPel); if (selectedPel) dataForNextFilter = dataForNextFilter.filter(c => c.PELOTAO === selectedPel); populateSelect(ui.filters.subsetor, dataForNextFilter.map(c => c.SUB_SETOR), selectedSubsetor); if (selectedSubsetor) dataForNextFilter = dataForNextFilter.filter(c => c.SUB_SETOR === selectedSubsetor); populateSelect(ui.filters.municipio, dataForNextFilter.map(c => c.nome_municipio), ui.filters.municipio.value); }
+
+        // Substitua sua função populateOccurrenceDropdown por esta versão final
+        function populateOccurrenceDropdown(crimes) {
+            const unique = [...new Set(crimes.map(c => c.numero_ocorrencia ? String(c.numero_ocorrencia).trim() : null).filter(id => id))].sort();
+            ui.occurrenceSelect.innerHTML = '<option value="">-- Selecione --</option>';
+
+            unique.forEach(occ => {
+                const count = state.visitCounts[occ] || 0;
+                let bgColor = '';
+                if (count === 0) bgColor = 'bg-red-100';
+                else if (count === 1) bgColor = 'bg-yellow-100';
+                else bgColor = 'bg-green-100';
+
+                let contactIcon = '';
+
+                // --- NOVA LÓGICA DE ÍCONES COM PRIORIDADE ---
+                // 1. Prioridade máxima: verificar se o REDS não tem telefones.
+                if (state.redsWithNoPhones.has(occ)) {
+                    contactIcon = '🟡 '; // Ícone para "Sem Telefone"
+                } else {
+                    // 2. Se tiver telefone, verifica o status das tentativas de contato
+                    const contactInfo = state.contactAttempts[occ];
+                    if (contactInfo) {
+                        if (contactInfo._hasSuccess) {
+                            contactIcon = '✓ '; // Verde (Sucesso)
+                        } else if (contactInfo._totalAttempts > 0) {
+                            contactIcon = '❌ '; // Vermelho (Só falhas)
+                        }
+                    }
+                }
+
+                ui.occurrenceSelect.innerHTML += `<option value="${occ}" class="${bgColor}">${contactIcon}${occ}</option>`;
+            });
+            ui.resultsArea.innerHTML = '';
+        }
+
+        // Substitua sua função displayOccurrenceDetails por esta versão
+        function displayOccurrenceDetails() {
+            const selected = ui.occurrenceSelect.value;
+            ui.resultsArea.innerHTML = '';
+            if (!selected) return;
+
+            const people = state.allCrimeData.filter(r => (r.numero_ocorrencia ? String(r.numero_ocorrencia).trim() : '') === selected).filter(r => !palavrasExcluidas.some(p => String(r.envolvimento_descricao || '').toLowerCase().includes(p)));
+            let tipoVitima = 'Não informado';
+            const vitimaJuridica = people.find(p => p.envolvimento_descricao === 'VITIMA DE ACAO CRIMINAL / CIVEL' && p.ind_fisica_juridica === 'J');
+            if (vitimaJuridica) { tipoVitima = 'Jurídica'; } else { const vitimaFisica = people.find(p => p.envolvimento_descricao === 'VITIMA DE ACAO CRIMINAL / CIVEL' && p.ind_fisica_juridica === 'F'); if (vitimaFisica) { tipoVitima = 'Física'; } else if (people.length > 0 && people[0].ind_fisica_juridica) { if (people[0].ind_fisica_juridica === 'F') tipoVitima = 'Física'; if (people[0].ind_fisica_juridica === 'J') tipoVitima = 'Jurídica'; } }
+            let dataFato = 'Não informada';
+            if (people.length > 0 && people[0].data_fato) { const dataObj = parseExcelDate(people[0].data_fato); if (dataObj && !isNaN(dataObj.getTime())) { dataFato = dataObj.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' }); } }
+
+            const detailsHeaderHtml = `<div class="grid grid-cols-1 md:grid-cols-3 gap-x-4 gap-y-2 mb-6 text-gray-800"><p><strong class="font-semibold">Data do Fato:</strong> ${dataFato}</p><p><strong class="font-semibold">Ocorrência (REDS):</strong> ${selected}</p><p><strong class="font-semibold">Tipo de Vítima:</strong> ${tipoVitima}</p></div>`;
+            ui.resultsArea.innerHTML = detailsHeaderHtml;
+
+            if (people.length > 0) {
+                let tableHtml = `<table class="min-w-full divide-y divide-gray-200 mt-2"><thead class="bg-gray-50"><tr><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nome</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Envolvimento</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tel. Residencial</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tel. Comercial</th><th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Ações</th></tr></thead><tbody class="bg-white divide-y divide-gray-200">`;
+
+                people.forEach(p => {
+                    const nomeEnvolvido = p.nome_completo_envolvido || 'N/A';
+                    const envolvidoData = escape(JSON.stringify({ nome: nomeEnvolvido, envolvimento: p.envolvimento_descricao || 'N/A', tipoPessoa: p.ind_fisica_juridica || 'N/I', reds: selected }));
+
+                    // --- LÓGICA DOS NOVOS CONTADORES SEPARADOS ---
+                    let badgesHtml = '';
+                    const contactHistory = state.contactAttempts[selected]?.envolvidos[nomeEnvolvido];
+                    if (contactHistory) {
+                        // Badge de Falhas (vermelho)
+                        if (contactHistory.failed > 0) {
+                            badgesHtml += ` <span title="${contactHistory.failed} falha(s)" class="ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-red-200 text-red-800">✗ ${contactHistory.failed}</span>`;
+                        }
+                        // Badge de Sucessos (verde)
+                        if (contactHistory.success > 0) {
+                            badgesHtml += ` <span title="${contactHistory.success} sucesso(s)" class="ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-green-200 text-green-800">✓ ${contactHistory.success}</span>`;
+                        }
+                    }
+
+                    // --- LÓGICA PARA MOSTRAR OS BOTÕES CORRETOS ---
+                    let buttonsHtml = '';
+                    const hasPhone = p.numero_telefone_residencial || p.numero_telefone_comercial;
+                    if (hasPhone) {
+                        buttonsHtml = `
+                    <button onclick="window.handleContactAttempt('${envolvidoData}', 'atendeu')" class="px-3 py-1 text-xs font-bold text-white bg-green-500 rounded-md hover:bg-green-600">✓ OK</button>
+                    <button onclick="window.handleContactAttempt('${envolvidoData}', 'nao_atendeu')" class="px-3 py-1 text-xs font-bold text-white bg-red-500 rounded-md hover:bg-red-600">✗ Falhou</button>
+                `;
+                    } else {
+                        buttonsHtml = `
+                    <button onclick="window.handleContactAttempt('${envolvidoData}', 'no_phone')" class="px-3 py-1 text-xs font-bold text-gray-800 bg-yellow-400 rounded-md hover:bg-yellow-500">Sem Telefone</button>
+                `;
+                    }
+
+                    tableHtml += `
+                <tr>
+                    <td class="px-6 py-4 text-sm">${nomeEnvolvido}${badgesHtml}</td>
+                    <td class="px-6 py-4 text-sm">${p.envolvimento_descricao || 'N/A'}</td>
+                    <td class="px-6 py-4 text-sm">${p.numero_telefone_residencial || 'N/A'}</td>
+                    <td class="px-6 py-4 text-sm">${p.numero_telefone_comercial || 'N/A'}</td>
+                    <td class="px-6 py-4 text-sm text-center space-x-2">${buttonsHtml}</td>
+                </tr>`;
+                });
+
+                tableHtml += `</tbody></table>`;
+                ui.resultsArea.innerHTML += tableHtml;
+            } else {
+                ui.resultsArea.innerHTML += `<p class="text-gray-600 mt-4 p-4 bg-yellow-50 rounded-md">Nenhum envolvido (diferente de autor/suspeito) encontrado.</p>`;
+            }
+        }
+
+        function setupRealtimeListeners() {
+            const db = window.dbFunctions.getDbInstance();
+            const { collection, onSnapshot } = window.dbFunctions.getFirestoreLibs();
+
+            const contactAttemptsRef = collection(db, "tentativas_contato");
+
+            // onSnapshot "ouve" a coleção. O código dentro dele será executado
+            // na primeira vez e, depois, toda vez que algo mudar na coleção.
+            onSnapshot(contactAttemptsRef, (snapshot) => {
+                console.log("Recebida atualização em tempo real das tentativas de contato!");
+                const attemptsData = snapshot.docs.map(doc => doc.data());
+
+                // 1. Processa os dados mais recentes e atualiza o estado
+                processContactAttempts(attemptsData);
+
+                // 2. Redesenha a interface com os dados atualizados
+                // Isso garante que os ícones e badges estejam sempre corretos.
+                populateOccurrenceDropdown(state.filteredCrimeData);
+                displayOccurrenceDetails(); // Redesenha os detalhes se uma ocorrência estiver selecionada
             });
         }
 
-        function showLoader(show, container) { container.style.display = show ? 'block' : 'none'; }
-        function initMap() { if (state.map) { state.map.invalidateSize(); return; } state.map = L.map(ui.map).setView([-18.22, -41.50], 10); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap' }).addTo(state.map); state.crimeMarkersLayer = L.layerGroup().addTo(state.map); }
-        function addMapControls() { if (state.map.mapControls) return; const MapControl = L.Control.extend({ onAdd: function () { const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control bg-white p-2 rounded-md shadow-lg'); container.innerHTML = `<div class="space-y-1"><p class="font-bold text-xs mb-1">Colorir por:</p><button data-level="CIA_PM" class="map-control-btn w-full text-xs px-2 py-1 bg-gray-200 rounded">CIA</button><button data-level="PELOTAO" class="map-control-btn w-full text-xs px-2 py-1 bg-gray-200 rounded">Pelotão</button><button data-level="SUB_SETOR" class="map-control-btn w-full text-xs px-2 py-1 bg-gray-200 rounded">Sub Setor</button></div>`; container.querySelectorAll('.map-control-btn').forEach(btn => { btn.onclick = (e) => { e.stopPropagation(); document.querySelectorAll('.map-control-btn').forEach(b => b.classList.remove('bg-blue-500', 'text-white')); e.target.classList.add('bg-blue-500', 'text-white'); const level = e.target.dataset.level; window.logUserEvent(`mapa_colorir_por_${level.toLowerCase()}`); updateChoroplethMap(level); }; }); return container; } }); state.map.mapControls = new MapControl({ position: 'topright' }); state.map.mapControls.addTo(state.map); const legend = L.control({ position: 'bottomright' }); legend.onAdd = function () { const div = L.DomUtil.create('div', 'info-legend'); const colors = ['#68d391', '#f6e05e', '#f56565', '#a0aec0']; const labels = ['≥ 1.0 (Ótimo)', '0.5 - 0.99 (Atenção)', '< 0.5 (Crítico)', 'Sem Ocorrências']; div.innerHTML += '<h4 class="font-bold text-xs">Visitas / Crime</h4>'; for (let i = 0; i < colors.length; i++) { div.innerHTML += `<i style="background:${colors[i]}"></i> ${labels[i]}<br>`; } return div; }; legend.addTo(state.map); }
-        function runFullAnalysis() { calculateVisitCounts(); populateAllFilters(); applyFiltersAndRedraw(); }
-        function calculateVisitCounts() { const counts = {}; const processedVisits = new Set(); state.allVisitaData.forEach(v => { const visitKey = JSON.stringify(v); if (!processedVisits.has(visitKey)) { processedVisits.add(visitKey); if (v.numero_reds_furto) { const id = String(v.numero_reds_furto).trim(); counts[id] = (counts[id] || 0) + 1; } } }); state.visitCounts = counts; }
-        function applyFiltersAndRedraw() { let data = [...state.allCrimeData]; const visitStatus = ui.filters.visitStatus.value; if (visitStatus) { data = data.filter(crime => { const id = crime.numero_ocorrencia ? String(crime.numero_ocorrencia).trim() : null; if (!id) return false; const count = state.visitCounts[id] || 0; if (visitStatus === 'sem_visita') return count === 0; if (visitStatus === '1_visita') return count === 1; if (visitStatus === '2_mais_visitas') return count >= 2; return true; }); } const municipio = ui.filters.municipio.value; if (municipio) data = data.filter(c => c.nome_municipio === municipio); const startDate = ui.filters.startDate.valueAsDate; const endDate = ui.filters.endDate.valueAsDate; if (startDate || endDate) { data = data.filter(c => { const crimeDate = parseExcelDate(c.data_fato); if (!crimeDate) return false; if (startDate && crimeDate < startDate) return false; if (endDate) { const endOfDay = new Date(endDate); endOfDay.setHours(23, 59, 59, 999); if (crimeDate > endOfDay) return false; } return true; }); } const cia = ui.filters.cia.value; if (cia) data = data.filter(c => c.CIA_PM == cia); const pel = ui.filters.pel.value; if (pel) data = data.filter(c => c.PELOTAO == pel); const subsetor = ui.filters.subsetor.value; if (subsetor) data = data.filter(c => c.SUB_SETOR == subsetor); state.filteredCrimeData = data; updateDashboard(state.filteredCrimeData); populateOccurrenceDropdown(state.filteredCrimeData); updateMapLayers(); }
-        function updateDashboard(crimes) { ui.dashboardCards.classList.remove('hidden'); const uniqueOccurrences = [...new Set(crimes.map(c => c.numero_ocorrencia ? String(c.numero_ocorrencia).trim() : null).filter(id => id))]; document.getElementById('total-crimes').textContent = uniqueOccurrences.length; let counters = { no: 0, one: 0, two: 0 }; uniqueOccurrences.forEach(id => { const count = state.visitCounts[id] || 0; if (count === 0) { counters.no++; } else if (count === 1) { counters.one++; } else { counters.two++; } }); document.getElementById('no-visits').textContent = counters.no; document.getElementById('one-visit').textContent = counters.one; document.getElementById('two-plus-visits').textContent = counters.two; }
-        function populateAllFilters() { const populateSelect = (element, values, selectedValue) => { const uniqueSorted = [...new Set(values)].filter(Boolean).sort(); element.innerHTML = '<option value="">Todos</option>'; uniqueSorted.forEach(value => { const option = document.createElement('option'); option.value = value; option.textContent = value; if (value === selectedValue) option.selected = true; element.appendChild(option); }); }; const selectedCia = ui.filters.cia.value; const selectedPel = ui.filters.pel.value; const selectedSubsetor = ui.filters.subsetor.value; let dataForNextFilter = state.allCrimeData; populateSelect(ui.filters.cia, dataForNextFilter.map(c => c.CIA_PM), selectedCia); if (selectedCia) dataForNextFilter = dataForNextFilter.filter(c => c.CIA_PM === selectedCia); populateSelect(ui.filters.pel, dataForNextFilter.map(c => c.PELOTAO), selectedPel); if (selectedPel) dataForNextFilter = dataForNextFilter.filter(c => c.PELOTAO === selectedPel); populateSelect(ui.filters.subsetor, dataForNextFilter.map(c => c.SUB_SETOR), selectedSubsetor); if (selectedSubsetor) dataForNextFilter = dataForNextFilter.filter(c => c.SUB_SETOR === selectedSubsetor); populateSelect(ui.filters.municipio, dataForNextFilter.map(c => c.nome_municipio), ui.filters.municipio.value); }
-        function populateOccurrenceDropdown(crimes) { const unique = [...new Set(crimes.map(c => c.numero_ocorrencia ? String(c.numero_ocorrencia).trim() : null).filter(id => id))].sort(); ui.occurrenceSelect.innerHTML = '<option value="">-- Selecione --</option>'; unique.forEach(occ => { const count = state.visitCounts[occ] || 0; let bgColor = ''; if (count === 0) bgColor = 'bg-red-100'; else if (count === 1) bgColor = 'bg-yellow-100'; else bgColor = 'bg-green-100'; ui.occurrenceSelect.innerHTML += `<option value="${occ}" class="${bgColor}">${occ}</option>`; }); ui.resultsArea.innerHTML = ''; }
-        function displayOccurrenceDetails() { const selected = ui.occurrenceSelect.value; ui.resultsArea.innerHTML = ''; if (!selected) return; const people = state.allCrimeData.filter(r => (r.numero_ocorrencia ? String(r.numero_ocorrencia).trim() : '') === selected).filter(r => !palavrasExcluidas.some(p => String(r.envolvimento_descricao || '').toLowerCase().includes(p))); const crime = state.allCrimeData.find(r => (r.numero_ocorrencia ? String(r.numero_ocorrencia).trim() : '') === selected); let dataFato = 'Não informada'; if (crime?.data_fato) { const dataObj = parseExcelDate(crime.data_fato); if (!isNaN(dataObj.getTime())) { dataFato = dataObj.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' }); } } ui.resultsArea.innerHTML = `<p class="mb-4 text-gray-700"><strong>Data do Fato:</strong> ${dataFato}</p>`; if (people.length > 0) { ui.resultsArea.innerHTML += `<table class="min-w-full divide-y divide-gray-200 mt-2"><thead class="bg-gray-50"><tr><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nome</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Envolvimento</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tel. Residencial</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tel. Comercial</th></tr></thead><tbody class="bg-white divide-y divide-gray-200">${people.map(p => `<tr><td class="px-6 py-4 text-sm">${p.nome_completo_envolvido || 'N/A'}</td><td class="px-6 py-4 text-sm">${p.envolvimento_descricao || 'N/A'}</td><td class="px-6 py-4 text-sm">${p.numero_telefone_residencial || 'N/A'}</td><td class="px-6 py-4 text-sm">${p.numero_telefone_comercial || 'N/A'}</td></tr>`).join('')}</tbody></table>`; } else { ui.resultsArea.innerHTML += `<p class="text-gray-600 mt-4 p-4 bg-yellow-50 rounded-md">Nenhum envolvido (diferente de autor/suspeito) encontrado.</p>`; } }
         function findProperty(props, name) { const key = Object.keys(props).find(k => k.trim().toLowerCase() === name.trim().toLowerCase()); return key ? props[key] : null; }
         function tagCrimesWithGeoData() { if (!state.geojsonData) return; state.allCrimeData.forEach(crime => { const lat = parseFloat(String(crime.numero_latitude).replace(',', '.')), lon = parseFloat(String(crime.numero_longitude).replace(',', '.')); if (isNaN(lat) || isNaN(lon)) return; const point = turf.point([lon, lat]); for (const feature of state.geojsonData.features) { if (turf.booleanPointInPolygon(point, feature)) { crime.CIA_PM = findProperty(feature.properties, 'CIA_PM'); crime.PELOTAO = findProperty(feature.properties, 'PELOTAO'); crime.SUB_SETOR = findProperty(feature.properties, 'SUB_SETOR'); return; } } }); }
-        function updateMapLayers() { if (!state.map) return; state.crimeMarkersLayer.clearLayers(); if (state.sectorLayer) state.map.removeLayer(state.sectorLayer); if (state.geojsonData) { state.sectorLayer = L.geoJSON(state.geojsonData, { style: { color: "#3b82f6", weight: 2, opacity: 0.7, fillOpacity: 0.1, }, onEachFeature: (feature, layer) => { const cia = findProperty(feature.properties, 'CIA_PM'), pel = findProperty(feature.properties, 'PELOTAO'), subsetor = findProperty(feature.properties, 'SUB_SETOR'); layer.bindTooltip(`<b>CIA:</b> ${cia}<br><b>Pelotão:</b> ${pel}<br><b>Sub Setor:</b> ${subsetor}`); layer.on('click', () => { ui.filters.cia.value = cia || ''; resetAndPopulateFilters('cia'); }); } }).addTo(state.map); } const markers = []; state.filteredCrimeData.forEach(crime => { const lat = parseFloat(String(crime.numero_latitude).replace(',', '.')); const lon = parseFloat(String(crime.numero_longitude).replace(',', '.')); if (!isNaN(lat) && !isNaN(lon)) { const id = crime.numero_ocorrencia ? String(crime.numero_ocorrencia).trim() : null; const count = id ? (state.visitCounts[id] || 0) : 0; let color = '#ef4444'; if (count >= 1) color = '#22c55e'; const marker = L.marker([lat, lon], { icon: createStyledMarkerIcon(color) }).bindPopup(`<b>Ocorrência:</b> ${crime.numero_ocorrencia}<br><b>Município:</b> ${crime.nome_municipio}`); state.crimeMarkersLayer.addLayer(marker); markers.push([lat, lon]); } }); if (markers.length > 0) { state.map.fitBounds(L.latLngBounds(markers), { padding: [50, 50], maxZoom: 15 }); } else if (state.sectorLayer && state.sectorLayer.getBounds().isValid()) { state.map.fitBounds(state.sectorLayer.getBounds()); } if (state.activeChoropleth) updateChoroplethMap(state.activeChoropleth); }
+
+        function updateMapLayers() {
+            if (!state.map) return;
+            state.crimeMarkersLayer.clearLayers();
+            if (state.sectorLayer) state.map.removeLayer(state.sectorLayer);
+            if (state.geojsonData) {
+                state.sectorLayer = L.geoJSON(state.geojsonData, { style: { color: "#3b82f6", weight: 2, opacity: 0.7, fillOpacity: 0.1, }, onEachFeature: (feature, layer) => { const cia = findProperty(feature.properties, 'CIA_PM'), pel = findProperty(feature.properties, 'PELOTAO'), subsetor = findProperty(feature.properties, 'SUB_SETOR'); layer.bindTooltip(`<b>CIA:</b> ${cia}<br><b>Pelotão:</b> ${pel}<br><b>Sub Setor:</b> ${subsetor}`); layer.on('click', () => { ui.filters.cia.value = cia || ''; resetAndPopulateFilters('cia'); }); } }).addTo(state.map);
+            }
+            const markers = [];
+            state.filteredCrimeData.forEach(crime => {
+                const lat = parseFloat(String(crime.numero_latitude).replace(',', '.'));
+                const lon = parseFloat(String(crime.numero_longitude).replace(',', '.'));
+                if (!isNaN(lat) && !isNaN(lon)) {
+                    const id = crime.numero_ocorrencia ? String(crime.numero_ocorrencia).trim() : null;
+                    const count = id ? (state.visitCounts[id] || 0) : 0;
+                    let color = '#ef4444';
+                    if (count >= 1) { color = '#22c55e'; }
+                    const dataFatoFormatada = crime.data_fato ? parseExcelDate(crime.data_fato).toLocaleDateString('pt-BR') : 'N/I';
+                    const popupContent = `<b>Ocorrência:</b> ${crime.numero_ocorrencia}<br><b>Município:</b> ${crime.nome_municipio}<br><b>Data do Fato:</b> ${dataFatoFormatada}`;
+                    const marker = L.marker([lat, lon], { icon: createStyledMarkerIcon(color) }).bindPopup(popupContent);
+                    state.crimeMarkersLayer.addLayer(marker);
+                    markers.push([lat, lon]);
+                }
+            });
+            if (markers.length > 0) { state.map.fitBounds(L.latLngBounds(markers), { padding: [50, 50], maxZoom: 15 }); } else if (state.sectorLayer && state.sectorLayer.getBounds().isValid()) { state.map.fitBounds(state.sectorLayer.getBounds()); }
+            if (state.activeChoropleth) updateChoroplethMap(state.activeChoropleth);
+        }
+
         function parseExcelDate(excelDate) { if (!excelDate) return null; const date = !isNaN(excelDate) ? new Date(Math.round((excelDate - 25569) * 86400 * 1000)) : new Date(excelDate); return isNaN(date.getTime()) ? null : date; }
         function updateChoroplethMap(aggregationLevel) { if (!state.map || !state.geojsonData || !state.sectorLayer) return; state.activeChoropleth = aggregationLevel; const getIdentifier = (feature) => findProperty(feature.properties, aggregationLevel); const areaStats = {}; state.filteredCrimeData.forEach(crime => { const areaId = crime[aggregationLevel]; if (!areaId) return; const crimeId = crime.numero_ocorrencia ? String(crime.numero_ocorrencia).trim() : null; if (!crimeId) return; if (!areaStats[areaId]) areaStats[areaId] = { crimes: new Set(), visits: 0 }; areaStats[areaId].crimes.add(crimeId); }); Object.keys(areaStats).forEach(areaId => { let visitCountForArea = 0; areaStats[areaId].crimes.forEach(crimeId => { visitCountForArea += (state.visitCounts[crimeId] || 0); }); areaStats[areaId].visits = visitCountForArea; }); state.sectorLayer.eachLayer(layer => { const areaId = getIdentifier(layer.feature); const stats = areaStats[areaId]; let color = '#a0aec0'; if (stats && stats.crimes.size > 0) { const ratio = stats.visits / stats.crimes.size; if (ratio < 0.5) color = '#f56565'; else if (ratio < 1) color = '#f6e05e'; else color = '#68d391'; } layer.setStyle({ fillColor: color, fillOpacity: 0.7, weight: 1.5, color: 'white' }); }); }
         function resetAndPopulateFilters(level) { if (level === 'cia') { ui.filters.pel.value = ''; ui.filters.subsetor.value = ''; ui.filters.municipio.value = ''; } if (level === 'pel') { ui.filters.subsetor.value = ''; ui.filters.municipio.value = ''; } if (level === 'subsetor') { ui.filters.municipio.value = ''; } populateAllFilters(); }
 
+        // Substitua sua função loadAndDisplayData por esta versão mais limpa
         async function loadAndDisplayData(isFullAccess) {
             const { loading, error, dashboardCards } = ui;
             showLoader(true, loading);
             try {
                 if (isFullAccess) {
+                    // A busca das tentativas de contato foi REMOVIDA daqui.
+                    // Ela agora é gerenciada pelo listener em tempo real.
                     const mainData = await window.dbFunctions.fetchMainData();
+
                     state.allCrimeData = mainData.crimes || [];
                     state.allVisitaData = mainData.visitas || [];
                     state.geojsonData = mainData.geojson || null;
@@ -481,13 +702,14 @@
                     tagCrimesWithGeoData();
                     initMap();
                     addMapControls();
-                    runFullAnalysis();
+                    runFullAnalysis(); // Esta função já redesenha a UI
                 } else {
                     const summaryData = await window.dbFunctions.fetchSummaryData();
                     document.getElementById('total-crimes').textContent = summaryData.total || 0;
                     document.getElementById('no-visits').textContent = summaryData.semVisita || 0;
                     document.getElementById('one-visit').textContent = summaryData.comUma || 0;
                     document.getElementById('two-plus-visits').textContent = summaryData.comDuasOuMais || 0;
+                    document.getElementById('total-visitas').textContent = summaryData.totalVisitas || 0;
                     dashboardCards.classList.remove('hidden');
                 }
             } catch (err) {
@@ -498,20 +720,12 @@
             }
         }
 
-        window.addEventListener('user-authenticated-full', () => loadAndDisplayData(true));
-        window.addEventListener('user-authenticated-limited', () => loadAndDisplayData(false));
-        window.addEventListener('admin-authenticated', async () => {
-            const db = window.dbFunctions.getDbInstance(); const { collection, onSnapshot, getDocs } = window.dbFunctions.getFirestoreLibs();
-            onSnapshot(collection(db, "user_permissions"), (snapshot) => { const userListContainer = document.getElementById('admin-user-list'); userListContainer.innerHTML = ''; const users = []; snapshot.forEach(doc => users.push({ uid: doc.id, ...doc.data() })); const pending = users.filter(u => u.status === 'pending'); const approved = users.filter(u => u.status === 'approved'); const revoked = users.filter(u => u.status === 'revoked'); const renderUserList = (title, userArray, colorClass) => { let html = `<h3 class="text-lg font-bold ${colorClass}">${title} (${userArray.length})</h3>`; if (userArray.length === 0) { html += `<p class="text-gray-500 italic">Nenhum usuário nesta categoria.</p>`; } else { html += `<ul class="space-y-2 mt-2">`; userArray.forEach(u => { const photoURL = u.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(u.displayName || u.email)}&background=random&color=fff&size=32`; html += `<li class="flex items-center justify-between p-2 bg-white rounded-md shadow-sm"><div class="flex items-center"><img src="${photoURL}" class="w-8 h-8 rounded-full mr-3"><div><p class="font-semibold">${u.displayName}</p><p class="text-sm text-gray-500">${u.email}</p></div></div><div class="space-x-2">${u.status !== 'approved' ? `<button onclick="window.adminFunctions.updateUserStatus('${u.uid}', 'approved')" class="bg-green-500 text-white px-3 py-1 text-sm rounded-md hover:bg-green-600">Aprovar</button>` : ''}${u.status !== 'revoked' ? `<button onclick="window.adminFunctions.updateUserStatus('${u.uid}', 'revoked')" class="bg-red-500 text-white px-3 py-1 text-sm rounded-md hover:bg-red-600">Revogar</button>` : ''}</div></li>`; }); html += `</ul>`; } return html; }; userListContainer.innerHTML += renderUserList('Solicitações Pendentes', pending, 'text-yellow-700'); userListContainer.innerHTML += `<hr class="my-4 border-indigo-200">`; userListContainer.innerHTML += renderUserList('Usuários Aprovados', approved, 'text-green-700'); userListContainer.innerHTML += `<hr class="my-4 border-indigo-200">`; userListContainer.innerHTML += renderUserList('Usuários Revogados', revoked, 'text-red-700'); });
-            try {
-                const activityCollectionRef = collection(db, "user_activity");
-                const activitySnapshot = await getDocs(activityCollectionRef);
-                let activities = []; activitySnapshot.forEach(doc => activities.push({ id: doc.id, ...doc.data() }));
-                activities.sort((a, b) => (b.lastLogin?.toDate() || 0) - (a.lastLogin?.toDate() || 0));
-                state.allUserActivity = activities;
-                renderActivityList(state.allUserActivity);
-            } catch (error) { console.error("Erro ao carregar dados de atividade:", error); document.getElementById('activity-user-list').innerHTML = `<p class="text-red-500">Falha ao carregar dados de atividade. Verifique as regras de segurança do Firebase e o console para erros.</p>`; }
+        window.addEventListener('user-authenticated-full', () => {
+            loadAndDisplayData(true);
+            setupRealtimeListeners(); // <-- ADICIONE ESTA LINHA
         });
+        window.addEventListener('user-authenticated-limited', () => loadAndDisplayData(false));
+        window.addEventListener('admin-authenticated', async () => { const db = window.dbFunctions.getDbInstance(); const { collection, onSnapshot, getDocs } = window.dbFunctions.getFirestoreLibs(); onSnapshot(collection(db, "user_permissions"), (snapshot) => { const userListContainer = document.getElementById('admin-user-list'); userListContainer.innerHTML = ''; const users = []; snapshot.forEach(doc => users.push({ uid: doc.id, ...doc.data() })); const pending = users.filter(u => u.status === 'pending'); const approved = users.filter(u => u.status === 'approved'); const revoked = users.filter(u => u.status === 'revoked'); const renderUserList = (title, userArray, colorClass) => { let html = `<h3 class="text-lg font-bold ${colorClass}">${title} (${userArray.length})</h3>`; if (userArray.length === 0) { html += `<p class="text-gray-500 italic">Nenhum usuário nesta categoria.</p>`; } else { html += `<ul class="space-y-2 mt-2">`; userArray.forEach(u => { const photoURL = u.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(u.displayName || u.email)}&background=random&color=fff&size=32`; html += `<li class="flex items-center justify-between p-2 bg-white rounded-md shadow-sm"><div class="flex items-center"><img src="${photoURL}" class="w-8 h-8 rounded-full mr-3"><div><p class="font-semibold">${u.displayName}</p><p class="text-sm text-gray-500">${u.email}</p></div></div><div class="space-x-2">${u.status !== 'approved' ? `<button onclick="window.adminFunctions.updateUserStatus('${u.uid}', 'approved')" class="bg-green-500 text-white px-3 py-1 text-sm rounded-md hover:bg-green-600">Aprovar</button>` : ''}${u.status !== 'revoked' ? `<button onclick="window.adminFunctions.updateUserStatus('${u.uid}', 'revoked')" class="bg-red-500 text-white px-3 py-1 text-sm rounded-md hover:bg-red-600">Revogar</button>` : ''}</div></li>`; }); html += `</ul>`; } return html; }; userListContainer.innerHTML += renderUserList('Solicitações Pendentes', pending, 'text-yellow-700'); userListContainer.innerHTML += `<hr class="my-4 border-indigo-200">`; userListContainer.innerHTML += renderUserList('Usuários Aprovados', approved, 'text-green-700'); userListContainer.innerHTML += `<hr class="my-4 border-indigo-200">`; userListContainer.innerHTML += renderUserList('Usuários Revogados', revoked, 'text-red-700'); }); try { const activityCollectionRef = collection(db, "user_activity"); const activitySnapshot = await getDocs(activityCollectionRef); let activities = []; activitySnapshot.forEach(doc => activities.push({ id: doc.id, ...doc.data() })); activities.sort((a, b) => (b.lastLogin?.toDate() || 0) - (a.lastLogin?.toDate() || 0)); state.allUserActivity = activities; renderActivityList(state.allUserActivity); } catch (error) { console.error("Erro ao carregar dados de atividade:", error); document.getElementById('activity-user-list').innerHTML = `<p class="text-red-500">Falha ao carregar dados de atividade. Verifique as regras de segurança do Firebase e o console para erros.</p>`; } });
         ui.applyFiltersBtn.addEventListener('click', applyFiltersAndRedraw);
         ui.occurrenceSelect.addEventListener('change', () => { if (ui.occurrenceSelect.value) { window.logUserEvent('consultar_ocorrencia'); } displayOccurrenceDetails(); });
         ui.filters.cia.addEventListener('change', () => resetAndPopulateFilters('cia'));
