@@ -28,7 +28,7 @@ try:
 
     # 🔹 Consulta SQL
     query = """
-    SELECT 
+    SELECT
         oco.numero_ocorrencia,
         oco.numero_latitude,
         oco.numero_longitude
@@ -51,7 +51,8 @@ try:
     df.dropna(subset=['numero_latitude', 'numero_longitude'], inplace=True)
 
     # 🔹 GeoDataFrame dos pontos
-    df['geometry'] = df.apply(lambda row: Point(row['numero_longitude'], row['numero_latitude']), axis=1)
+    df['geometry'] = df.apply(lambda row: Point(
+        row['numero_longitude'], row['numero_latitude']), axis=1)
     points_gdf = gpd.GeoDataFrame(df, geometry='geometry', crs="EPSG:4326")
 
     # 🔹 Carregar e alinhar o GeoJSON
@@ -61,11 +62,14 @@ try:
 
     # 🔹 Junção espacial
     print("📍 Realizando junção espacial...")
-    result_gdf = gpd.sjoin(points_gdf, polygons_gdf, how="left", predicate="within")
+    result_gdf = gpd.sjoin(points_gdf, polygons_gdf,
+                           how="left", predicate="within")
 
     # 🔹 Limpar colunas desnecessárias (como visuais do GeoJSON)
-    colunas_a_remover = ['index_right', 'fill-opacity', 'stroke-opacity', 'stroke']
-    result_gdf.drop(columns=[col for col in colunas_a_remover if col in result_gdf.columns], inplace=True)
+    colunas_a_remover = ['index_right',
+        'fill-opacity', 'stroke-opacity', 'stroke']
+    result_gdf.drop(columns=[
+                    col for col in colunas_a_remover if col in result_gdf.columns], inplace=True)
 
     # 🔹 Exportar CSV
     result_gdf.to_csv(output_file, index=False, encoding='utf-8-sig')
