@@ -1,7 +1,5 @@
---IRTD - Indicador de Resposta ao Tráfico de Drogas
-	--NAME: IRTD
-	SELECT 
-		OCO.numero_ocorrencia, 
+SELECT 
+		OCO.numero_ocorrencia, --IRTD - Indicador de Resposta ao Tráfico de Drogas
 	    OCO.natureza_codigo, 
 	    CASE 
 	        WHEN OCO.codigo_municipio IN (310470,311080,311300,311545,312675,312680,313230,313270,313507,313700,313920,314490,314530,314535,314620,314850,315000,315240,316330,316555,316860) THEN '19 BPM'

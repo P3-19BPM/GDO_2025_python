@@ -1,6 +1,4 @@
---PlanoAcao_Versao_20-02-2025
--- NAME: PL_03
-	   SELECT 
+SELECT 
 	    T.TIPO,
 	    T.cia_pm,
 	    T.PELOTAO_PM,
