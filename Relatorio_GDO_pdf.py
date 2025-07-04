@@ -21,7 +21,7 @@ pdf_capa_path = f"E:\\GDO\\GDO_2025\\Capa_{data_hoje}.pdf"
 pdf_final_path = f"E:\\GDO\\GDO_2025\\Monitoramento_GDO_{data_hoje}.pdf"
 
 # Caminho da imagem de capa
-imagem_capa_path = r"C:\Users\P3-19BPM\Downloads\Capa_Escura.png"
+imagem_capa_path = r"E:\GDO\GDO_2025\Capas\Capa_Escura\18.png"
 
 # Lista de abas que devem ser exportadas para o PDF
 abas_especificas = ["IMV", "ICVPe", "ICVPa", "IRTD", "PÓS_DELITO",
