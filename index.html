@@ -507,16 +507,7 @@
                 const count = state.visitCounts[id] || 0;
                 if (count === 0) { counters.no++; } else if (count === 1) { counters.one++; } else { counters.two++; }
             });
-            const deDupedVisits = [];
-            const processedVisits = new Set();
-            state.allVisitaData.forEach(v => {
-                const visitKey = JSON.stringify(v);
-                if (!processedVisits.has(visitKey)) {
-                    processedVisits.add(visitKey);
-                    deDupedVisits.push(v);
-                }
-            });
-            const filteredVisits = deDupedVisits.filter(v => v.numero_reds_furto && uniqueOccurrencesSet.has(String(v.numero_reds_furto).trim()));
+            const filteredVisits = state.allVisitaData.filter(v => v.numero_reds_furto && uniqueOccurrencesSet.has(String(v.numero_reds_furto).trim()));
             const totalVisitasFiltradas = filteredVisits.length;
             document.getElementById('no-visits').textContent = counters.no;
             document.getElementById('one-visit').textContent = counters.one;
