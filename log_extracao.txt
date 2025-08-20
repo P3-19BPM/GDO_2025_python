@@ -1,0 +1,659 @@
+🚀 Executando lote 1/51 (10 pares)...
+❌ Erro em db_bisp_cad_master.vw_chamada_tr - codigo_origem_chamada/descricao_origem_chamada: ('HY000', "[HY000] [Cloudera][ImpalaODBC] (370) Query analysis error occurred during query execution: [HY000] : AnalysisException: Could not resolve table reference: 'db_bisp_sandbox.cad_chamada_tr'\n (370) (SQLExecDirectW)")
+✅ db_bisp_cad_reporting.tb_atendimento - cabine_id + cabine_descricao (464 valores)
+✅ db_bisp_cad_reporting.tb_atendimento - cabine_codigo + cabine_descricao (452 valores)
+✅ db_bisp_cad_reporting.tb_atendimento - grupo_atendimento_id + grupo_atendimento_descricao (13 valores)
+✅ db_bisp_cad_reporting.tb_atendimento - atendente_id + atendente_nome (500 valores)
+✅ db_bisp_cad_reporting.tb_atendimento - qualificador_id + qualificador_descricao (113 valores)
+✅ db_bisp_cad_reporting.tb_atendimento - qualificador_detalhe_id + qualificador_detalhe_descricao (223 valores)
+✅ db_bisp_cad_reporting.tb_atendimento - municipio_codigo + municipio_nome (33 valores)
+✅ db_bisp_cad_reporting.tb_chamada - id_logradouro + descricao_logradouro (500 valores)
+✅ db_bisp_cad_reporting.tb_chamada - id_logradouro_cruzamento + descricao_logradouro_cruzamento (500 valores)
+💾 Lote 1 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 2/51 (10 pares)...
+✅ db_bisp_cad_reporting.tb_chamada - id_municipio + descricao_municipio (500 valores)
+✅ db_bisp_cad_reporting.tb_chamada - id_bairro + nome_bairro (500 valores)
+✅ db_bisp_cad_reporting.tb_chamada - id_tipo_logradouro_cruzamento + descricao_tipo_logradouro_cruzamento (94 valores)
+✅ db_bisp_cad_reporting.tb_chamada - id_tipo_logradouro + descricao_tipo_logradouro (232 valores)
+✅ db_bisp_cad_reporting.tb_chamada - id_complemento + descricao_complemento (500 valores)
+✅ db_bisp_cad_reporting.tb_chamada_atendimento - chamada_codigo_origem + chamada_descricao_origem (7 valores)
+✅ db_bisp_cad_reporting.tb_chamada_atendimento - orgao_id + orgao_nome (5 valores)
+✅ db_bisp_cad_reporting.tb_chamada_atendimento - local_municipio_id + local_municipio_nome (500 valores)
+✅ db_bisp_cad_reporting.tb_chamada_atendimento - local_bairro_id + local_bairro_nome (500 valores)
+✅ db_bisp_cad_reporting.tb_chamada_atendimento - local_tipo_logradouro_id + local_tipo_logradouro_nome (231 valores)
+💾 Lote 2 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 3/51 (10 pares)...
+✅ db_bisp_cad_reporting.tb_chamada_atendimento - local_logradouro_id + local_logradouro_nome (500 valores)
+✅ db_bisp_cad_reporting.tb_chamada_atendimento - natureza_tipo_servico_codigo + natureza_tipo_servico_descricao (4 valores)
+✅ db_bisp_cad_reporting.tb_chamada_atendimento - natureza_id + natureza_descricao (500 valores)
+✅ db_bisp_cad_reporting.tb_chamada_atendimento - natureza_codigo + natureza_descricao (500 valores)
+✅ db_bisp_cad_reporting.tb_chamada_atendimento - natureza_complemento_id + natureza_complemento_descricao (52 valores)
+✅ db_bisp_cad_reporting.tb_chamada_atendimento - natureza_complemento_codigo + natureza_complemento_descricao (52 valores)
+✅ db_bisp_cad_reporting.tb_chamada_atendimento_situacao - chamada_atendimento_situacao_id + chamada_atendimento_situacao_descricao (500 valores)
+✅ db_bisp_cad_reporting.tb_chamada_atendimento_situacao - chamada_atendimento_situacao_codigo + chamada_atendimento_situacao_descricao (12 valores)
+✅ db_bisp_cad_reporting.tb_chamada_historico - codigo_tipo_historico + descricao_tipo_historico (2 valores)
+✅ db_bisp_cad_reporting.tb_chamada_historico - usuario_alteracao_id + usuario_alteracao_nome (500 valores)
+💾 Lote 3 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 4/51 (10 pares)...
+✅ db_bisp_cad_reporting.tb_chamada_historico - usuario_alteracao_orgao_codigo + usuario_alteracao_orgao_descricao (7 valores)
+✅ db_bisp_cad_reporting.tb_empenho - tipo_recurso_id + tipo_recurso_descricao (277 valores)
+✅ db_bisp_cad_reporting.tb_empenho - tipo_recurso_codigo + tipo_recurso_descricao (236 valores)
+✅ db_bisp_cad_reporting.tb_empenho - viatura_id + viatura_descricao (500 valores)
+✅ db_bisp_cad_reporting.tb_empenho_situacao - empenho_situacao_id + empenho_situacao_descricao (500 valores)
+✅ db_bisp_cad_reporting.tb_empenho_situacao - empenho_situacao_codigo + empenho_situacao_descricao (10 valores)
+✅ db_bisp_cad_reporting.tb_integracao_reds - chamada_origem_codigo + chamada_origem_descricao (7 valores)
+✅ db_bisp_cad_reporting.tb_integracao_reds - tipo_recurso_id + tipo_recurso_descricao (257 valores)
+✅ db_bisp_cad_reporting.tb_integracao_reds - tipo_recurso_codigo + tipo_recurso_descricao (233 valores)
+✅ db_bisp_cad_reporting.tb_integracao_reds - viatura_id + viatura_descricao (500 valores)
+💾 Lote 4 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 5/51 (10 pares)...
+✅ db_bisp_cad_reporting.tb_recurso - tipo_recurso_id + tipo_recurso_descricao (265 valores)
+✅ db_bisp_cad_reporting.tb_recurso - tipo_recurso_codigo + tipo_recurso_descricao (234 valores)
+✅ db_bisp_cad_reporting.tb_recurso - viatura_id + viatura_descricao (500 valores)
+✅ db_bisp_cad_reporting.tb_recurso - viatura_marca_modelo_id + viatura_marca_modelo_descricao (4 valores)
+✅ db_bisp_cad_reporting.tb_recurso - viatura_marca_modelo_codigo + viatura_marca_modelo_descricao (4 valores)
+✅ db_bisp_cad_reporting.tb_recurso - usuario_alteracao_id + usuario_alteracao_nome (500 valores)
+✅ db_bisp_cad_reporting.tb_recurso - usuario_exclusao_id + usuario_exclusao_nome (500 valores)
+✅ db_bisp_cad_reporting.tb_recurso - sistema_integrado_id + sistema_integrado_descricao (1 valores)
+✅ db_bisp_cad_reporting.tb_recurso - sistema_integrado_codigo + sistema_integrado_descricao (1 valores)
+✅ db_bisp_cad_reporting.tb_recurso_componente - funcao_componente_id + funcao_componente_descricao (87 valores)
+💾 Lote 5 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 6/51 (10 pares)...
+✅ db_bisp_cad_reporting.tb_recurso_componente - funcao_componente_codigo + funcao_componente_descricao (65 valores)
+✅ db_bisp_cad_reporting.tb_recurso_componente - funcao_componente_orgao_id + funcao_componente_orgao_descricao (5 valores)
+✅ db_bisp_cad_reporting.tb_recurso_componente - pessoa_id + pessoa_nome (500 valores)
+✅ db_bisp_cad_reporting.tb_recurso_componente - usuario_inclusao_id + usuario_inclusao_nome (500 valores)
+✅ db_bisp_cad_reporting.tb_recurso_componente - usuario_exclusao_id + usuario_exclusao_nome (500 valores)
+✅ db_bisp_cad_reporting.tb_recurso_situacao - recurso_situacao_id + recurso_situacao_descricao (500 valores)
+✅ db_bisp_cad_reporting.tb_recurso_situacao - recurso_situacao_codigo + recurso_situacao_descricao (3 valores)
+✅ db_bisp_cad_reporting.tb_recurso_situacao - usuario_inclusao_id + usuario_inclusao_nome (500 valores)
+✅ db_bisp_cad_reporting.tb_recurso_situacao - usuario_inclusao_orgao_id + usuario_inclusao_orgao_descricao (7 valores)
+✅ db_bisp_cad_reporting.vw_atendimento_s - cabine_id + cabine_descricao (464 valores)
+💾 Lote 6 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 7/51 (10 pares)...
+✅ db_bisp_cad_reporting.vw_atendimento_s - cabine_codigo + cabine_descricao (452 valores)
+✅ db_bisp_cad_reporting.vw_atendimento_s - grupo_atendimento_id + grupo_atendimento_descricao (13 valores)
+✅ db_bisp_cad_reporting.vw_atendimento_s - atendente_id + atendente_nome (500 valores)
+✅ db_bisp_cad_reporting.vw_atendimento_s - qualificador_id + qualificador_descricao (113 valores)
+✅ db_bisp_cad_reporting.vw_atendimento_s - qualificador_detalhe_id + qualificador_detalhe_descricao (223 valores)
+✅ db_bisp_cad_reporting.vw_atendimento_s - municipio_codigo + municipio_nome (33 valores)
+✅ db_bisp_cad_reporting.vw_chamada_atendimento_s - chamada_codigo_origem + chamada_descricao_origem (6 valores)
+✅ db_bisp_cad_reporting.vw_chamada_atendimento_s - orgao_id + orgao_nome (5 valores)
+✅ db_bisp_cad_reporting.vw_chamada_atendimento_s - local_municipio_id + local_municipio_nome (500 valores)
+✅ db_bisp_cad_reporting.vw_chamada_atendimento_s - local_bairro_id + local_bairro_nome (500 valores)
+💾 Lote 7 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 8/51 (10 pares)...
+✅ db_bisp_cad_reporting.vw_chamada_atendimento_s - local_tipo_logradouro_id + local_tipo_logradouro_nome (231 valores)
+✅ db_bisp_cad_reporting.vw_chamada_atendimento_s - local_logradouro_id + local_logradouro_nome (500 valores)
+✅ db_bisp_cad_reporting.vw_chamada_atendimento_s - natureza_tipo_servico_codigo + natureza_tipo_servico_descricao (4 valores)
+✅ db_bisp_cad_reporting.vw_chamada_atendimento_s - natureza_id + natureza_descricao (500 valores)
+✅ db_bisp_cad_reporting.vw_chamada_atendimento_s - natureza_codigo + natureza_descricao (500 valores)
+✅ db_bisp_cad_reporting.vw_chamada_atendimento_s - natureza_complemento_id + natureza_complemento_descricao (52 valores)
+✅ db_bisp_cad_reporting.vw_chamada_atendimento_s - natureza_complemento_codigo + natureza_complemento_descricao (52 valores)
+✅ db_bisp_cad_reporting.vw_chamada_evento - id_evento + descricao_evento (310 valores)
+✅ db_bisp_cad_reporting.vw_chamada_evento_s - id_evento + descricao_evento (117 valores)
+✅ db_bisp_cad_reporting.vw_chamada_historico_s - codigo_tipo_historico + descricao_tipo_historico (2 valores)
+💾 Lote 8 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 9/51 (10 pares)...
+✅ db_bisp_cad_reporting.vw_chamada_historico_s - usuario_alteracao_id + usuario_alteracao_nome (500 valores)
+✅ db_bisp_cad_reporting.vw_chamada_historico_s - usuario_alteracao_orgao_codigo + usuario_alteracao_orgao_descricao (5 valores)
+✅ db_bisp_cad_reporting.vw_chamada_s - id_logradouro + descricao_logradouro (500 valores)
+✅ db_bisp_cad_reporting.vw_chamada_s - id_logradouro_cruzamento + descricao_logradouro_cruzamento (500 valores)
+✅ db_bisp_cad_reporting.vw_chamada_s - id_municipio + descricao_municipio (500 valores)
+✅ db_bisp_cad_reporting.vw_chamada_s - id_bairro + nome_bairro (500 valores)
+✅ db_bisp_cad_reporting.vw_chamada_s - id_tipo_logradouro_cruzamento + descricao_tipo_logradouro_cruzamento (94 valores)
+✅ db_bisp_cad_reporting.vw_chamada_s - id_tipo_logradouro + descricao_tipo_logradouro (232 valores)
+✅ db_bisp_cad_reporting.vw_chamada_s - id_complemento + descricao_complemento (500 valores)
+✅ db_bisp_cad_reporting.vw_empenho_s - tipo_recurso_id + tipo_recurso_descricao (277 valores)
+💾 Lote 9 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 10/51 (10 pares)...
+✅ db_bisp_cad_reporting.vw_empenho_s - tipo_recurso_codigo + tipo_recurso_descricao (236 valores)
+✅ db_bisp_cad_reporting.vw_empenho_s - viatura_id + viatura_descricao (500 valores)
+✅ db_bisp_cad_reporting.vw_recurso_componente_s - funcao_componente_id + funcao_componente_descricao (54 valores)
+✅ db_bisp_cad_reporting.vw_recurso_componente_s - funcao_componente_codigo + funcao_componente_descricao (50 valores)
+✅ db_bisp_cad_reporting.vw_recurso_componente_s - funcao_componente_orgao_id + funcao_componente_orgao_descricao (3 valores)
+✅ db_bisp_cad_reporting.vw_recurso_componente_s - pessoa_id + pessoa_nome (500 valores)
+✅ db_bisp_cad_reporting.vw_recurso_componente_s - usuario_inclusao_id + usuario_inclusao_nome (500 valores)
+✅ db_bisp_cad_reporting.vw_recurso_componente_s - usuario_exclusao_id + usuario_exclusao_nome (500 valores)
+✅ db_bisp_cad_reporting.vw_recurso_s - tipo_recurso_id + tipo_recurso_descricao (287 valores)
+✅ db_bisp_cad_reporting.vw_recurso_s - tipo_recurso_codigo + tipo_recurso_descricao (239 valores)
+💾 Lote 10 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 11/51 (10 pares)...
+✅ db_bisp_cad_reporting.vw_recurso_s - viatura_id + viatura_descricao (500 valores)
+✅ db_bisp_cad_reporting.vw_recurso_s - viatura_marca_modelo_id + viatura_marca_modelo_descricao (19 valores)
+✅ db_bisp_cad_reporting.vw_recurso_s - viatura_marca_modelo_codigo + viatura_marca_modelo_descricao (19 valores)
+✅ db_bisp_cad_reporting.vw_recurso_s - usuario_alteracao_id + usuario_alteracao_nome (500 valores)
+✅ db_bisp_cad_reporting.vw_recurso_s - usuario_exclusao_id + usuario_exclusao_nome (500 valores)
+✅ db_bisp_cad_reporting.vw_recurso_s - sistema_integrado_id + sistema_integrado_descricao (1 valores)
+✅ db_bisp_cad_reporting.vw_recurso_s - sistema_integrado_codigo + sistema_integrado_descricao (1 valores)
+✅ db_bisp_escala_reporting.tb_escala - responsavel_id + responsavel_nome (500 valores)
+✅ db_bisp_escala_reporting.tb_escala - servico_id + servico_descricao (243 valores)
+✅ db_bisp_escala_reporting.tb_escala - servico_codigo + servico_descricao (240 valores)
+💾 Lote 11 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 12/51 (10 pares)...
+✅ db_bisp_escala_reporting.tb_escala - evento_id + evento_nome (316 valores)
+✅ db_bisp_escala_reporting.tb_escala - evento_id + evento_descricao (234 valores)
+✅ db_bisp_escala_reporting.tb_escala_diaria - dia_ultima_acao_codigo + dia_ultima_acao_descricao (2 valores)
+✅ db_bisp_escala_reporting.tb_escala_diaria - equipe_id + equipe_nome (500 valores)
+✅ db_bisp_escala_reporting.tb_escala_diaria - equipe_id + equipe_descricao (500 valores)
+✅ db_bisp_escala_reporting.tb_escala_pessoa - equipe_id + equipe_nome (500 valores)
+✅ db_bisp_escala_reporting.tb_escala_pessoa - equipe_id + equipe_descricao (500 valores)
+✅ db_bisp_escala_reporting.tb_escala_pessoa - pessoa_id + pessoa_nome (500 valores)
+✅ db_bisp_escala_reporting.tb_guarnicao - viatura_id + viatura_descricao (500 valores)
+✅ db_bisp_escala_reporting.tb_guarnicao - recurso_restricao_id + recurso_restricao_descricao (75 valores)
+💾 Lote 12 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 13/51 (10 pares)...
+✅ db_bisp_escala_reporting.tb_guarnicao_pessoa - funcao_id + funcao_descricao (51 valores)
+✅ db_bisp_escala_reporting.tb_guarnicao_pessoa - funcao_codigo + funcao_descricao (51 valores)
+✅ db_bisp_escala_reporting.tb_indisponibilidade - pessoa_id + pessoa_nome (500 valores)
+✅ db_bisp_escala_reporting.tb_saldo_horas - pessoa_id + pessoa_nome (500 valores)
+✅ db_bisp_infopen_reporting.tb_contatos - codigo_tipo_contato + descricao_tipo_contato (22 valores)
+✅ db_bisp_infopen_reporting.tb_descredenciamento - codigo_motivo_descredenciamento + descricao_motivo_descredenciamento (6 valores)
+✅ db_bisp_infopen_reporting.tb_individuo_infopen - codigo_religiao + descricao_religiao (8 valores)
+✅ db_bisp_infopen_reporting.tb_individuo_infopen - codigo_estado_civil + descricao_estado_civil (8 valores)
+✅ db_bisp_infopen_reporting.tb_ocorrencia_disciplinar - codigo_comarca + descricao_comarca (500 valores)
+✅ db_bisp_infopen_reporting.vw_contatos - codigo_tipo_contato + descricao_tipo_contato (22 valores)
+💾 Lote 13 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 14/51 (10 pares)...
+✅ db_bisp_infopen_reporting.vw_descredenciamento - codigo_motivo_descredenciamento + descricao_motivo_descredenciamento (6 valores)
+✅ db_bisp_infopen_reporting.vw_individuoinfopen - codigo_religiao + descricao_religiao (8 valores)
+✅ db_bisp_infopen_reporting.vw_individuoinfopen - codigo_estado_civil + descricao_estado_civil (8 valores)
+✅ db_bisp_infopen_reporting.vw_ocorrenciadisciplinar - codigo_comarca + descricao_comarca (500 valores)
+✅ db_bisp_reds_master.vw_envolvido_ocorrencia_s - id_endereco + descricao_endereco (500 valores)
+✅ db_bisp_reds_master.vw_envolvido_ocorrencia_s - codigo_bairro + nome_bairro (500 valores)
+✅ db_bisp_reds_master.vw_envolvido_ocorrencia_s - codigo_municipio + nome_municipio (500 valores)
+✅ db_bisp_reds_master.vw_envolvido_ocorrencia_s - id_indicador_uso_etilometro + descricao_indicador_uso_etilometro (500 valores)
+❌ Erro em db_bisp_reds_master.vw_envolvido_ocorrencia_tr - id_endereco/descricao_endereco: ('HY000', "[HY000] [Cloudera][ImpalaODBC] (370) Query analysis error occurred during query execution: [HY000] : AnalysisException: Could not resolve table reference: 'db_bisp_sandbox.bo_envolvido_tr'\n (370) (SQLExecDirectW)")
+❌ Erro em db_bisp_reds_master.vw_envolvido_ocorrencia_tr - codigo_bairro/nome_bairro: ('HY000', "[HY000] [Cloudera][ImpalaODBC] (370) Query analysis error occurred during query execution: [HY000] : AnalysisException: Could not resolve table reference: 'db_bisp_sandbox.bo_envolvido_tr'\n (370) (SQLExecDirectW)")
+💾 Lote 14 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 15/51 (10 pares)...
+❌ Erro em db_bisp_reds_master.vw_envolvido_ocorrencia_tr - codigo_municipio/nome_municipio: ('HY000', "[HY000] [Cloudera][ImpalaODBC] (370) Query analysis error occurred during query execution: [HY000] : AnalysisException: Could not resolve table reference: 'db_bisp_sandbox.bo_envolvido_tr'\n (370) (SQLExecDirectW)")
+❌ Erro em db_bisp_reds_master.vw_envolvido_ocorrencia_tr - id_indicador_uso_etilometro/descricao_indicador_uso_etilometro: ('HY000', "[HY000] [Cloudera][ImpalaODBC] (370) Query analysis error occurred during query execution: [HY000] : AnalysisException: Could not resolve table reference: 'db_bisp_sandbox.bo_envolvido_tr'\n (370) (SQLExecDirectW)")
+✅ db_bisp_reds_master.vw_material_apreendido_ocorrencia_s - codigo_categoria + descricao_categoria (3 valores)
+✅ db_bisp_reds_master.vw_ocorrencia_s - codigo_operacao + nome_operacao (0 valores)
+✅ db_bisp_reds_master.vw_ocorrencia_s - codigo_tipo_registro + descricao_tipo_registro (2 valores)
+✅ db_bisp_reds_master.vw_ocorrencia_s - codigo_bairro + nome_bairro (500 valores)
+✅ db_bisp_reds_master.vw_ocorrencia_s - codigo_municipio + nome_municipio (500 valores)
+✅ db_bisp_reds_master.vw_ocorrencia_s - codigo_localizacao_ocorrencia + descricao_localizacao_ocorrencia (2 valores)
+❌ Erro em db_bisp_reds_master.vw_ocorrencia_tr - codigo_operacao/nome_operacao: ('HY000', "[HY000] [Cloudera][ImpalaODBC] (370) Query analysis error occurred during query execution: [HY000] : AnalysisException: Could not resolve table reference: 'db_bisp_sandbox.bo_ocorrencia_policial_tr'\n (370) (SQLExecDirectW)")
+❌ Erro em db_bisp_reds_master.vw_ocorrencia_tr - codigo_tipo_registro/descricao_tipo_registro: ('HY000', "[HY000] [Cloudera][ImpalaODBC] (370) Query analysis error occurred during query execution: [HY000] : AnalysisException: Could not resolve table reference: 'db_bisp_sandbox.bo_ocorrencia_policial_tr'\n (370) (SQLExecDirectW)")
+💾 Lote 15 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 16/51 (10 pares)...
+❌ Erro em db_bisp_reds_master.vw_ocorrencia_tr - codigo_bairro/nome_bairro: ('HY000', "[HY000] [Cloudera][ImpalaODBC] (370) Query analysis error occurred during query execution: [HY000] : AnalysisException: Could not resolve table reference: 'db_bisp_sandbox.bo_ocorrencia_policial_tr'\n (370) (SQLExecDirectW)")
+❌ Erro em db_bisp_reds_master.vw_ocorrencia_tr - codigo_municipio/nome_municipio: ('HY000', "[HY000] [Cloudera][ImpalaODBC] (370) Query analysis error occurred during query execution: [HY000] : AnalysisException: Could not resolve table reference: 'db_bisp_sandbox.bo_ocorrencia_policial_tr'\n (370) (SQLExecDirectW)")
+❌ Erro em db_bisp_reds_master.vw_ocorrencia_tr - codigo_localizacao_ocorrencia/descricao_localizacao_ocorrencia: ('HY000', "[HY000] [Cloudera][ImpalaODBC] (370) Query analysis error occurred during query execution: [HY000] : AnalysisException: Could not resolve table reference: 'db_bisp_sandbox.bo_ocorrencia_policial_tr'\n (370) (SQLExecDirectW)")
+✅ db_bisp_reds_master.vw_recibo_s - id_destinatario + nome_destinatario (500 valores)
+❌ Erro em db_bisp_reds_master.vw_recibo_tr - id_destinatario/nome_destinatario: ('HY000', "[HY000] [Cloudera][ImpalaODBC] (370) Query analysis error occurred during query execution: [HY000] : AnalysisException: Could not resolve table reference: 'db_bisp_sandbox.bo_recibo_tr'\n (370) (SQLExecDirectW)")
+✅ db_bisp_reds_master.vw_veiculo_ocorrencia_s - codigo_municipio + nome_municipio (500 valores)
+✅ db_bisp_reds_master.vw_veiculo_ocorrencia_s - id_motivo_nao_remocao + descricao_motivo_nao_remocao (0 valores)
+✅ db_bisp_reds_reporting.tb_animal_ocorrencia - id_origem_animal + descricao_origem_animal (4 valores)
+✅ db_bisp_reds_reporting.tb_animal_ocorrencia - codigo_origem_animal + descricao_origem_animal (4 valores)
+✅ db_bisp_reds_reporting.tb_animal_ocorrencia - id_situacao + descricao_situacao (9 valores)
+💾 Lote 16 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 17/51 (10 pares)...
+✅ db_bisp_reds_reporting.tb_animal_ocorrencia - codigo_situacao + descricao_situacao (9 valores)
+✅ db_bisp_reds_reporting.tb_animal_ocorrencia - id_tipo_animal + descricao_tipo_animal (8 valores)
+✅ db_bisp_reds_reporting.tb_animal_ocorrencia - codigo_tipo_animal + descricao_tipo_animal (8 valores)
+✅ db_bisp_reds_reporting.tb_arma_ocorrencia - orgao_codigo + orgao_descricao (0 valores)
+✅ db_bisp_reds_reporting.tb_arma_ocorrencia - situacao_codigo + situacao_descricao (9 valores)
+✅ db_bisp_reds_reporting.tb_arma_ocorrencia - marca_arma_codigo + marca_arma_descricao (31 valores)
+✅ db_bisp_reds_reporting.tb_arma_ocorrencia - tipo_arma_codigo + tipo_arma_descricao (16 valores)
+✅ db_bisp_reds_reporting.tb_arma_ocorrencia - calibre_arma_codigo + calibre_arma_descricao (26 valores)
+✅ db_bisp_reds_reporting.tb_arma_utilizada_ocorrencia - tipo_arma_codigo + tipo_arma_descricao (13 valores)
+✅ db_bisp_reds_reporting.tb_arma_utilizada_ocorrencia - calibre_arma_codigo + calibre_arma_descricao (17 valores)
+💾 Lote 17 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 18/51 (10 pares)...
+✅ db_bisp_reds_reporting.tb_atendimento_pre_hospitalar_ocorrencia - codigo_tipo_lesao + descricao_tipo_lesao (2 valores)
+✅ db_bisp_reds_reporting.tb_atendimento_pre_hospitalar_ocorrencia - codigo_tipo_queimadura + descricao_tipo_queimadura (3 valores)
+✅ db_bisp_reds_reporting.tb_atendimento_pre_hospitalar_ocorrencia - destino_codigo + destino_descricao (6 valores)
+✅ db_bisp_reds_reporting.tb_atendimento_pre_hospitalar_ocorrencia - local_destino_codigo + local_destino_descricao (15 valores)
+✅ db_bisp_reds_reporting.tb_atendimento_pre_hospitalar_ocorrencia - posicao_no_veiculo_codigo + posicao_no_veiculo_descricao (0 valores)
+✅ db_bisp_reds_reporting.tb_atendimento_pre_hospitalar_ocorrencia - localizacao_vitima_codigo + localizacao_vitima_descricao (0 valores)
+✅ db_bisp_reds_reporting.tb_atendimento_pre_hospitalar_ocorrencia - evento_relacionado_codigo + evento_relacionado_descricao (3 valores)
+✅ db_bisp_reds_reporting.tb_atendimento_pre_hospitalar_ocorrencia - orgao_codigo + orgao_descricao (0 valores)
+✅ db_bisp_reds_reporting.tb_auto_resistencia_envolvido_ocorrencia - codigo_tipo_envolvimento + descricao_tipo_envolvimento (4 valores)
+✅ db_bisp_reds_reporting.tb_auto_resistencia_envolvido_ocorrencia - efetivo_operacional_id_orgao + efetivo_operacional_nome_orgao (6 valores)
+💾 Lote 18 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 19/51 (10 pares)...
+✅ db_bisp_reds_reporting.tb_auto_resistencia_envolvido_ocorrencia - natureza_codigo + natureza_descricao (263 valores)
+✅ db_bisp_reds_reporting.tb_auto_resistencia_envolvido_ocorrencia - grau_lesao_codigo + grau_lesao_descricao (5 valores)
+✅ db_bisp_reds_reporting.tb_auto_resistencia_ocorrencia - codigo_municipio + nome_municipio (500 valores)
+✅ db_bisp_reds_reporting.tb_auto_resistencia_ocorrencia - codigo_bairro + nome_bairro (500 valores)
+✅ db_bisp_reds_reporting.tb_auto_resistencia_ocorrencia - tipo_logradouro_codigo + tipo_logradouro_descricao (111 valores)
+✅ db_bisp_reds_reporting.tb_auto_resistencia_ocorrencia - logradouro_codigo + logradouro_nome (500 valores)
+✅ db_bisp_reds_reporting.tb_auto_resistencia_ocorrencia - tipo_logradouro2_codigo + tipo_logradouro2_descricao (12 valores)
+✅ db_bisp_reds_reporting.tb_auto_resistencia_ocorrencia - logradouro2_codigo + logradouro2_nome (500 valores)
+✅ db_bisp_reds_reporting.tb_auto_resistencia_ocorrencia - responsavel_prisao_id_orgao + responsavel_prisao_nome_orgao (6 valores)
+✅ db_bisp_reds_reporting.tb_autor_suspeito - id_sofrimento_mental + descricao_sofrimento_mental (500 valores)
+💾 Lote 19 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 20/51 (10 pares)...
+✅ db_bisp_reds_reporting.tb_autuacao_procedimento_ocorrencia - natureza_ocorrencia_codigo + natureza_ocorrencia_descricao (489 valores)
+✅ db_bisp_reds_reporting.tb_avaliacao_risco_vd - relacao_vitima_agressor_codigo + relacao_vitima_agressor_descricao (11 valores)
+✅ db_bisp_reds_reporting.tb_avaliacao_risco_vd - resposta_codigo_tipo_parametro + resposta_descricao_tipo_parametro (2 valores)
+✅ db_bisp_reds_reporting.tb_busca_salvamento_ocorrencia - acao_bm_codigo + acao_bm_descricao (20 valores)
+✅ db_bisp_reds_reporting.tb_busca_salvamento_ocorrencia - tipo_entrada_codigo + tipo_entrada_descricao (7 valores)
+✅ db_bisp_reds_reporting.tb_busca_salvamento_ocorrencia - equipamento_codigo + equipamento_descricao (73 valores)
+✅ db_bisp_reds_reporting.tb_busca_salvamento_ocorrencia - meio_acesso_codigo + meio_acesso_descricao (5 valores)
+✅ db_bisp_reds_reporting.tb_busca_salvamento_ocorrencia - tipo_local_codigo + tipo_local_descricao (1 valores)
+✅ db_bisp_reds_reporting.tb_busca_salvamento_ocorrencia - produto_perigoso_codigo + produto_perigoso_descricao (0 valores)
+✅ db_bisp_reds_reporting.tb_busca_salvamento_ocorrencia - produto_perigoso_codigo + produto_perigoso_nome (0 valores)
+💾 Lote 20 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 21/51 (10 pares)...
+✅ db_bisp_reds_reporting.tb_busca_salvamento_terrestre_ocorrencia - tipo_costrucao_codigo + tipo_costrucao_descricao (1 valores)
+✅ db_bisp_reds_reporting.tb_busca_salvamento_terrestre_ocorrencia - especie_animal_codigo + especie_animal_descricao (50 valores)
+✅ db_bisp_reds_reporting.tb_busca_salvamento_terrestre_ocorrencia - especie_animal_condicao_codigo + especie_animal_condicao_descricao (3 valores)
+✅ db_bisp_reds_reporting.tb_busca_salvamento_terrestre_ocorrencia - classe_edificacao_codigo + classe_edificacao_descricao (2 valores)
+✅ db_bisp_reds_reporting.tb_cheque_cartao_ocorrencia - operadora_codigo + operadora_descricao (3 valores)
+✅ db_bisp_reds_reporting.tb_cheque_cartao_ocorrencia - banco_codigo + banco_descricao (246 valores)
+✅ db_bisp_reds_reporting.tb_cheque_cartao_ocorrencia - orgao_codigo + orgao_descricao (0 valores)
+✅ db_bisp_reds_reporting.tb_cheque_cartao_ocorrencia - situacao_codigo + situacao_descricao (11 valores)
+✅ db_bisp_reds_reporting.tb_cheque_cartao_ocorrencia - tipo_material_codigo + tipo_material_descricao (3 valores)
+✅ db_bisp_reds_reporting.tb_condutor_veiculo_ocorrencia - situacao_condutor_codigo + situacao_condutor_descricao (2 valores)
+💾 Lote 21 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 22/51 (10 pares)...
+✅ db_bisp_reds_reporting.tb_condutor_veiculo_ocorrencia - codigo_tipo_cnh + descricao_tipo_cnh (4 valores)
+✅ db_bisp_reds_reporting.tb_condutor_veiculo_ocorrencia - categoria_cnh_codigo + categoria_cnh_descricao (9 valores)
+✅ db_bisp_reds_reporting.tb_documento_pessoal_ocorrencia - orgao_codigo + orgao_descricao (0 valores)
+✅ db_bisp_reds_reporting.tb_documento_pessoal_ocorrencia - situacao_codigo + situacao_descricao (11 valores)
+✅ db_bisp_reds_reporting.tb_documento_pessoal_ocorrencia - tipo_documento_codigo + tipo_documento_descricao (18 valores)
+✅ db_bisp_reds_reporting.tb_documento_pessoal_ocorrencia - orgao_emissor_codigo + orgao_emissor_descricao (54 valores)
+✅ db_bisp_reds_reporting.tb_documento_pessoal_ocorrencia - codigo_formato_documento + descricao_formato_documento (2 valores)
+✅ db_bisp_reds_reporting.tb_envolvido_meio_imobilizacao_ocorrencia - meio_imobilizacao_codigo + meio_imobilizacao_descricao (8 valores)
+✅ db_bisp_reds_reporting.tb_envolvido_motivo_imobilizacao_ocorrencia - motivo_imobilizacao_codigo + motivo_imobilizacao_descricao (17 valores)
+✅ db_bisp_reds_reporting.tb_envolvido_ocorrencia - id_pais_origem + nome_pais_origem (174 valores)
+💾 Lote 22 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 23/51 (10 pares)...
+✅ db_bisp_reds_reporting.tb_envolvido_ocorrencia - tipo_documento_codigo + tipo_documento_descricao (10 valores)
+✅ db_bisp_reds_reporting.tb_envolvido_ocorrencia - tipo_logradouro_codigo + tipo_logradouro_descricao (244 valores)
+✅ db_bisp_reds_reporting.tb_envolvido_ocorrencia - natureza_ocorrencia_codigo + natureza_ocorrencia_descricao (500 valores)
+✅ db_bisp_reds_reporting.tb_envolvido_ocorrencia - id_endereco + descricao_endereco (500 valores)
+✅ db_bisp_reds_reporting.tb_envolvido_ocorrencia - logradouro_codigo + logradouro_nome (500 valores)
+✅ db_bisp_reds_reporting.tb_envolvido_ocorrencia - codigo_bairro + nome_bairro (500 valores)
+✅ db_bisp_reds_reporting.tb_envolvido_ocorrencia - codigo_municipio + nome_municipio (500 valores)
+✅ db_bisp_reds_reporting.tb_envolvido_ocorrencia - condicao_fisica_codigo + condicao_fisica_descricao (5 valores)
+✅ db_bisp_reds_reporting.tb_envolvido_ocorrencia - cor_pele_codigo + cor_pele_descricao (8 valores)
+✅ db_bisp_reds_reporting.tb_envolvido_ocorrencia - envolvimento_codigo + envolvimento_descricao (46 valores)
+💾 Lote 23 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 24/51 (10 pares)...
+✅ db_bisp_reds_reporting.tb_envolvido_ocorrencia - envolvimento_secundario_codigo + envolvimento_secundario_descricao (30 valores)
+✅ db_bisp_reds_reporting.tb_envolvido_ocorrencia - estado_civil_codigo + estado_civil_descricao (8 valores)
+✅ db_bisp_reds_reporting.tb_envolvido_ocorrencia - relacao_vitima_autor_codigo + relacao_vitima_autor_descricao (18 valores)
+✅ db_bisp_reds_reporting.tb_envolvido_ocorrencia - orgao_emissor_codigo + orgao_emissor_descricao (54 valores)
+✅ db_bisp_reds_reporting.tb_envolvido_ocorrencia - tipo_prisao_apreensao_codigo + tipo_prisao_apreensao_descricao (7 valores)
+✅ db_bisp_reds_reporting.tb_envolvido_ocorrencia - tipo_remocao_codigo + tipo_remocao_descricao (15 valores)
+✅ db_bisp_reds_reporting.tb_envolvido_ocorrencia - orgao_lotacao_policial_codigo + orgao_lotacao_policial_descricao (12 valores)
+✅ db_bisp_reds_reporting.tb_envolvido_ocorrencia - id_pais + nome_pais (110 valores)
+✅ db_bisp_reds_reporting.tb_envolvido_ocorrencia - id_indicador_uso_etilometro + descricao_indicador_uso_etilometro (500 valores)
+✅ db_bisp_reds_reporting.tb_envolvido_ocorrencia - orientacao_sexual_codigo + orientacao_sexual_descricao (5 valores)
+💾 Lote 24 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 25/51 (10 pares)...
+✅ db_bisp_reds_reporting.tb_envolvido_ocorrencia - motivo_ausencia_telmail_codigo + motivo_ausencia_telmail_descricao (2 valores)
+✅ db_bisp_reds_reporting.tb_envolvido_ocorrencia - etnia_indigena_codigo + etnia_indigena_descricao (18 valores)
+✅ db_bisp_reds_reporting.tb_envolvido_sintoma_embriaguez_ocorrencia - sintoma_embriaguez_codigo + sintoma_embriaguez_descricao (4 valores)
+✅ db_bisp_reds_reporting.tb_incendio_ocorrencia - id_subtipo_relatorio + descricao_subtipo_relatorio (4 valores)
+✅ db_bisp_reds_reporting.tb_incendio_ocorrencia - acao_bm_codigo + acao_bm_descricao (0 valores)
+✅ db_bisp_reds_reporting.tb_incendio_ocorrencia - classe_edificacao_codigo + classe_edificacao_descricao (0 valores)
+✅ db_bisp_reds_reporting.tb_incendio_ocorrencia - edificacao_tipo_construcao_codigo + edificacao_tipo_construcao_descricao (7 valores)
+✅ db_bisp_reds_reporting.tb_incendio_ocorrencia - edificacao_codigo_tipo_guarda_local + edificacao_descricao_tipo_guarda_local (3 valores)
+✅ db_bisp_reds_reporting.tb_incendio_ocorrencia - tipo_entrada_forcada_codigo + tipo_entrada_forcada_descricao (7 valores)
+✅ db_bisp_reds_reporting.tb_incendio_ocorrencia - equipamento_codigo + equipamento_descricao (0 valores)
+💾 Lote 25 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 26/51 (10 pares)...
+✅ db_bisp_reds_reporting.tb_incendio_ocorrencia - florestal_codigo_aclive_declive + florestal_descricao_aclive_declive (0 valores)
+✅ db_bisp_reds_reporting.tb_incendio_ocorrencia - florestal_codigo_tipo_combustivel + florestal_descricao_tipo_combustivel (0 valores)
+✅ db_bisp_reds_reporting.tb_incendio_ocorrencia - meio_acesso_codigo + meio_acesso_descricao (0 valores)
+✅ db_bisp_reds_reporting.tb_incendio_ocorrencia - meio_evacuacao_codigo + meio_evacuacao_descricao (0 valores)
+✅ db_bisp_reds_reporting.tb_incendio_ocorrencia - meio_evacuacao_tipo_codigo + meio_evacuacao_tipo_descricao (0 valores)
+✅ db_bisp_reds_reporting.tb_incendio_ocorrencia - meio_retardante_codigo + meio_retardante_descricao (0 valores)
+✅ db_bisp_reds_reporting.tb_incendio_ocorrencia - meio_pcip_codigo + meio_pcip_descricao (0 valores)
+✅ db_bisp_reds_reporting.tb_incendio_ocorrencia - meio_pcip_tipo_codigo + meio_pcip_tipo_descricao (0 valores)
+✅ db_bisp_reds_reporting.tb_incendio_ocorrencia - tipo_incendio_florestal_codigo + tipo_incendio_florestal_descricao (3 valores)
+✅ db_bisp_reds_reporting.tb_incendio_ocorrencia - tipo_vegetacao_codigo + tipo_vegetacao_descricao (11 valores)
+💾 Lote 26 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 27/51 (10 pares)...
+✅ db_bisp_reds_reporting.tb_incendio_ocorrencia - incendio_veiculo_codigo_tipo_combustivel + incendio_veiculo_descricao_tipo_combustivel (5 valores)
+✅ db_bisp_reds_reporting.tb_incendio_ocorrencia - incendio_veiculo_tipo_carga_codigo + incendio_veiculo_tipo_carga_descricao (2 valores)
+✅ db_bisp_reds_reporting.tb_incendio_ocorrencia - edificacao_cor_incendio_codigo + edificacao_cor_incendio_descricao (0 valores)
+✅ db_bisp_reds_reporting.tb_incendio_ocorrencia - edificacao_cor_incendio_codigo_tipo + edificacao_cor_incendio_descricao_tipo (0 valores)
+✅ db_bisp_reds_reporting.tb_item_vistoriado_ocorrencia - item_vistoria_grupo_codigo + item_vistoria_grupo_descricao (33 valores)
+✅ db_bisp_reds_reporting.tb_item_vistoriado_ocorrencia - item_vistoria_codigo + item_vistoria_descricao (204 valores)
+✅ db_bisp_reds_reporting.tb_material_apreendido_ocorrencia - tipo_objeto_codigo + tipo_objeto_descricao (269 valores)
+✅ db_bisp_reds_reporting.tb_material_apreendido_ocorrencia - situacao_codigo + situacao_descricao (11 valores)
+✅ db_bisp_reds_reporting.tb_material_apreendido_ocorrencia - orgao_codigo + orgao_descricao (0 valores)
+✅ db_bisp_reds_reporting.tb_material_apreendido_ocorrencia - motivo_apreencao_codigo + motivo_apreencao_descricao (8 valores)
+💾 Lote 27 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 28/51 (10 pares)...
+✅ db_bisp_reds_reporting.tb_material_apreendido_ocorrencia - codigo_categoria + descricao_categoria (3 valores)
+✅ db_bisp_reds_reporting.tb_ocorrencia - digitador_id_orgao + digitador_nome_orgao (7 valores)
+✅ db_bisp_reds_reporting.tb_ocorrencia - codigo_operacao + nome_operacao (0 valores)
+✅ db_bisp_reds_reporting.tb_ocorrencia - operacao_codigo + operacao_descricao (244 valores)
+✅ db_bisp_reds_reporting.tb_ocorrencia - natureza_codigo + natureza_descricao (500 valores)
+✅ db_bisp_reds_reporting.tb_ocorrencia - complemento_natureza_codigo + complemento_natureza_descricao (275 valores)
+✅ db_bisp_reds_reporting.tb_ocorrencia - logradouro_codigo + logradouro_nome (500 valores)
+✅ db_bisp_reds_reporting.tb_ocorrencia - tipo_logradouro_codigo + tipo_logradouro_descricao (232 valores)
+✅ db_bisp_reds_reporting.tb_ocorrencia - codigo_bairro + nome_bairro (500 valores)
+✅ db_bisp_reds_reporting.tb_ocorrencia - codigo_municipio + nome_municipio (500 valores)
+💾 Lote 28 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 29/51 (10 pares)...
+✅ db_bisp_reds_reporting.tb_ocorrencia - logradouro2_codigo + logradouro2_nome (500 valores)
+✅ db_bisp_reds_reporting.tb_ocorrencia - tipo_logradouro2_codigo + tipo_logradouro2_descricao (73 valores)
+✅ db_bisp_reds_reporting.tb_ocorrencia - tipo_local_codigo + tipo_local_descricao (8 valores)
+✅ db_bisp_reds_reporting.tb_ocorrencia - local_mediato_codigo + local_mediato_descricao (0 valores)
+✅ db_bisp_reds_reporting.tb_ocorrencia - local_imediato_codigo + local_imediato_descricao (187 valores)
+✅ db_bisp_reds_reporting.tb_ocorrencia - instrumento_utilizado_codigo + instrumento_utilizado_descricao (57 valores)
+✅ db_bisp_reds_reporting.tb_ocorrencia - responsavel_apreensao_id_orgao + responsavel_apreensao_nome_orgao (8 valores)
+✅ db_bisp_reds_reporting.tb_ocorrencia - relator_id_orgao + relator_nome_orgao (7 valores)
+✅ db_bisp_reds_reporting.tb_ocorrencia - codigo_tipo_registro + descricao_tipo_registro (2 valores)
+✅ db_bisp_reds_reporting.tb_ocorrencia - natureza_diao_codigo + natureza_diao_descricao (0 valores)
+💾 Lote 29 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 30/51 (10 pares)...
+✅ db_bisp_reds_reporting.tb_ocorrencia - origem_comunicacao_codigo + origem_comunicacao_descricao (9 valores)
+✅ db_bisp_reds_reporting.tb_ocorrencia - tipo_interceptacao_codigo + tipo_interceptacao_descricao (0 valores)
+✅ db_bisp_reds_reporting.tb_ocorrencia - pais_codigo + pais_nome (56 valores)
+✅ db_bisp_reds_reporting.tb_ocorrencia - codigo_localizacao_ocorrencia + descricao_localizacao_ocorrencia (2 valores)
+✅ db_bisp_reds_reporting.tb_ocorrencia - orgao_solicitante_codigo + orgao_solicitante_descricao (73 valores)
+✅ db_bisp_reds_reporting.tb_ocorrencia - perito_id_perito + perito_nome_perito (500 valores)
+✅ db_bisp_reds_reporting.tb_placa_ocorrencia - orgao_codigo + orgao_descricao (0 valores)
+✅ db_bisp_reds_reporting.tb_placa_ocorrencia - motivo_aprensao_codigo + motivo_aprensao_descricao (6 valores)
+✅ db_bisp_reds_reporting.tb_placa_ocorrencia - situacao_codigo + situacao_descricao (10 valores)
+✅ db_bisp_reds_reporting.tb_placa_ocorrencia - codigo_municipio + nome_municipio (0 valores)
+💾 Lote 30 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 31/51 (10 pares)...
+✅ db_bisp_reds_reporting.tb_prevencao_vistoria_ocorrencia - resultado_prevencao_codigo + resultado_prevencao_descricao (20 valores)
+✅ db_bisp_reds_reporting.tb_prevencao_vistoria_ocorrencia - classificacao_edificacao_codigo + classificacao_edificacao_descricao (4 valores)
+✅ db_bisp_reds_reporting.tb_prevencao_vistoria_ocorrencia - classificacao_ito21_codigo + classificacao_ito21_descricao (3 valores)
+✅ db_bisp_reds_reporting.tb_prevencao_vistoria_ocorrencia - ocupacao_divisao_codigo + ocupacao_divisao_descricao (339 valores)
+✅ db_bisp_reds_reporting.tb_raph_lesao_ocorrencia - local_lesao_codigo + local_lesao_descricao (11 valores)
+✅ db_bisp_reds_reporting.tb_raph_lesao_ocorrencia - tipo_lesao_codigo + tipo_lesao_descricao (6 valores)
+✅ db_bisp_reds_reporting.tb_raph_material_ocorrencia - tipo_material_atendimento_codigo + tipo_material_atendimento_descricao (0 valores)
+✅ db_bisp_reds_reporting.tb_raph_procedimento_efetuado_ocorrencia - tipo_procedimento_codigo + tipo_procedimento_descricao (0 valores)
+✅ db_bisp_reds_reporting.tb_raph_quadro_clinico_ocorrencia - quadro_clinico_codigo + quadro_clinico_descricao (0 valores)
+✅ db_bisp_reds_reporting.tb_raph_tipo_veiculo_ocorrencia - tipo_veiculo_codigo + tipo_veiculo_descricao (0 valores)
+💾 Lote 31 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 32/51 (10 pares)...
+✅ db_bisp_reds_reporting.tb_raph_trauma_ocorrencia - tipo_trauma_codigo + tipo_trauma_descricao (1 valores)
+✅ db_bisp_reds_reporting.tb_raph_trauma_ocorrencia - especie_animal_codigo + especie_animal_descricao (38 valores)
+✅ db_bisp_reds_reporting.tb_rat_produtividade_ocorrencia - indicador_codigo + indicador_descricao (500 valores)
+✅ db_bisp_reds_reporting.tb_recibo - usuario_responsavel_id + usuario_responsavel_nome (500 valores)
+✅ db_bisp_reds_reporting.tb_recibo - orgao_id + orgao_descricao (47 valores)
+✅ db_bisp_reds_reporting.tb_recibo - orgao_codigo + orgao_descricao (47 valores)
+✅ db_bisp_reds_reporting.tb_tco_assinatura_ocorrencia - id_orgao + descricao_orgao (5 valores)
+✅ db_bisp_reds_reporting.tb_tco_assinatura_ocorrencia - codigo_orgao + descricao_orgao (5 valores)
+✅ db_bisp_reds_reporting.tb_tco_ocorrencia - id_tipo_tco + descricao_tipo_tco (5 valores)
+✅ db_bisp_reds_reporting.tb_tco_ocorrencia - codigo_tipo_tco + descricao_tipo_tco (3 valores)
+💾 Lote 32 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 33/51 (10 pares)...
+✅ db_bisp_reds_reporting.tb_tco_ocorrencia - codigo_comarca + nome_comarca (298 valores)
+✅ db_bisp_reds_reporting.tb_veiculo_acidente_condicao_via_ocorrencia - condicao_via_codigo + condicao_via_descricao (7 valores)
+✅ db_bisp_reds_reporting.tb_veiculo_acidente_natureza_movimento_ocorrencia - natureza_movimento_codigo + natureza_movimento_descricao (15 valores)
+✅ db_bisp_reds_reporting.tb_veiculo_acidente_obra_arte_ocorrencia - obra_arte_codigo + obra_arte_descricao (6 valores)
+✅ db_bisp_reds_reporting.tb_veiculo_acidente_ocorrencia - tipo_carga_transportada_codigo + tipo_carga_transportada_descricao (3 valores)
+✅ db_bisp_reds_reporting.tb_veiculo_acidente_ocorrencia - tipo_via_codigo + tipo_via_descricao (3 valores)
+✅ db_bisp_reds_reporting.tb_veiculo_acidente_ocorrencia - largura_pista_codigo + largura_pista_descricao (2 valores)
+✅ db_bisp_reds_reporting.tb_veiculo_acidente_ocorrencia - relevo_pista_codigo + relevo_pista_descricao (5 valores)
+✅ db_bisp_reds_reporting.tb_veiculo_acidente_ocorrencia - tipo_pavimento_codigo + tipo_pavimento_descricao (6 valores)
+✅ db_bisp_reds_reporting.tb_veiculo_acidente_ocorrencia - faixa_via_codigo + faixa_via_descricao (5 valores)
+💾 Lote 33 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 34/51 (10 pares)...
+✅ db_bisp_reds_reporting.tb_veiculo_acidente_ocorrencia - tipo_tracado_codigo + tipo_tracado_descricao (3 valores)
+✅ db_bisp_reds_reporting.tb_veiculo_acidente_ocorrencia - condicao_codigo + condicao_descricao (3 valores)
+✅ db_bisp_reds_reporting.tb_veiculo_acidente_ocorrencia - caracteristica_via_codigo + caracteristica_via_descricao (7 valores)
+✅ db_bisp_reds_reporting.tb_veiculo_acidente_ocorrencia - mao_direcao_codigo + mao_direcao_descricao (2 valores)
+✅ db_bisp_reds_reporting.tb_veiculo_acidente_ocorrencia - condicao_tempo_codigo + condicao_tempo_descricao (5 valores)
+✅ db_bisp_reds_reporting.tb_veiculo_acidente_ocorrencia - condicao_sinalizacao_codigo + condicao_sinalizacao_descricao (4 valores)
+✅ db_bisp_reds_reporting.tb_veiculo_acidente_ocorrencia - condicao_obra_codigo + condicao_obra_descricao (4 valores)
+✅ db_bisp_reds_reporting.tb_veiculo_acidente_ocorrencia - marca_longitudinal_codigo + marca_longitudinal_descricao (3 valores)
+✅ db_bisp_reds_reporting.tb_veiculo_acidente_ocorrencia - controle_trafego_codigo + controle_trafego_descricao (8 valores)
+✅ db_bisp_reds_reporting.tb_veiculo_acidente_ponto_impacto_ocorrencia - ponto_impacto_codigo + ponto_impacto_descricao (14 valores)
+💾 Lote 34 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 35/51 (10 pares)...
+✅ db_bisp_reds_reporting.tb_veiculo_acidente_sinalizacao_ocorrencia - sinalizacao_codigo + sinalizacao_descricao (11 valores)
+✅ db_bisp_reds_reporting.tb_veiculo_avaria_ocorrencia - avaria_codigo + avaria_descricao (128 valores)
+✅ db_bisp_reds_reporting.tb_veiculo_classificacao_dano_ocorrencia - motivo_ausencia_foto_codigo + motivo_ausencia_foto_descricao (0 valores)
+✅ db_bisp_reds_reporting.tb_veiculo_disp_seguranca_ocorrencia - dispositivo_seguranca_codigo + dispositivo_seguranca_descricao (8 valores)
+✅ db_bisp_reds_reporting.tb_veiculo_ocorrencia - orgao_codigo + orgao_descricao (0 valores)
+✅ db_bisp_reds_reporting.tb_veiculo_ocorrencia - situacao_placa_codigo + situacao_placa_descricao (21 valores)
+✅ db_bisp_reds_reporting.tb_veiculo_ocorrencia - motivo_apreensao_codigo + motivo_apreensao_descricao (6 valores)
+✅ db_bisp_reds_reporting.tb_veiculo_ocorrencia - marca_modelo_codigo + marca_modelo_descricao (500 valores)
+✅ db_bisp_reds_reporting.tb_veiculo_ocorrencia - cor_veiculo_codigo + cor_veiculo_descricao (16 valores)
+✅ db_bisp_reds_reporting.tb_veiculo_ocorrencia - tipo_veiculo_codigo + tipo_veiculo_descricao (31 valores)
+💾 Lote 35 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 36/51 (10 pares)...
+✅ db_bisp_reds_reporting.tb_veiculo_ocorrencia - categoria_veiculo_codigo + categoria_veiculo_descricao (7 valores)
+✅ db_bisp_reds_reporting.tb_veiculo_ocorrencia - especie_veiculo_codigo + especie_veiculo_descricao (7 valores)
+✅ db_bisp_reds_reporting.tb_veiculo_ocorrencia - codigo_municipio + nome_municipio (500 valores)
+✅ db_bisp_reds_reporting.tb_veiculo_ocorrencia - id_pais + nome_pais (0 valores)
+✅ db_bisp_reds_reporting.tb_veiculo_ocorrencia - motivo_ausencia_foto_codigo + motivo_ausencia_foto_descricao (6 valores)
+✅ db_bisp_reds_reporting.tb_veiculo_superficie_pista_ocorrencia - superficie_pista_codigo + superficie_pista_descricao (5 valores)
+✅ db_bisp_reds_reporting.tb_viatura_ocorrencia - codigo_tipo_viatura + descricao_tipo_viatura (3 valores)
+✅ db_bisp_reds_reporting.tb_viatura_ocorrencia - orgao_codigo + orgao_descricao (26 valores)
+✅ db_bisp_reds_reporting.tb_viatura_ocorrencia - problema_atendimento_codigo + problema_atendimento_descricao (7 valores)
+✅ db_bisp_reds_reporting.tb_viatura_ocorrencia - natureza_secundaria_codigo + natureza_secundaria_descricao (500 valores)
+💾 Lote 36 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 37/51 (10 pares)...
+✅ db_bisp_reds_reporting.tb_vistoria_veiculo_ocorrencia - situacao_combustivel_codigo + situacao_combustivel_descricao (5 valores)
+✅ db_bisp_reds_reporting.vw_arma_ocorrencia_s - orgao_codigo + orgao_descricao (0 valores)
+✅ db_bisp_reds_reporting.vw_arma_ocorrencia_s - situacao_codigo + situacao_descricao (9 valores)
+✅ db_bisp_reds_reporting.vw_arma_ocorrencia_s - marca_arma_codigo + marca_arma_descricao (31 valores)
+✅ db_bisp_reds_reporting.vw_arma_ocorrencia_s - tipo_arma_codigo + tipo_arma_descricao (16 valores)
+✅ db_bisp_reds_reporting.vw_arma_ocorrencia_s - calibre_arma_codigo + calibre_arma_descricao (26 valores)
+✅ db_bisp_reds_reporting.vw_atendimento_pre_hospitalar_ocorrencia_s - codigo_tipo_lesao + descricao_tipo_lesao (2 valores)
+✅ db_bisp_reds_reporting.vw_atendimento_pre_hospitalar_ocorrencia_s - codigo_tipo_queimadura + descricao_tipo_queimadura (3 valores)
+✅ db_bisp_reds_reporting.vw_atendimento_pre_hospitalar_ocorrencia_s - destino_codigo + destino_descricao (6 valores)
+✅ db_bisp_reds_reporting.vw_atendimento_pre_hospitalar_ocorrencia_s - local_destino_codigo + local_destino_descricao (14 valores)
+💾 Lote 37 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 38/51 (10 pares)...
+✅ db_bisp_reds_reporting.vw_atendimento_pre_hospitalar_ocorrencia_s - posicao_no_veiculo_codigo + posicao_no_veiculo_descricao (0 valores)
+✅ db_bisp_reds_reporting.vw_atendimento_pre_hospitalar_ocorrencia_s - localizacao_vitima_codigo + localizacao_vitima_descricao (0 valores)
+✅ db_bisp_reds_reporting.vw_atendimento_pre_hospitalar_ocorrencia_s - evento_relacionado_codigo + evento_relacionado_descricao (3 valores)
+✅ db_bisp_reds_reporting.vw_atendimento_pre_hospitalar_ocorrencia_s - orgao_codigo + orgao_descricao (0 valores)
+✅ db_bisp_reds_reporting.vw_avaliacao_risco_vd_s - relacao_vitima_agressor_codigo + relacao_vitima_agressor_descricao (11 valores)
+✅ db_bisp_reds_reporting.vw_avaliacao_risco_vd_s - resposta_codigo_tipo_parametro + resposta_descricao_tipo_parametro (2 valores)
+✅ db_bisp_reds_reporting.vw_envolvido_ocorrencia_s - id_pais_origem + nome_pais_origem (149 valores)
+✅ db_bisp_reds_reporting.vw_envolvido_ocorrencia_s - tipo_documento_codigo + tipo_documento_descricao (10 valores)
+✅ db_bisp_reds_reporting.vw_envolvido_ocorrencia_s - tipo_logradouro_codigo + tipo_logradouro_descricao (226 valores)
+✅ db_bisp_reds_reporting.vw_envolvido_ocorrencia_s - natureza_ocorrencia_codigo + natureza_ocorrencia_descricao (500 valores)
+💾 Lote 38 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 39/51 (10 pares)...
+✅ db_bisp_reds_reporting.vw_envolvido_ocorrencia_s - id_endereco + descricao_endereco (500 valores)
+✅ db_bisp_reds_reporting.vw_envolvido_ocorrencia_s - logradouro_codigo + logradouro_nome (500 valores)
+✅ db_bisp_reds_reporting.vw_envolvido_ocorrencia_s - codigo_bairro + nome_bairro (500 valores)
+✅ db_bisp_reds_reporting.vw_envolvido_ocorrencia_s - codigo_municipio + nome_municipio (500 valores)
+✅ db_bisp_reds_reporting.vw_envolvido_ocorrencia_s - condicao_fisica_codigo + condicao_fisica_descricao (5 valores)
+✅ db_bisp_reds_reporting.vw_envolvido_ocorrencia_s - cor_pele_codigo + cor_pele_descricao (8 valores)
+✅ db_bisp_reds_reporting.vw_envolvido_ocorrencia_s - envolvimento_codigo + envolvimento_descricao (43 valores)
+✅ db_bisp_reds_reporting.vw_envolvido_ocorrencia_s - estado_civil_codigo + estado_civil_descricao (8 valores)
+✅ db_bisp_reds_reporting.vw_envolvido_ocorrencia_s - relacao_vitima_autor_codigo + relacao_vitima_autor_descricao (18 valores)
+✅ db_bisp_reds_reporting.vw_envolvido_ocorrencia_s - orgao_emissor_codigo + orgao_emissor_descricao (54 valores)
+💾 Lote 39 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 40/51 (10 pares)...
+✅ db_bisp_reds_reporting.vw_envolvido_ocorrencia_s - tipo_prisao_apreensao_codigo + tipo_prisao_apreensao_descricao (7 valores)
+✅ db_bisp_reds_reporting.vw_envolvido_ocorrencia_s - tipo_remocao_codigo + tipo_remocao_descricao (15 valores)
+✅ db_bisp_reds_reporting.vw_envolvido_ocorrencia_s - orgao_lotacao_policial_codigo + orgao_lotacao_policial_descricao (12 valores)
+✅ db_bisp_reds_reporting.vw_envolvido_ocorrencia_s - id_pais + nome_pais (86 valores)
+✅ db_bisp_reds_reporting.vw_envolvido_ocorrencia_s - id_indicador_uso_etilometro + descricao_indicador_uso_etilometro (500 valores)
+✅ db_bisp_reds_reporting.vw_envolvido_ocorrencia_s - orientacao_sexual_codigo + orientacao_sexual_descricao (5 valores)
+✅ db_bisp_reds_reporting.vw_envolvido_ocorrencia_s - motivo_ausencia_telmail_codigo + motivo_ausencia_telmail_descricao (2 valores)
+✅ db_bisp_reds_reporting.vw_incendio_ocorrencia_s - id_subtipo_relatorio + descricao_subtipo_relatorio (4 valores)
+✅ db_bisp_reds_reporting.vw_incendio_ocorrencia_s - acao_bm_codigo + acao_bm_descricao (0 valores)
+✅ db_bisp_reds_reporting.vw_incendio_ocorrencia_s - classe_edificacao_codigo + classe_edificacao_descricao (0 valores)
+💾 Lote 40 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 41/51 (10 pares)...
+✅ db_bisp_reds_reporting.vw_incendio_ocorrencia_s - edificacao_tipo_construcao_codigo + edificacao_tipo_construcao_descricao (7 valores)
+✅ db_bisp_reds_reporting.vw_incendio_ocorrencia_s - edificacao_codigo_tipo_guarda_local + edificacao_descricao_tipo_guarda_local (3 valores)
+✅ db_bisp_reds_reporting.vw_incendio_ocorrencia_s - tipo_entrada_forcada_codigo + tipo_entrada_forcada_descricao (7 valores)
+✅ db_bisp_reds_reporting.vw_incendio_ocorrencia_s - equipamento_codigo + equipamento_descricao (0 valores)
+✅ db_bisp_reds_reporting.vw_incendio_ocorrencia_s - florestal_codigo_aclive_declive + florestal_descricao_aclive_declive (0 valores)
+✅ db_bisp_reds_reporting.vw_incendio_ocorrencia_s - florestal_codigo_tipo_combustivel + florestal_descricao_tipo_combustivel (0 valores)
+✅ db_bisp_reds_reporting.vw_incendio_ocorrencia_s - meio_acesso_codigo + meio_acesso_descricao (0 valores)
+✅ db_bisp_reds_reporting.vw_incendio_ocorrencia_s - meio_evacuacao_codigo + meio_evacuacao_descricao (0 valores)
+✅ db_bisp_reds_reporting.vw_incendio_ocorrencia_s - meio_evacuacao_tipo_codigo + meio_evacuacao_tipo_descricao (0 valores)
+✅ db_bisp_reds_reporting.vw_incendio_ocorrencia_s - meio_retardante_codigo + meio_retardante_descricao (0 valores)
+💾 Lote 41 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 42/51 (10 pares)...
+✅ db_bisp_reds_reporting.vw_incendio_ocorrencia_s - meio_pcip_codigo + meio_pcip_descricao (0 valores)
+✅ db_bisp_reds_reporting.vw_incendio_ocorrencia_s - meio_pcip_tipo_codigo + meio_pcip_tipo_descricao (0 valores)
+✅ db_bisp_reds_reporting.vw_incendio_ocorrencia_s - tipo_incendio_florestal_codigo + tipo_incendio_florestal_descricao (3 valores)
+✅ db_bisp_reds_reporting.vw_incendio_ocorrencia_s - tipo_vegetacao_codigo + tipo_vegetacao_descricao (11 valores)
+✅ db_bisp_reds_reporting.vw_incendio_ocorrencia_s - incendio_veiculo_codigo_tipo_combustivel + incendio_veiculo_descricao_tipo_combustivel (5 valores)
+✅ db_bisp_reds_reporting.vw_incendio_ocorrencia_s - incendio_veiculo_tipo_carga_codigo + incendio_veiculo_tipo_carga_descricao (2 valores)
+✅ db_bisp_reds_reporting.vw_incendio_ocorrencia_s - edificacao_cor_incendio_codigo + edificacao_cor_incendio_descricao (0 valores)
+✅ db_bisp_reds_reporting.vw_incendio_ocorrencia_s - edificacao_cor_incendio_codigo_tipo + edificacao_cor_incendio_descricao_tipo (0 valores)
+✅ db_bisp_reds_reporting.vw_material_apreendido_ocorrencia_s - tipo_objeto_codigo + tipo_objeto_descricao (266 valores)
+✅ db_bisp_reds_reporting.vw_material_apreendido_ocorrencia_s - situacao_codigo + situacao_descricao (11 valores)
+💾 Lote 42 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 43/51 (10 pares)...
+✅ db_bisp_reds_reporting.vw_material_apreendido_ocorrencia_s - orgao_codigo + orgao_descricao (0 valores)
+✅ db_bisp_reds_reporting.vw_material_apreendido_ocorrencia_s - motivo_apreencao_codigo + motivo_apreencao_descricao (7 valores)
+✅ db_bisp_reds_reporting.vw_material_apreendido_ocorrencia_s - codigo_categoria + descricao_categoria (3 valores)
+✅ db_bisp_reds_reporting.vw_ocorrencia_s - digitador_id_orgao + digitador_nome_orgao (7 valores)
+✅ db_bisp_reds_reporting.vw_ocorrencia_s - operacao_codigo + operacao_descricao (244 valores)
+✅ db_bisp_reds_reporting.vw_ocorrencia_s - natureza_codigo + natureza_descricao (500 valores)
+✅ db_bisp_reds_reporting.vw_ocorrencia_s - natureza_secundaria1_codigo + natureza_secundaria1_descricao (500 valores)
+✅ db_bisp_reds_reporting.vw_ocorrencia_s - natureza_secundaria2_codigo + natureza_secundaria2_descricao (500 valores)
+✅ db_bisp_reds_reporting.vw_ocorrencia_s - natureza_secundaria3_codigo + natureza_secundaria3_descricao (500 valores)
+✅ db_bisp_reds_reporting.vw_ocorrencia_s - complemento_natureza_codigo + complemento_natureza_descricao (275 valores)
+💾 Lote 43 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 44/51 (10 pares)...
+✅ db_bisp_reds_reporting.vw_ocorrencia_s - logradouro_codigo + logradouro_nome (500 valores)
+✅ db_bisp_reds_reporting.vw_ocorrencia_s - tipo_logradouro_codigo + tipo_logradouro_descricao (231 valores)
+✅ db_bisp_reds_reporting.vw_ocorrencia_s - codigo_bairro + nome_bairro (500 valores)
+✅ db_bisp_reds_reporting.vw_ocorrencia_s - codigo_municipio + nome_municipio (500 valores)
+✅ db_bisp_reds_reporting.vw_ocorrencia_s - logradouro2_codigo + logradouro2_nome (500 valores)
+✅ db_bisp_reds_reporting.vw_ocorrencia_s - tipo_logradouro2_codigo + tipo_logradouro2_descricao (73 valores)
+✅ db_bisp_reds_reporting.vw_ocorrencia_s - tipo_local_codigo + tipo_local_descricao (8 valores)
+✅ db_bisp_reds_reporting.vw_ocorrencia_s - local_mediato_codigo + local_mediato_descricao (0 valores)
+✅ db_bisp_reds_reporting.vw_ocorrencia_s - local_imediato_codigo + local_imediato_descricao (187 valores)
+✅ db_bisp_reds_reporting.vw_ocorrencia_s - instrumento_utilizado_codigo + instrumento_utilizado_descricao (57 valores)
+💾 Lote 44 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 45/51 (10 pares)...
+✅ db_bisp_reds_reporting.vw_ocorrencia_s - responsavel_apreensao_id_orgao + responsavel_apreensao_nome_orgao (8 valores)
+✅ db_bisp_reds_reporting.vw_ocorrencia_s - relator_id_orgao + relator_nome_orgao (7 valores)
+✅ db_bisp_reds_reporting.vw_ocorrencia_s - codigo_tipo_registro + descricao_tipo_registro (2 valores)
+✅ db_bisp_reds_reporting.vw_ocorrencia_s - natureza_diao_codigo + natureza_diao_descricao (0 valores)
+✅ db_bisp_reds_reporting.vw_ocorrencia_s - origem_comunicacao_codigo + origem_comunicacao_descricao (9 valores)
+✅ db_bisp_reds_reporting.vw_ocorrencia_s - tipo_interceptacao_codigo + tipo_interceptacao_descricao (0 valores)
+✅ db_bisp_reds_reporting.vw_ocorrencia_s - pais_codigo + pais_nome (56 valores)
+✅ db_bisp_reds_reporting.vw_ocorrencia_s - codigo_localizacao_ocorrencia + descricao_localizacao_ocorrencia (2 valores)
+✅ db_bisp_reds_reporting.vw_ocorrencia_s - orgao_solicitante_codigo + orgao_solicitante_descricao (73 valores)
+✅ db_bisp_reds_reporting.vw_ocorrencia_s - perito_id_perito + perito_nome_perito (500 valores)
+💾 Lote 45 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 46/51 (10 pares)...
+✅ db_bisp_reds_reporting.vw_rat_produtividade_ocorrencia_s - indicador_codigo + indicador_descricao (500 valores)
+✅ db_bisp_reds_reporting.vw_recibo_s - usuario_responsavel_id + usuario_responsavel_nome (500 valores)
+✅ db_bisp_reds_reporting.vw_recibo_s - orgao_id + orgao_descricao (47 valores)
+✅ db_bisp_reds_reporting.vw_recibo_s - orgao_codigo + orgao_descricao (47 valores)
+✅ db_bisp_reds_reporting.vw_veiculo_acidente_ocorrencia_s - tipo_carga_transportada_codigo + tipo_carga_transportada_descricao (3 valores)
+✅ db_bisp_reds_reporting.vw_veiculo_acidente_ocorrencia_s - tipo_via_codigo + tipo_via_descricao (3 valores)
+✅ db_bisp_reds_reporting.vw_veiculo_acidente_ocorrencia_s - largura_pista_codigo + largura_pista_descricao (2 valores)
+✅ db_bisp_reds_reporting.vw_veiculo_acidente_ocorrencia_s - relevo_pista_codigo + relevo_pista_descricao (5 valores)
+✅ db_bisp_reds_reporting.vw_veiculo_acidente_ocorrencia_s - tipo_pavimento_codigo + tipo_pavimento_descricao (6 valores)
+✅ db_bisp_reds_reporting.vw_veiculo_acidente_ocorrencia_s - faixa_via_codigo + faixa_via_descricao (5 valores)
+💾 Lote 46 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 47/51 (10 pares)...
+✅ db_bisp_reds_reporting.vw_veiculo_acidente_ocorrencia_s - tipo_tracado_codigo + tipo_tracado_descricao (3 valores)
+✅ db_bisp_reds_reporting.vw_veiculo_acidente_ocorrencia_s - condicao_codigo + condicao_descricao (3 valores)
+✅ db_bisp_reds_reporting.vw_veiculo_acidente_ocorrencia_s - caracteristica_via_codigo + caracteristica_via_descricao (7 valores)
+✅ db_bisp_reds_reporting.vw_veiculo_acidente_ocorrencia_s - mao_direcao_codigo + mao_direcao_descricao (2 valores)
+✅ db_bisp_reds_reporting.vw_veiculo_acidente_ocorrencia_s - condicao_tempo_codigo + condicao_tempo_descricao (5 valores)
+✅ db_bisp_reds_reporting.vw_veiculo_acidente_ocorrencia_s - condicao_sinalizacao_codigo + condicao_sinalizacao_descricao (4 valores)
+✅ db_bisp_reds_reporting.vw_veiculo_acidente_ocorrencia_s - condicao_obra_codigo + condicao_obra_descricao (4 valores)
+✅ db_bisp_reds_reporting.vw_veiculo_acidente_ocorrencia_s - marca_longitudinal_codigo + marca_longitudinal_descricao (3 valores)
+✅ db_bisp_reds_reporting.vw_veiculo_acidente_ocorrencia_s - controle_trafego_codigo + controle_trafego_descricao (8 valores)
+✅ db_bisp_reds_reporting.vw_veiculo_ocorrencia_s - orgao_codigo + orgao_descricao (0 valores)
+💾 Lote 47 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 48/51 (10 pares)...
+✅ db_bisp_reds_reporting.vw_veiculo_ocorrencia_s - situacao_placa_codigo + situacao_placa_descricao (21 valores)
+✅ db_bisp_reds_reporting.vw_veiculo_ocorrencia_s - motivo_apreensao_codigo + motivo_apreensao_descricao (6 valores)
+✅ db_bisp_reds_reporting.vw_veiculo_ocorrencia_s - marca_modelo_codigo + marca_modelo_descricao (500 valores)
+✅ db_bisp_reds_reporting.vw_veiculo_ocorrencia_s - cor_veiculo_codigo + cor_veiculo_descricao (16 valores)
+✅ db_bisp_reds_reporting.vw_veiculo_ocorrencia_s - tipo_veiculo_codigo + tipo_veiculo_descricao (31 valores)
+✅ db_bisp_reds_reporting.vw_veiculo_ocorrencia_s - categoria_veiculo_codigo + categoria_veiculo_descricao (7 valores)
+✅ db_bisp_reds_reporting.vw_veiculo_ocorrencia_s - especie_veiculo_codigo + especie_veiculo_descricao (7 valores)
+✅ db_bisp_reds_reporting.vw_veiculo_ocorrencia_s - codigo_municipio + nome_municipio (500 valores)
+✅ db_bisp_reds_reporting.vw_veiculo_ocorrencia_s - id_pais + nome_pais (0 valores)
+✅ db_bisp_reds_reporting.vw_veiculo_ocorrencia_s - motivo_ausencia_foto_codigo + motivo_ausencia_foto_descricao (6 valores)
+💾 Lote 48 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 49/51 (10 pares)...
+✅ db_bisp_shared.tb_ibge_setores_geodata - situacao_codigo + situacao_descricao (8 valores)
+✅ db_bisp_shared.tb_ibge_setores_geodata - tipo_codigo + tipo_descricao (10 valores)
+✅ db_bisp_shared.tb_ibge_setores_geodata - regiao_codigo + regiao_nome (1 valores)
+✅ db_bisp_shared.tb_ibge_setores_geodata - municipio_codigo + municipio_nome (500 valores)
+✅ db_bisp_shared.tb_ibge_setores_geodata - distrito_codigo + distrito_nome (500 valores)
+✅ db_bisp_shared.tb_ibge_setores_geodata - subdistrito_codigo + subdistrito_nome (101 valores)
+✅ db_bisp_shared.tb_ibge_setores_geodata - bairro_codigo + bairro_nome (500 valores)
+✅ db_bisp_shared.tb_ibge_setores_geodata - nucleo_urbano_codigo + nucleo_urbano_nome (500 valores)
+✅ db_bisp_shared.tb_ibge_setores_geodata - aglomerado_codigo + aglomerado_nome (500 valores)
+✅ db_bisp_shared.tb_ibge_setores_geodata - regiao_geografica_intermediaria_codigo + regiao_geografica_intermediaria_nome (13 valores)
+💾 Lote 49 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 50/51 (10 pares)...
+✅ db_bisp_shared.tb_ibge_setores_geodata - regiao_geografica_imediata_codigo + regiao_geografica_imediata_nome (70 valores)
+✅ db_bisp_shared.tb_ibge_setores_geodata - concentracao_urbana_codigo + concentracao_urbana_nome (26 valores)
+✅ db_bisp_sigpri_reporting.tb_admissao - codigo_motivo_admissao + descricao_motivo_admissao (64 valores)
+✅ db_bisp_sigpri_reporting.tb_admissao - codigo_tipo_admissao + descricao_tipo_admissao (11 valores)
+✅ db_bisp_sigpri_reporting.tb_admissao - codigo_motivo_do_desligamento + descricao_motivo_do_desligamento (138 valores)
+✅ db_bisp_sigpri_reporting.tb_admissao - codigo_destino_preso + nome_destino_preso (7 valores)
+✅ db_bisp_sigpri_reporting.tb_admissao_transito - codigo_motivo_do_desligamento + descricao_motivo_do_desligamento (64 valores)
+✅ db_bisp_sigpri_reporting.tb_admissao_transito - codigo_destino_preso + nome_destino_preso (6 valores)
+✅ db_bisp_sigpri_reporting.tb_monitoramento_eletronico - codigo_tipo_termino_monitoramento + descricao_tipo_termino_monitoramento (2 valores)
+✅ db_bisp_sigpri_reporting.tb_monitoramento_eletronico - id_motivo_do_desligamento + descricao_motivo_do_desligamento (14 valores)
+💾 Lote 50 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🚀 Executando lote 51/51 (4 pares)...
+✅ db_bisp_sigpri_reporting.tb_movimentacao_individuo - id_estrutura_fisica + nome_estrutura_fisica (500 valores)
+✅ db_bisp_sigpri_reporting.tb_outra_prisao - codigo_tipo_prisao_externa + descricao_tipo_prisao_externa (4 valores)
+✅ db_bisp_sip_reporting.vw_individuo_sip - codigo_profissao + descricao_profissao (500 valores)
+✅ db_bisp_smab_reporting.tb_unidade_pmmg - municipio_codigo + municipio_nome (500 valores)
+💾 Lote 51 salvo em E:\GitHub\GDO_2025_python\valores_relacionados.json
+
+🎯 Extração concluída!
+(venvGDO) PS E:\GitHub\GDO_2025_python> 

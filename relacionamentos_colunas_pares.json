@@ -1,0 +1,2258 @@
+{
+  "db_bisp_cad_master": {
+    "vw_chamada_tr": [
+      {
+        "coluna_chave": "codigo_origem_chamada",
+        "coluna_descricao": "descricao_origem_chamada"
+      }
+    ]
+  },
+  "db_bisp_cad_reporting": {
+    "tb_atendimento": [
+      {
+        "coluna_chave": "cabine_id",
+        "coluna_descricao": "cabine_descricao"
+      },
+      {
+        "coluna_chave": "cabine_codigo",
+        "coluna_descricao": "cabine_descricao"
+      },
+      {
+        "coluna_chave": "grupo_atendimento_id",
+        "coluna_descricao": "grupo_atendimento_descricao"
+      },
+      {
+        "coluna_chave": "atendente_id",
+        "coluna_descricao": "atendente_nome"
+      },
+      {
+        "coluna_chave": "qualificador_id",
+        "coluna_descricao": "qualificador_descricao"
+      },
+      {
+        "coluna_chave": "qualificador_detalhe_id",
+        "coluna_descricao": "qualificador_detalhe_descricao"
+      },
+      {
+        "coluna_chave": "municipio_codigo",
+        "coluna_descricao": "municipio_nome"
+      }
+    ],
+    "tb_chamada": [
+      {
+        "coluna_chave": "id_logradouro",
+        "coluna_descricao": "descricao_logradouro"
+      },
+      {
+        "coluna_chave": "id_logradouro_cruzamento",
+        "coluna_descricao": "descricao_logradouro_cruzamento"
+      },
+      {
+        "coluna_chave": "id_municipio",
+        "coluna_descricao": "descricao_municipio"
+      },
+      {
+        "coluna_chave": "id_bairro",
+        "coluna_descricao": "nome_bairro"
+      },
+      {
+        "coluna_chave": "id_tipo_logradouro_cruzamento",
+        "coluna_descricao": "descricao_tipo_logradouro_cruzamento"
+      },
+      {
+        "coluna_chave": "id_tipo_logradouro",
+        "coluna_descricao": "descricao_tipo_logradouro"
+      },
+      {
+        "coluna_chave": "id_complemento",
+        "coluna_descricao": "descricao_complemento"
+      }
+    ],
+    "tb_chamada_atendimento": [
+      {
+        "coluna_chave": "chamada_codigo_origem",
+        "coluna_descricao": "chamada_descricao_origem"
+      },
+      {
+        "coluna_chave": "orgao_id",
+        "coluna_descricao": "orgao_nome"
+      },
+      {
+        "coluna_chave": "local_municipio_id",
+        "coluna_descricao": "local_municipio_nome"
+      },
+      {
+        "coluna_chave": "local_bairro_id",
+        "coluna_descricao": "local_bairro_nome"
+      },
+      {
+        "coluna_chave": "local_tipo_logradouro_id",
+        "coluna_descricao": "local_tipo_logradouro_nome"
+      },
+      {
+        "coluna_chave": "local_logradouro_id",
+        "coluna_descricao": "local_logradouro_nome"
+      },
+      {
+        "coluna_chave": "natureza_tipo_servico_codigo",
+        "coluna_descricao": "natureza_tipo_servico_descricao"
+      },
+      {
+        "coluna_chave": "natureza_id",
+        "coluna_descricao": "natureza_descricao"
+      },
+      {
+        "coluna_chave": "natureza_codigo",
+        "coluna_descricao": "natureza_descricao"
+      },
+      {
+        "coluna_chave": "natureza_complemento_id",
+        "coluna_descricao": "natureza_complemento_descricao"
+      },
+      {
+        "coluna_chave": "natureza_complemento_codigo",
+        "coluna_descricao": "natureza_complemento_descricao"
+      }
+    ],
+    "tb_chamada_atendimento_situacao": [
+      {
+        "coluna_chave": "chamada_atendimento_situacao_id",
+        "coluna_descricao": "chamada_atendimento_situacao_descricao"
+      },
+      {
+        "coluna_chave": "chamada_atendimento_situacao_codigo",
+        "coluna_descricao": "chamada_atendimento_situacao_descricao"
+      }
+    ],
+    "tb_chamada_historico": [
+      {
+        "coluna_chave": "codigo_tipo_historico",
+        "coluna_descricao": "descricao_tipo_historico"
+      },
+      {
+        "coluna_chave": "usuario_alteracao_id",
+        "coluna_descricao": "usuario_alteracao_nome"
+      },
+      {
+        "coluna_chave": "usuario_alteracao_orgao_codigo",
+        "coluna_descricao": "usuario_alteracao_orgao_descricao"
+      }
+    ],
+    "tb_empenho": [
+      {
+        "coluna_chave": "tipo_recurso_id",
+        "coluna_descricao": "tipo_recurso_descricao"
+      },
+      {
+        "coluna_chave": "tipo_recurso_codigo",
+        "coluna_descricao": "tipo_recurso_descricao"
+      },
+      {
+        "coluna_chave": "viatura_id",
+        "coluna_descricao": "viatura_descricao"
+      }
+    ],
+    "tb_empenho_situacao": [
+      {
+        "coluna_chave": "empenho_situacao_id",
+        "coluna_descricao": "empenho_situacao_descricao"
+      },
+      {
+        "coluna_chave": "empenho_situacao_codigo",
+        "coluna_descricao": "empenho_situacao_descricao"
+      }
+    ],
+    "tb_integracao_reds": [
+      {
+        "coluna_chave": "chamada_origem_codigo",
+        "coluna_descricao": "chamada_origem_descricao"
+      },
+      {
+        "coluna_chave": "tipo_recurso_id",
+        "coluna_descricao": "tipo_recurso_descricao"
+      },
+      {
+        "coluna_chave": "tipo_recurso_codigo",
+        "coluna_descricao": "tipo_recurso_descricao"
+      },
+      {
+        "coluna_chave": "viatura_id",
+        "coluna_descricao": "viatura_descricao"
+      }
+    ],
+    "tb_recurso": [
+      {
+        "coluna_chave": "tipo_recurso_id",
+        "coluna_descricao": "tipo_recurso_descricao"
+      },
+      {
+        "coluna_chave": "tipo_recurso_codigo",
+        "coluna_descricao": "tipo_recurso_descricao"
+      },
+      {
+        "coluna_chave": "viatura_id",
+        "coluna_descricao": "viatura_descricao"
+      },
+      {
+        "coluna_chave": "viatura_marca_modelo_id",
+        "coluna_descricao": "viatura_marca_modelo_descricao"
+      },
+      {
+        "coluna_chave": "viatura_marca_modelo_codigo",
+        "coluna_descricao": "viatura_marca_modelo_descricao"
+      },
+      {
+        "coluna_chave": "usuario_alteracao_id",
+        "coluna_descricao": "usuario_alteracao_nome"
+      },
+      {
+        "coluna_chave": "usuario_exclusao_id",
+        "coluna_descricao": "usuario_exclusao_nome"
+      },
+      {
+        "coluna_chave": "sistema_integrado_id",
+        "coluna_descricao": "sistema_integrado_descricao"
+      },
+      {
+        "coluna_chave": "sistema_integrado_codigo",
+        "coluna_descricao": "sistema_integrado_descricao"
+      }
+    ],
+    "tb_recurso_componente": [
+      {
+        "coluna_chave": "funcao_componente_id",
+        "coluna_descricao": "funcao_componente_descricao"
+      },
+      {
+        "coluna_chave": "funcao_componente_codigo",
+        "coluna_descricao": "funcao_componente_descricao"
+      },
+      {
+        "coluna_chave": "funcao_componente_orgao_id",
+        "coluna_descricao": "funcao_componente_orgao_descricao"
+      },
+      {
+        "coluna_chave": "pessoa_id",
+        "coluna_descricao": "pessoa_nome"
+      },
+      {
+        "coluna_chave": "usuario_inclusao_id",
+        "coluna_descricao": "usuario_inclusao_nome"
+      },
+      {
+        "coluna_chave": "usuario_exclusao_id",
+        "coluna_descricao": "usuario_exclusao_nome"
+      }
+    ],
+    "tb_recurso_situacao": [
+      {
+        "coluna_chave": "recurso_situacao_id",
+        "coluna_descricao": "recurso_situacao_descricao"
+      },
+      {
+        "coluna_chave": "recurso_situacao_codigo",
+        "coluna_descricao": "recurso_situacao_descricao"
+      },
+      {
+        "coluna_chave": "usuario_inclusao_id",
+        "coluna_descricao": "usuario_inclusao_nome"
+      },
+      {
+        "coluna_chave": "usuario_inclusao_orgao_id",
+        "coluna_descricao": "usuario_inclusao_orgao_descricao"
+      }
+    ],
+    "vw_atendimento_s": [
+      {
+        "coluna_chave": "cabine_id",
+        "coluna_descricao": "cabine_descricao"
+      },
+      {
+        "coluna_chave": "cabine_codigo",
+        "coluna_descricao": "cabine_descricao"
+      },
+      {
+        "coluna_chave": "grupo_atendimento_id",
+        "coluna_descricao": "grupo_atendimento_descricao"
+      },
+      {
+        "coluna_chave": "atendente_id",
+        "coluna_descricao": "atendente_nome"
+      },
+      {
+        "coluna_chave": "qualificador_id",
+        "coluna_descricao": "qualificador_descricao"
+      },
+      {
+        "coluna_chave": "qualificador_detalhe_id",
+        "coluna_descricao": "qualificador_detalhe_descricao"
+      },
+      {
+        "coluna_chave": "municipio_codigo",
+        "coluna_descricao": "municipio_nome"
+      }
+    ],
+    "vw_chamada_atendimento_s": [
+      {
+        "coluna_chave": "chamada_codigo_origem",
+        "coluna_descricao": "chamada_descricao_origem"
+      },
+      {
+        "coluna_chave": "orgao_id",
+        "coluna_descricao": "orgao_nome"
+      },
+      {
+        "coluna_chave": "local_municipio_id",
+        "coluna_descricao": "local_municipio_nome"
+      },
+      {
+        "coluna_chave": "local_bairro_id",
+        "coluna_descricao": "local_bairro_nome"
+      },
+      {
+        "coluna_chave": "local_tipo_logradouro_id",
+        "coluna_descricao": "local_tipo_logradouro_nome"
+      },
+      {
+        "coluna_chave": "local_logradouro_id",
+        "coluna_descricao": "local_logradouro_nome"
+      },
+      {
+        "coluna_chave": "natureza_tipo_servico_codigo",
+        "coluna_descricao": "natureza_tipo_servico_descricao"
+      },
+      {
+        "coluna_chave": "natureza_id",
+        "coluna_descricao": "natureza_descricao"
+      },
+      {
+        "coluna_chave": "natureza_codigo",
+        "coluna_descricao": "natureza_descricao"
+      },
+      {
+        "coluna_chave": "natureza_complemento_id",
+        "coluna_descricao": "natureza_complemento_descricao"
+      },
+      {
+        "coluna_chave": "natureza_complemento_codigo",
+        "coluna_descricao": "natureza_complemento_descricao"
+      }
+    ],
+    "vw_chamada_evento": [
+      {
+        "coluna_chave": "id_evento",
+        "coluna_descricao": "descricao_evento"
+      }
+    ],
+    "vw_chamada_evento_s": [
+      {
+        "coluna_chave": "id_evento",
+        "coluna_descricao": "descricao_evento"
+      }
+    ],
+    "vw_chamada_historico_s": [
+      {
+        "coluna_chave": "codigo_tipo_historico",
+        "coluna_descricao": "descricao_tipo_historico"
+      },
+      {
+        "coluna_chave": "usuario_alteracao_id",
+        "coluna_descricao": "usuario_alteracao_nome"
+      },
+      {
+        "coluna_chave": "usuario_alteracao_orgao_codigo",
+        "coluna_descricao": "usuario_alteracao_orgao_descricao"
+      }
+    ],
+    "vw_chamada_s": [
+      {
+        "coluna_chave": "id_logradouro",
+        "coluna_descricao": "descricao_logradouro"
+      },
+      {
+        "coluna_chave": "id_logradouro_cruzamento",
+        "coluna_descricao": "descricao_logradouro_cruzamento"
+      },
+      {
+        "coluna_chave": "id_municipio",
+        "coluna_descricao": "descricao_municipio"
+      },
+      {
+        "coluna_chave": "id_bairro",
+        "coluna_descricao": "nome_bairro"
+      },
+      {
+        "coluna_chave": "id_tipo_logradouro_cruzamento",
+        "coluna_descricao": "descricao_tipo_logradouro_cruzamento"
+      },
+      {
+        "coluna_chave": "id_tipo_logradouro",
+        "coluna_descricao": "descricao_tipo_logradouro"
+      },
+      {
+        "coluna_chave": "id_complemento",
+        "coluna_descricao": "descricao_complemento"
+      }
+    ],
+    "vw_empenho_s": [
+      {
+        "coluna_chave": "tipo_recurso_id",
+        "coluna_descricao": "tipo_recurso_descricao"
+      },
+      {
+        "coluna_chave": "tipo_recurso_codigo",
+        "coluna_descricao": "tipo_recurso_descricao"
+      },
+      {
+        "coluna_chave": "viatura_id",
+        "coluna_descricao": "viatura_descricao"
+      }
+    ],
+    "vw_recurso_componente_s": [
+      {
+        "coluna_chave": "funcao_componente_id",
+        "coluna_descricao": "funcao_componente_descricao"
+      },
+      {
+        "coluna_chave": "funcao_componente_codigo",
+        "coluna_descricao": "funcao_componente_descricao"
+      },
+      {
+        "coluna_chave": "funcao_componente_orgao_id",
+        "coluna_descricao": "funcao_componente_orgao_descricao"
+      },
+      {
+        "coluna_chave": "pessoa_id",
+        "coluna_descricao": "pessoa_nome"
+      },
+      {
+        "coluna_chave": "usuario_inclusao_id",
+        "coluna_descricao": "usuario_inclusao_nome"
+      },
+      {
+        "coluna_chave": "usuario_exclusao_id",
+        "coluna_descricao": "usuario_exclusao_nome"
+      }
+    ],
+    "vw_recurso_s": [
+      {
+        "coluna_chave": "tipo_recurso_id",
+        "coluna_descricao": "tipo_recurso_descricao"
+      },
+      {
+        "coluna_chave": "tipo_recurso_codigo",
+        "coluna_descricao": "tipo_recurso_descricao"
+      },
+      {
+        "coluna_chave": "viatura_id",
+        "coluna_descricao": "viatura_descricao"
+      },
+      {
+        "coluna_chave": "viatura_marca_modelo_id",
+        "coluna_descricao": "viatura_marca_modelo_descricao"
+      },
+      {
+        "coluna_chave": "viatura_marca_modelo_codigo",
+        "coluna_descricao": "viatura_marca_modelo_descricao"
+      },
+      {
+        "coluna_chave": "usuario_alteracao_id",
+        "coluna_descricao": "usuario_alteracao_nome"
+      },
+      {
+        "coluna_chave": "usuario_exclusao_id",
+        "coluna_descricao": "usuario_exclusao_nome"
+      },
+      {
+        "coluna_chave": "sistema_integrado_id",
+        "coluna_descricao": "sistema_integrado_descricao"
+      },
+      {
+        "coluna_chave": "sistema_integrado_codigo",
+        "coluna_descricao": "sistema_integrado_descricao"
+      }
+    ]
+  },
+  "db_bisp_escala_reporting": {
+    "tb_escala": [
+      {
+        "coluna_chave": "responsavel_id",
+        "coluna_descricao": "responsavel_nome"
+      },
+      {
+        "coluna_chave": "servico_id",
+        "coluna_descricao": "servico_descricao"
+      },
+      {
+        "coluna_chave": "servico_codigo",
+        "coluna_descricao": "servico_descricao"
+      },
+      {
+        "coluna_chave": "evento_id",
+        "coluna_descricao": "evento_nome"
+      },
+      {
+        "coluna_chave": "evento_id",
+        "coluna_descricao": "evento_descricao"
+      }
+    ],
+    "tb_escala_diaria": [
+      {
+        "coluna_chave": "dia_ultima_acao_codigo",
+        "coluna_descricao": "dia_ultima_acao_descricao"
+      },
+      {
+        "coluna_chave": "equipe_id",
+        "coluna_descricao": "equipe_nome"
+      },
+      {
+        "coluna_chave": "equipe_id",
+        "coluna_descricao": "equipe_descricao"
+      }
+    ],
+    "tb_escala_pessoa": [
+      {
+        "coluna_chave": "equipe_id",
+        "coluna_descricao": "equipe_nome"
+      },
+      {
+        "coluna_chave": "equipe_id",
+        "coluna_descricao": "equipe_descricao"
+      },
+      {
+        "coluna_chave": "pessoa_id",
+        "coluna_descricao": "pessoa_nome"
+      }
+    ],
+    "tb_guarnicao": [
+      {
+        "coluna_chave": "viatura_id",
+        "coluna_descricao": "viatura_descricao"
+      },
+      {
+        "coluna_chave": "recurso_restricao_id",
+        "coluna_descricao": "recurso_restricao_descricao"
+      }
+    ],
+    "tb_guarnicao_pessoa": [
+      {
+        "coluna_chave": "funcao_id",
+        "coluna_descricao": "funcao_descricao"
+      },
+      {
+        "coluna_chave": "funcao_codigo",
+        "coluna_descricao": "funcao_descricao"
+      }
+    ],
+    "tb_indisponibilidade": [
+      {
+        "coluna_chave": "pessoa_id",
+        "coluna_descricao": "pessoa_nome"
+      }
+    ],
+    "tb_saldo_horas": [
+      {
+        "coluna_chave": "pessoa_id",
+        "coluna_descricao": "pessoa_nome"
+      }
+    ]
+  },
+  "db_bisp_infopen_reporting": {
+    "tb_contatos": [
+      {
+        "coluna_chave": "codigo_tipo_contato",
+        "coluna_descricao": "descricao_tipo_contato"
+      }
+    ],
+    "tb_descredenciamento": [
+      {
+        "coluna_chave": "codigo_motivo_descredenciamento",
+        "coluna_descricao": "descricao_motivo_descredenciamento"
+      }
+    ],
+    "tb_individuo_infopen": [
+      {
+        "coluna_chave": "codigo_religiao",
+        "coluna_descricao": "descricao_religiao"
+      },
+      {
+        "coluna_chave": "codigo_estado_civil",
+        "coluna_descricao": "descricao_estado_civil"
+      }
+    ],
+    "tb_ocorrencia_disciplinar": [
+      {
+        "coluna_chave": "codigo_comarca",
+        "coluna_descricao": "descricao_comarca"
+      }
+    ],
+    "vw_contatos": [
+      {
+        "coluna_chave": "codigo_tipo_contato",
+        "coluna_descricao": "descricao_tipo_contato"
+      }
+    ],
+    "vw_descredenciamento": [
+      {
+        "coluna_chave": "codigo_motivo_descredenciamento",
+        "coluna_descricao": "descricao_motivo_descredenciamento"
+      }
+    ],
+    "vw_individuoinfopen": [
+      {
+        "coluna_chave": "codigo_religiao",
+        "coluna_descricao": "descricao_religiao"
+      },
+      {
+        "coluna_chave": "codigo_estado_civil",
+        "coluna_descricao": "descricao_estado_civil"
+      }
+    ],
+    "vw_ocorrenciadisciplinar": [
+      {
+        "coluna_chave": "codigo_comarca",
+        "coluna_descricao": "descricao_comarca"
+      }
+    ]
+  },
+  "db_bisp_reds_master": {
+    "vw_envolvido_ocorrencia_s": [
+      {
+        "coluna_chave": "id_endereco",
+        "coluna_descricao": "descricao_endereco"
+      },
+      {
+        "coluna_chave": "codigo_bairro",
+        "coluna_descricao": "nome_bairro"
+      },
+      {
+        "coluna_chave": "codigo_municipio",
+        "coluna_descricao": "nome_municipio"
+      },
+      {
+        "coluna_chave": "id_indicador_uso_etilometro",
+        "coluna_descricao": "descricao_indicador_uso_etilometro"
+      }
+    ],
+    "vw_envolvido_ocorrencia_tr": [
+      {
+        "coluna_chave": "id_endereco",
+        "coluna_descricao": "descricao_endereco"
+      },
+      {
+        "coluna_chave": "codigo_bairro",
+        "coluna_descricao": "nome_bairro"
+      },
+      {
+        "coluna_chave": "codigo_municipio",
+        "coluna_descricao": "nome_municipio"
+      },
+      {
+        "coluna_chave": "id_indicador_uso_etilometro",
+        "coluna_descricao": "descricao_indicador_uso_etilometro"
+      }
+    ],
+    "vw_material_apreendido_ocorrencia_s": [
+      {
+        "coluna_chave": "codigo_categoria",
+        "coluna_descricao": "descricao_categoria"
+      }
+    ],
+    "vw_ocorrencia_s": [
+      {
+        "coluna_chave": "codigo_operacao",
+        "coluna_descricao": "nome_operacao"
+      },
+      {
+        "coluna_chave": "codigo_tipo_registro",
+        "coluna_descricao": "descricao_tipo_registro"
+      },
+      {
+        "coluna_chave": "codigo_bairro",
+        "coluna_descricao": "nome_bairro"
+      },
+      {
+        "coluna_chave": "codigo_municipio",
+        "coluna_descricao": "nome_municipio"
+      },
+      {
+        "coluna_chave": "codigo_localizacao_ocorrencia",
+        "coluna_descricao": "descricao_localizacao_ocorrencia"
+      }
+    ],
+    "vw_ocorrencia_tr": [
+      {
+        "coluna_chave": "codigo_operacao",
+        "coluna_descricao": "nome_operacao"
+      },
+      {
+        "coluna_chave": "codigo_tipo_registro",
+        "coluna_descricao": "descricao_tipo_registro"
+      },
+      {
+        "coluna_chave": "codigo_bairro",
+        "coluna_descricao": "nome_bairro"
+      },
+      {
+        "coluna_chave": "codigo_municipio",
+        "coluna_descricao": "nome_municipio"
+      },
+      {
+        "coluna_chave": "codigo_localizacao_ocorrencia",
+        "coluna_descricao": "descricao_localizacao_ocorrencia"
+      }
+    ],
+    "vw_recibo_s": [
+      {
+        "coluna_chave": "id_destinatario",
+        "coluna_descricao": "nome_destinatario"
+      }
+    ],
+    "vw_recibo_tr": [
+      {
+        "coluna_chave": "id_destinatario",
+        "coluna_descricao": "nome_destinatario"
+      }
+    ],
+    "vw_veiculo_ocorrencia_s": [
+      {
+        "coluna_chave": "codigo_municipio",
+        "coluna_descricao": "nome_municipio"
+      },
+      {
+        "coluna_chave": "id_motivo_nao_remocao",
+        "coluna_descricao": "descricao_motivo_nao_remocao"
+      }
+    ]
+  },
+  "db_bisp_reds_reporting": {
+    "tb_animal_ocorrencia": [
+      {
+        "coluna_chave": "id_origem_animal",
+        "coluna_descricao": "descricao_origem_animal"
+      },
+      {
+        "coluna_chave": "codigo_origem_animal",
+        "coluna_descricao": "descricao_origem_animal"
+      },
+      {
+        "coluna_chave": "id_situacao",
+        "coluna_descricao": "descricao_situacao"
+      },
+      {
+        "coluna_chave": "codigo_situacao",
+        "coluna_descricao": "descricao_situacao"
+      },
+      {
+        "coluna_chave": "id_tipo_animal",
+        "coluna_descricao": "descricao_tipo_animal"
+      },
+      {
+        "coluna_chave": "codigo_tipo_animal",
+        "coluna_descricao": "descricao_tipo_animal"
+      }
+    ],
+    "tb_arma_ocorrencia": [
+      {
+        "coluna_chave": "orgao_codigo",
+        "coluna_descricao": "orgao_descricao"
+      },
+      {
+        "coluna_chave": "situacao_codigo",
+        "coluna_descricao": "situacao_descricao"
+      },
+      {
+        "coluna_chave": "marca_arma_codigo",
+        "coluna_descricao": "marca_arma_descricao"
+      },
+      {
+        "coluna_chave": "tipo_arma_codigo",
+        "coluna_descricao": "tipo_arma_descricao"
+      },
+      {
+        "coluna_chave": "calibre_arma_codigo",
+        "coluna_descricao": "calibre_arma_descricao"
+      }
+    ],
+    "tb_arma_utilizada_ocorrencia": [
+      {
+        "coluna_chave": "tipo_arma_codigo",
+        "coluna_descricao": "tipo_arma_descricao"
+      },
+      {
+        "coluna_chave": "calibre_arma_codigo",
+        "coluna_descricao": "calibre_arma_descricao"
+      }
+    ],
+    "tb_atendimento_pre_hospitalar_ocorrencia": [
+      {
+        "coluna_chave": "codigo_tipo_lesao",
+        "coluna_descricao": "descricao_tipo_lesao"
+      },
+      {
+        "coluna_chave": "codigo_tipo_queimadura",
+        "coluna_descricao": "descricao_tipo_queimadura"
+      },
+      {
+        "coluna_chave": "destino_codigo",
+        "coluna_descricao": "destino_descricao"
+      },
+      {
+        "coluna_chave": "local_destino_codigo",
+        "coluna_descricao": "local_destino_descricao"
+      },
+      {
+        "coluna_chave": "posicao_no_veiculo_codigo",
+        "coluna_descricao": "posicao_no_veiculo_descricao"
+      },
+      {
+        "coluna_chave": "localizacao_vitima_codigo",
+        "coluna_descricao": "localizacao_vitima_descricao"
+      },
+      {
+        "coluna_chave": "evento_relacionado_codigo",
+        "coluna_descricao": "evento_relacionado_descricao"
+      },
+      {
+        "coluna_chave": "orgao_codigo",
+        "coluna_descricao": "orgao_descricao"
+      }
+    ],
+    "tb_auto_resistencia_envolvido_ocorrencia": [
+      {
+        "coluna_chave": "codigo_tipo_envolvimento",
+        "coluna_descricao": "descricao_tipo_envolvimento"
+      },
+      {
+        "coluna_chave": "efetivo_operacional_id_orgao",
+        "coluna_descricao": "efetivo_operacional_nome_orgao"
+      },
+      {
+        "coluna_chave": "natureza_codigo",
+        "coluna_descricao": "natureza_descricao"
+      },
+      {
+        "coluna_chave": "grau_lesao_codigo",
+        "coluna_descricao": "grau_lesao_descricao"
+      }
+    ],
+    "tb_auto_resistencia_ocorrencia": [
+      {
+        "coluna_chave": "codigo_municipio",
+        "coluna_descricao": "nome_municipio"
+      },
+      {
+        "coluna_chave": "codigo_bairro",
+        "coluna_descricao": "nome_bairro"
+      },
+      {
+        "coluna_chave": "tipo_logradouro_codigo",
+        "coluna_descricao": "tipo_logradouro_descricao"
+      },
+      {
+        "coluna_chave": "logradouro_codigo",
+        "coluna_descricao": "logradouro_nome"
+      },
+      {
+        "coluna_chave": "tipo_logradouro2_codigo",
+        "coluna_descricao": "tipo_logradouro2_descricao"
+      },
+      {
+        "coluna_chave": "logradouro2_codigo",
+        "coluna_descricao": "logradouro2_nome"
+      },
+      {
+        "coluna_chave": "responsavel_prisao_id_orgao",
+        "coluna_descricao": "responsavel_prisao_nome_orgao"
+      }
+    ],
+    "tb_autor_suspeito": [
+      {
+        "coluna_chave": "id_sofrimento_mental",
+        "coluna_descricao": "descricao_sofrimento_mental"
+      }
+    ],
+    "tb_autuacao_procedimento_ocorrencia": [
+      {
+        "coluna_chave": "natureza_ocorrencia_codigo",
+        "coluna_descricao": "natureza_ocorrencia_descricao"
+      }
+    ],
+    "tb_avaliacao_risco_vd": [
+      {
+        "coluna_chave": "relacao_vitima_agressor_codigo",
+        "coluna_descricao": "relacao_vitima_agressor_descricao"
+      },
+      {
+        "coluna_chave": "resposta_codigo_tipo_parametro",
+        "coluna_descricao": "resposta_descricao_tipo_parametro"
+      }
+    ],
+    "tb_busca_salvamento_ocorrencia": [
+      {
+        "coluna_chave": "acao_bm_codigo",
+        "coluna_descricao": "acao_bm_descricao"
+      },
+      {
+        "coluna_chave": "tipo_entrada_codigo",
+        "coluna_descricao": "tipo_entrada_descricao"
+      },
+      {
+        "coluna_chave": "equipamento_codigo",
+        "coluna_descricao": "equipamento_descricao"
+      },
+      {
+        "coluna_chave": "meio_acesso_codigo",
+        "coluna_descricao": "meio_acesso_descricao"
+      },
+      {
+        "coluna_chave": "tipo_local_codigo",
+        "coluna_descricao": "tipo_local_descricao"
+      },
+      {
+        "coluna_chave": "produto_perigoso_codigo",
+        "coluna_descricao": "produto_perigoso_descricao"
+      },
+      {
+        "coluna_chave": "produto_perigoso_codigo",
+        "coluna_descricao": "produto_perigoso_nome"
+      }
+    ],
+    "tb_busca_salvamento_terrestre_ocorrencia": [
+      {
+        "coluna_chave": "tipo_costrucao_codigo",
+        "coluna_descricao": "tipo_costrucao_descricao"
+      },
+      {
+        "coluna_chave": "especie_animal_codigo",
+        "coluna_descricao": "especie_animal_descricao"
+      },
+      {
+        "coluna_chave": "especie_animal_condicao_codigo",
+        "coluna_descricao": "especie_animal_condicao_descricao"
+      },
+      {
+        "coluna_chave": "classe_edificacao_codigo",
+        "coluna_descricao": "classe_edificacao_descricao"
+      }
+    ],
+    "tb_cheque_cartao_ocorrencia": [
+      {
+        "coluna_chave": "operadora_codigo",
+        "coluna_descricao": "operadora_descricao"
+      },
+      {
+        "coluna_chave": "banco_codigo",
+        "coluna_descricao": "banco_descricao"
+      },
+      {
+        "coluna_chave": "orgao_codigo",
+        "coluna_descricao": "orgao_descricao"
+      },
+      {
+        "coluna_chave": "situacao_codigo",
+        "coluna_descricao": "situacao_descricao"
+      },
+      {
+        "coluna_chave": "tipo_material_codigo",
+        "coluna_descricao": "tipo_material_descricao"
+      }
+    ],
+    "tb_condutor_veiculo_ocorrencia": [
+      {
+        "coluna_chave": "situacao_condutor_codigo",
+        "coluna_descricao": "situacao_condutor_descricao"
+      },
+      {
+        "coluna_chave": "codigo_tipo_cnh",
+        "coluna_descricao": "descricao_tipo_cnh"
+      },
+      {
+        "coluna_chave": "categoria_cnh_codigo",
+        "coluna_descricao": "categoria_cnh_descricao"
+      }
+    ],
+    "tb_documento_pessoal_ocorrencia": [
+      {
+        "coluna_chave": "orgao_codigo",
+        "coluna_descricao": "orgao_descricao"
+      },
+      {
+        "coluna_chave": "situacao_codigo",
+        "coluna_descricao": "situacao_descricao"
+      },
+      {
+        "coluna_chave": "tipo_documento_codigo",
+        "coluna_descricao": "tipo_documento_descricao"
+      },
+      {
+        "coluna_chave": "orgao_emissor_codigo",
+        "coluna_descricao": "orgao_emissor_descricao"
+      },
+      {
+        "coluna_chave": "codigo_formato_documento",
+        "coluna_descricao": "descricao_formato_documento"
+      }
+    ],
+    "tb_envolvido_meio_imobilizacao_ocorrencia": [
+      {
+        "coluna_chave": "meio_imobilizacao_codigo",
+        "coluna_descricao": "meio_imobilizacao_descricao"
+      }
+    ],
+    "tb_envolvido_motivo_imobilizacao_ocorrencia": [
+      {
+        "coluna_chave": "motivo_imobilizacao_codigo",
+        "coluna_descricao": "motivo_imobilizacao_descricao"
+      }
+    ],
+    "tb_envolvido_ocorrencia": [
+      {
+        "coluna_chave": "id_pais_origem",
+        "coluna_descricao": "nome_pais_origem"
+      },
+      {
+        "coluna_chave": "tipo_documento_codigo",
+        "coluna_descricao": "tipo_documento_descricao"
+      },
+      {
+        "coluna_chave": "tipo_logradouro_codigo",
+        "coluna_descricao": "tipo_logradouro_descricao"
+      },
+      {
+        "coluna_chave": "natureza_ocorrencia_codigo",
+        "coluna_descricao": "natureza_ocorrencia_descricao"
+      },
+      {
+        "coluna_chave": "id_endereco",
+        "coluna_descricao": "descricao_endereco"
+      },
+      {
+        "coluna_chave": "logradouro_codigo",
+        "coluna_descricao": "logradouro_nome"
+      },
+      {
+        "coluna_chave": "codigo_bairro",
+        "coluna_descricao": "nome_bairro"
+      },
+      {
+        "coluna_chave": "codigo_municipio",
+        "coluna_descricao": "nome_municipio"
+      },
+      {
+        "coluna_chave": "condicao_fisica_codigo",
+        "coluna_descricao": "condicao_fisica_descricao"
+      },
+      {
+        "coluna_chave": "cor_pele_codigo",
+        "coluna_descricao": "cor_pele_descricao"
+      },
+      {
+        "coluna_chave": "envolvimento_codigo",
+        "coluna_descricao": "envolvimento_descricao"
+      },
+      {
+        "coluna_chave": "envolvimento_secundario_codigo",
+        "coluna_descricao": "envolvimento_secundario_descricao"
+      },
+      {
+        "coluna_chave": "estado_civil_codigo",
+        "coluna_descricao": "estado_civil_descricao"
+      },
+      {
+        "coluna_chave": "relacao_vitima_autor_codigo",
+        "coluna_descricao": "relacao_vitima_autor_descricao"
+      },
+      {
+        "coluna_chave": "orgao_emissor_codigo",
+        "coluna_descricao": "orgao_emissor_descricao"
+      },
+      {
+        "coluna_chave": "tipo_prisao_apreensao_codigo",
+        "coluna_descricao": "tipo_prisao_apreensao_descricao"
+      },
+      {
+        "coluna_chave": "tipo_remocao_codigo",
+        "coluna_descricao": "tipo_remocao_descricao"
+      },
+      {
+        "coluna_chave": "orgao_lotacao_policial_codigo",
+        "coluna_descricao": "orgao_lotacao_policial_descricao"
+      },
+      {
+        "coluna_chave": "id_pais",
+        "coluna_descricao": "nome_pais"
+      },
+      {
+        "coluna_chave": "id_indicador_uso_etilometro",
+        "coluna_descricao": "descricao_indicador_uso_etilometro"
+      },
+      {
+        "coluna_chave": "orientacao_sexual_codigo",
+        "coluna_descricao": "orientacao_sexual_descricao"
+      },
+      {
+        "coluna_chave": "motivo_ausencia_telmail_codigo",
+        "coluna_descricao": "motivo_ausencia_telmail_descricao"
+      },
+      {
+        "coluna_chave": "etnia_indigena_codigo",
+        "coluna_descricao": "etnia_indigena_descricao"
+      }
+    ],
+    "tb_envolvido_sintoma_embriaguez_ocorrencia": [
+      {
+        "coluna_chave": "sintoma_embriaguez_codigo",
+        "coluna_descricao": "sintoma_embriaguez_descricao"
+      }
+    ],
+    "tb_incendio_ocorrencia": [
+      {
+        "coluna_chave": "id_subtipo_relatorio",
+        "coluna_descricao": "descricao_subtipo_relatorio"
+      },
+      {
+        "coluna_chave": "acao_bm_codigo",
+        "coluna_descricao": "acao_bm_descricao"
+      },
+      {
+        "coluna_chave": "classe_edificacao_codigo",
+        "coluna_descricao": "classe_edificacao_descricao"
+      },
+      {
+        "coluna_chave": "edificacao_tipo_construcao_codigo",
+        "coluna_descricao": "edificacao_tipo_construcao_descricao"
+      },
+      {
+        "coluna_chave": "edificacao_codigo_tipo_guarda_local",
+        "coluna_descricao": "edificacao_descricao_tipo_guarda_local"
+      },
+      {
+        "coluna_chave": "tipo_entrada_forcada_codigo",
+        "coluna_descricao": "tipo_entrada_forcada_descricao"
+      },
+      {
+        "coluna_chave": "equipamento_codigo",
+        "coluna_descricao": "equipamento_descricao"
+      },
+      {
+        "coluna_chave": "florestal_codigo_aclive_declive",
+        "coluna_descricao": "florestal_descricao_aclive_declive"
+      },
+      {
+        "coluna_chave": "florestal_codigo_tipo_combustivel",
+        "coluna_descricao": "florestal_descricao_tipo_combustivel"
+      },
+      {
+        "coluna_chave": "meio_acesso_codigo",
+        "coluna_descricao": "meio_acesso_descricao"
+      },
+      {
+        "coluna_chave": "meio_evacuacao_codigo",
+        "coluna_descricao": "meio_evacuacao_descricao"
+      },
+      {
+        "coluna_chave": "meio_evacuacao_tipo_codigo",
+        "coluna_descricao": "meio_evacuacao_tipo_descricao"
+      },
+      {
+        "coluna_chave": "meio_retardante_codigo",
+        "coluna_descricao": "meio_retardante_descricao"
+      },
+      {
+        "coluna_chave": "meio_pcip_codigo",
+        "coluna_descricao": "meio_pcip_descricao"
+      },
+      {
+        "coluna_chave": "meio_pcip_tipo_codigo",
+        "coluna_descricao": "meio_pcip_tipo_descricao"
+      },
+      {
+        "coluna_chave": "tipo_incendio_florestal_codigo",
+        "coluna_descricao": "tipo_incendio_florestal_descricao"
+      },
+      {
+        "coluna_chave": "tipo_vegetacao_codigo",
+        "coluna_descricao": "tipo_vegetacao_descricao"
+      },
+      {
+        "coluna_chave": "incendio_veiculo_codigo_tipo_combustivel",
+        "coluna_descricao": "incendio_veiculo_descricao_tipo_combustivel"
+      },
+      {
+        "coluna_chave": "incendio_veiculo_tipo_carga_codigo",
+        "coluna_descricao": "incendio_veiculo_tipo_carga_descricao"
+      },
+      {
+        "coluna_chave": "edificacao_cor_incendio_codigo",
+        "coluna_descricao": "edificacao_cor_incendio_descricao"
+      },
+      {
+        "coluna_chave": "edificacao_cor_incendio_codigo_tipo",
+        "coluna_descricao": "edificacao_cor_incendio_descricao_tipo"
+      }
+    ],
+    "tb_item_vistoriado_ocorrencia": [
+      {
+        "coluna_chave": "item_vistoria_grupo_codigo",
+        "coluna_descricao": "item_vistoria_grupo_descricao"
+      },
+      {
+        "coluna_chave": "item_vistoria_codigo",
+        "coluna_descricao": "item_vistoria_descricao"
+      }
+    ],
+    "tb_material_apreendido_ocorrencia": [
+      {
+        "coluna_chave": "tipo_objeto_codigo",
+        "coluna_descricao": "tipo_objeto_descricao"
+      },
+      {
+        "coluna_chave": "situacao_codigo",
+        "coluna_descricao": "situacao_descricao"
+      },
+      {
+        "coluna_chave": "orgao_codigo",
+        "coluna_descricao": "orgao_descricao"
+      },
+      {
+        "coluna_chave": "motivo_apreencao_codigo",
+        "coluna_descricao": "motivo_apreencao_descricao"
+      },
+      {
+        "coluna_chave": "codigo_categoria",
+        "coluna_descricao": "descricao_categoria"
+      }
+    ],
+    "tb_ocorrencia": [
+      {
+        "coluna_chave": "digitador_id_orgao",
+        "coluna_descricao": "digitador_nome_orgao"
+      },
+      {
+        "coluna_chave": "codigo_operacao",
+        "coluna_descricao": "nome_operacao"
+      },
+      {
+        "coluna_chave": "operacao_codigo",
+        "coluna_descricao": "operacao_descricao"
+      },
+      {
+        "coluna_chave": "natureza_codigo",
+        "coluna_descricao": "natureza_descricao"
+      },
+      {
+        "coluna_chave": "complemento_natureza_codigo",
+        "coluna_descricao": "complemento_natureza_descricao"
+      },
+      {
+        "coluna_chave": "logradouro_codigo",
+        "coluna_descricao": "logradouro_nome"
+      },
+      {
+        "coluna_chave": "tipo_logradouro_codigo",
+        "coluna_descricao": "tipo_logradouro_descricao"
+      },
+      {
+        "coluna_chave": "codigo_bairro",
+        "coluna_descricao": "nome_bairro"
+      },
+      {
+        "coluna_chave": "codigo_municipio",
+        "coluna_descricao": "nome_municipio"
+      },
+      {
+        "coluna_chave": "logradouro2_codigo",
+        "coluna_descricao": "logradouro2_nome"
+      },
+      {
+        "coluna_chave": "tipo_logradouro2_codigo",
+        "coluna_descricao": "tipo_logradouro2_descricao"
+      },
+      {
+        "coluna_chave": "tipo_local_codigo",
+        "coluna_descricao": "tipo_local_descricao"
+      },
+      {
+        "coluna_chave": "local_mediato_codigo",
+        "coluna_descricao": "local_mediato_descricao"
+      },
+      {
+        "coluna_chave": "local_imediato_codigo",
+        "coluna_descricao": "local_imediato_descricao"
+      },
+      {
+        "coluna_chave": "instrumento_utilizado_codigo",
+        "coluna_descricao": "instrumento_utilizado_descricao"
+      },
+      {
+        "coluna_chave": "responsavel_apreensao_id_orgao",
+        "coluna_descricao": "responsavel_apreensao_nome_orgao"
+      },
+      {
+        "coluna_chave": "relator_id_orgao",
+        "coluna_descricao": "relator_nome_orgao"
+      },
+      {
+        "coluna_chave": "codigo_tipo_registro",
+        "coluna_descricao": "descricao_tipo_registro"
+      },
+      {
+        "coluna_chave": "natureza_diao_codigo",
+        "coluna_descricao": "natureza_diao_descricao"
+      },
+      {
+        "coluna_chave": "origem_comunicacao_codigo",
+        "coluna_descricao": "origem_comunicacao_descricao"
+      },
+      {
+        "coluna_chave": "tipo_interceptacao_codigo",
+        "coluna_descricao": "tipo_interceptacao_descricao"
+      },
+      {
+        "coluna_chave": "pais_codigo",
+        "coluna_descricao": "pais_nome"
+      },
+      {
+        "coluna_chave": "codigo_localizacao_ocorrencia",
+        "coluna_descricao": "descricao_localizacao_ocorrencia"
+      },
+      {
+        "coluna_chave": "orgao_solicitante_codigo",
+        "coluna_descricao": "orgao_solicitante_descricao"
+      },
+      {
+        "coluna_chave": "perito_id_perito",
+        "coluna_descricao": "perito_nome_perito"
+      }
+    ],
+    "tb_placa_ocorrencia": [
+      {
+        "coluna_chave": "orgao_codigo",
+        "coluna_descricao": "orgao_descricao"
+      },
+      {
+        "coluna_chave": "motivo_aprensao_codigo",
+        "coluna_descricao": "motivo_aprensao_descricao"
+      },
+      {
+        "coluna_chave": "situacao_codigo",
+        "coluna_descricao": "situacao_descricao"
+      },
+      {
+        "coluna_chave": "codigo_municipio",
+        "coluna_descricao": "nome_municipio"
+      }
+    ],
+    "tb_prevencao_vistoria_ocorrencia": [
+      {
+        "coluna_chave": "resultado_prevencao_codigo",
+        "coluna_descricao": "resultado_prevencao_descricao"
+      },
+      {
+        "coluna_chave": "classificacao_edificacao_codigo",
+        "coluna_descricao": "classificacao_edificacao_descricao"
+      },
+      {
+        "coluna_chave": "classificacao_ito21_codigo",
+        "coluna_descricao": "classificacao_ito21_descricao"
+      },
+      {
+        "coluna_chave": "ocupacao_divisao_codigo",
+        "coluna_descricao": "ocupacao_divisao_descricao"
+      }
+    ],
+    "tb_raph_lesao_ocorrencia": [
+      {
+        "coluna_chave": "local_lesao_codigo",
+        "coluna_descricao": "local_lesao_descricao"
+      },
+      {
+        "coluna_chave": "tipo_lesao_codigo",
+        "coluna_descricao": "tipo_lesao_descricao"
+      }
+    ],
+    "tb_raph_material_ocorrencia": [
+      {
+        "coluna_chave": "tipo_material_atendimento_codigo",
+        "coluna_descricao": "tipo_material_atendimento_descricao"
+      }
+    ],
+    "tb_raph_procedimento_efetuado_ocorrencia": [
+      {
+        "coluna_chave": "tipo_procedimento_codigo",
+        "coluna_descricao": "tipo_procedimento_descricao"
+      }
+    ],
+    "tb_raph_quadro_clinico_ocorrencia": [
+      {
+        "coluna_chave": "quadro_clinico_codigo",
+        "coluna_descricao": "quadro_clinico_descricao"
+      }
+    ],
+    "tb_raph_tipo_veiculo_ocorrencia": [
+      {
+        "coluna_chave": "tipo_veiculo_codigo",
+        "coluna_descricao": "tipo_veiculo_descricao"
+      }
+    ],
+    "tb_raph_trauma_ocorrencia": [
+      {
+        "coluna_chave": "tipo_trauma_codigo",
+        "coluna_descricao": "tipo_trauma_descricao"
+      },
+      {
+        "coluna_chave": "especie_animal_codigo",
+        "coluna_descricao": "especie_animal_descricao"
+      }
+    ],
+    "tb_rat_produtividade_ocorrencia": [
+      {
+        "coluna_chave": "indicador_codigo",
+        "coluna_descricao": "indicador_descricao"
+      }
+    ],
+    "tb_recibo": [
+      {
+        "coluna_chave": "usuario_responsavel_id",
+        "coluna_descricao": "usuario_responsavel_nome"
+      },
+      {
+        "coluna_chave": "orgao_id",
+        "coluna_descricao": "orgao_descricao"
+      },
+      {
+        "coluna_chave": "orgao_codigo",
+        "coluna_descricao": "orgao_descricao"
+      }
+    ],
+    "tb_tco_assinatura_ocorrencia": [
+      {
+        "coluna_chave": "id_orgao",
+        "coluna_descricao": "descricao_orgao"
+      },
+      {
+        "coluna_chave": "codigo_orgao",
+        "coluna_descricao": "descricao_orgao"
+      }
+    ],
+    "tb_tco_ocorrencia": [
+      {
+        "coluna_chave": "id_tipo_tco",
+        "coluna_descricao": "descricao_tipo_tco"
+      },
+      {
+        "coluna_chave": "codigo_tipo_tco",
+        "coluna_descricao": "descricao_tipo_tco"
+      },
+      {
+        "coluna_chave": "codigo_comarca",
+        "coluna_descricao": "nome_comarca"
+      }
+    ],
+    "tb_veiculo_acidente_condicao_via_ocorrencia": [
+      {
+        "coluna_chave": "condicao_via_codigo",
+        "coluna_descricao": "condicao_via_descricao"
+      }
+    ],
+    "tb_veiculo_acidente_natureza_movimento_ocorrencia": [
+      {
+        "coluna_chave": "natureza_movimento_codigo",
+        "coluna_descricao": "natureza_movimento_descricao"
+      }
+    ],
+    "tb_veiculo_acidente_obra_arte_ocorrencia": [
+      {
+        "coluna_chave": "obra_arte_codigo",
+        "coluna_descricao": "obra_arte_descricao"
+      }
+    ],
+    "tb_veiculo_acidente_ocorrencia": [
+      {
+        "coluna_chave": "tipo_carga_transportada_codigo",
+        "coluna_descricao": "tipo_carga_transportada_descricao"
+      },
+      {
+        "coluna_chave": "tipo_via_codigo",
+        "coluna_descricao": "tipo_via_descricao"
+      },
+      {
+        "coluna_chave": "largura_pista_codigo",
+        "coluna_descricao": "largura_pista_descricao"
+      },
+      {
+        "coluna_chave": "relevo_pista_codigo",
+        "coluna_descricao": "relevo_pista_descricao"
+      },
+      {
+        "coluna_chave": "tipo_pavimento_codigo",
+        "coluna_descricao": "tipo_pavimento_descricao"
+      },
+      {
+        "coluna_chave": "faixa_via_codigo",
+        "coluna_descricao": "faixa_via_descricao"
+      },
+      {
+        "coluna_chave": "tipo_tracado_codigo",
+        "coluna_descricao": "tipo_tracado_descricao"
+      },
+      {
+        "coluna_chave": "condicao_codigo",
+        "coluna_descricao": "condicao_descricao"
+      },
+      {
+        "coluna_chave": "caracteristica_via_codigo",
+        "coluna_descricao": "caracteristica_via_descricao"
+      },
+      {
+        "coluna_chave": "mao_direcao_codigo",
+        "coluna_descricao": "mao_direcao_descricao"
+      },
+      {
+        "coluna_chave": "condicao_tempo_codigo",
+        "coluna_descricao": "condicao_tempo_descricao"
+      },
+      {
+        "coluna_chave": "condicao_sinalizacao_codigo",
+        "coluna_descricao": "condicao_sinalizacao_descricao"
+      },
+      {
+        "coluna_chave": "condicao_obra_codigo",
+        "coluna_descricao": "condicao_obra_descricao"
+      },
+      {
+        "coluna_chave": "marca_longitudinal_codigo",
+        "coluna_descricao": "marca_longitudinal_descricao"
+      },
+      {
+        "coluna_chave": "controle_trafego_codigo",
+        "coluna_descricao": "controle_trafego_descricao"
+      }
+    ],
+    "tb_veiculo_acidente_ponto_impacto_ocorrencia": [
+      {
+        "coluna_chave": "ponto_impacto_codigo",
+        "coluna_descricao": "ponto_impacto_descricao"
+      }
+    ],
+    "tb_veiculo_acidente_sinalizacao_ocorrencia": [
+      {
+        "coluna_chave": "sinalizacao_codigo",
+        "coluna_descricao": "sinalizacao_descricao"
+      }
+    ],
+    "tb_veiculo_avaria_ocorrencia": [
+      {
+        "coluna_chave": "avaria_codigo",
+        "coluna_descricao": "avaria_descricao"
+      }
+    ],
+    "tb_veiculo_classificacao_dano_ocorrencia": [
+      {
+        "coluna_chave": "motivo_ausencia_foto_codigo",
+        "coluna_descricao": "motivo_ausencia_foto_descricao"
+      }
+    ],
+    "tb_veiculo_disp_seguranca_ocorrencia": [
+      {
+        "coluna_chave": "dispositivo_seguranca_codigo",
+        "coluna_descricao": "dispositivo_seguranca_descricao"
+      }
+    ],
+    "tb_veiculo_ocorrencia": [
+      {
+        "coluna_chave": "orgao_codigo",
+        "coluna_descricao": "orgao_descricao"
+      },
+      {
+        "coluna_chave": "situacao_placa_codigo",
+        "coluna_descricao": "situacao_placa_descricao"
+      },
+      {
+        "coluna_chave": "motivo_apreensao_codigo",
+        "coluna_descricao": "motivo_apreensao_descricao"
+      },
+      {
+        "coluna_chave": "marca_modelo_codigo",
+        "coluna_descricao": "marca_modelo_descricao"
+      },
+      {
+        "coluna_chave": "cor_veiculo_codigo",
+        "coluna_descricao": "cor_veiculo_descricao"
+      },
+      {
+        "coluna_chave": "tipo_veiculo_codigo",
+        "coluna_descricao": "tipo_veiculo_descricao"
+      },
+      {
+        "coluna_chave": "categoria_veiculo_codigo",
+        "coluna_descricao": "categoria_veiculo_descricao"
+      },
+      {
+        "coluna_chave": "especie_veiculo_codigo",
+        "coluna_descricao": "especie_veiculo_descricao"
+      },
+      {
+        "coluna_chave": "codigo_municipio",
+        "coluna_descricao": "nome_municipio"
+      },
+      {
+        "coluna_chave": "id_pais",
+        "coluna_descricao": "nome_pais"
+      },
+      {
+        "coluna_chave": "motivo_ausencia_foto_codigo",
+        "coluna_descricao": "motivo_ausencia_foto_descricao"
+      }
+    ],
+    "tb_veiculo_superficie_pista_ocorrencia": [
+      {
+        "coluna_chave": "superficie_pista_codigo",
+        "coluna_descricao": "superficie_pista_descricao"
+      }
+    ],
+    "tb_viatura_ocorrencia": [
+      {
+        "coluna_chave": "codigo_tipo_viatura",
+        "coluna_descricao": "descricao_tipo_viatura"
+      },
+      {
+        "coluna_chave": "orgao_codigo",
+        "coluna_descricao": "orgao_descricao"
+      },
+      {
+        "coluna_chave": "problema_atendimento_codigo",
+        "coluna_descricao": "problema_atendimento_descricao"
+      },
+      {
+        "coluna_chave": "natureza_secundaria_codigo",
+        "coluna_descricao": "natureza_secundaria_descricao"
+      }
+    ],
+    "tb_vistoria_veiculo_ocorrencia": [
+      {
+        "coluna_chave": "situacao_combustivel_codigo",
+        "coluna_descricao": "situacao_combustivel_descricao"
+      }
+    ],
+    "vw_arma_ocorrencia_s": [
+      {
+        "coluna_chave": "orgao_codigo",
+        "coluna_descricao": "orgao_descricao"
+      },
+      {
+        "coluna_chave": "situacao_codigo",
+        "coluna_descricao": "situacao_descricao"
+      },
+      {
+        "coluna_chave": "marca_arma_codigo",
+        "coluna_descricao": "marca_arma_descricao"
+      },
+      {
+        "coluna_chave": "tipo_arma_codigo",
+        "coluna_descricao": "tipo_arma_descricao"
+      },
+      {
+        "coluna_chave": "calibre_arma_codigo",
+        "coluna_descricao": "calibre_arma_descricao"
+      }
+    ],
+    "vw_atendimento_pre_hospitalar_ocorrencia_s": [
+      {
+        "coluna_chave": "codigo_tipo_lesao",
+        "coluna_descricao": "descricao_tipo_lesao"
+      },
+      {
+        "coluna_chave": "codigo_tipo_queimadura",
+        "coluna_descricao": "descricao_tipo_queimadura"
+      },
+      {
+        "coluna_chave": "destino_codigo",
+        "coluna_descricao": "destino_descricao"
+      },
+      {
+        "coluna_chave": "local_destino_codigo",
+        "coluna_descricao": "local_destino_descricao"
+      },
+      {
+        "coluna_chave": "posicao_no_veiculo_codigo",
+        "coluna_descricao": "posicao_no_veiculo_descricao"
+      },
+      {
+        "coluna_chave": "localizacao_vitima_codigo",
+        "coluna_descricao": "localizacao_vitima_descricao"
+      },
+      {
+        "coluna_chave": "evento_relacionado_codigo",
+        "coluna_descricao": "evento_relacionado_descricao"
+      },
+      {
+        "coluna_chave": "orgao_codigo",
+        "coluna_descricao": "orgao_descricao"
+      }
+    ],
+    "vw_avaliacao_risco_vd_s": [
+      {
+        "coluna_chave": "relacao_vitima_agressor_codigo",
+        "coluna_descricao": "relacao_vitima_agressor_descricao"
+      },
+      {
+        "coluna_chave": "resposta_codigo_tipo_parametro",
+        "coluna_descricao": "resposta_descricao_tipo_parametro"
+      }
+    ],
+    "vw_envolvido_ocorrencia_s": [
+      {
+        "coluna_chave": "id_pais_origem",
+        "coluna_descricao": "nome_pais_origem"
+      },
+      {
+        "coluna_chave": "tipo_documento_codigo",
+        "coluna_descricao": "tipo_documento_descricao"
+      },
+      {
+        "coluna_chave": "tipo_logradouro_codigo",
+        "coluna_descricao": "tipo_logradouro_descricao"
+      },
+      {
+        "coluna_chave": "natureza_ocorrencia_codigo",
+        "coluna_descricao": "natureza_ocorrencia_descricao"
+      },
+      {
+        "coluna_chave": "id_endereco",
+        "coluna_descricao": "descricao_endereco"
+      },
+      {
+        "coluna_chave": "logradouro_codigo",
+        "coluna_descricao": "logradouro_nome"
+      },
+      {
+        "coluna_chave": "codigo_bairro",
+        "coluna_descricao": "nome_bairro"
+      },
+      {
+        "coluna_chave": "codigo_municipio",
+        "coluna_descricao": "nome_municipio"
+      },
+      {
+        "coluna_chave": "condicao_fisica_codigo",
+        "coluna_descricao": "condicao_fisica_descricao"
+      },
+      {
+        "coluna_chave": "cor_pele_codigo",
+        "coluna_descricao": "cor_pele_descricao"
+      },
+      {
+        "coluna_chave": "envolvimento_codigo",
+        "coluna_descricao": "envolvimento_descricao"
+      },
+      {
+        "coluna_chave": "estado_civil_codigo",
+        "coluna_descricao": "estado_civil_descricao"
+      },
+      {
+        "coluna_chave": "relacao_vitima_autor_codigo",
+        "coluna_descricao": "relacao_vitima_autor_descricao"
+      },
+      {
+        "coluna_chave": "orgao_emissor_codigo",
+        "coluna_descricao": "orgao_emissor_descricao"
+      },
+      {
+        "coluna_chave": "tipo_prisao_apreensao_codigo",
+        "coluna_descricao": "tipo_prisao_apreensao_descricao"
+      },
+      {
+        "coluna_chave": "tipo_remocao_codigo",
+        "coluna_descricao": "tipo_remocao_descricao"
+      },
+      {
+        "coluna_chave": "orgao_lotacao_policial_codigo",
+        "coluna_descricao": "orgao_lotacao_policial_descricao"
+      },
+      {
+        "coluna_chave": "id_pais",
+        "coluna_descricao": "nome_pais"
+      },
+      {
+        "coluna_chave": "id_indicador_uso_etilometro",
+        "coluna_descricao": "descricao_indicador_uso_etilometro"
+      },
+      {
+        "coluna_chave": "orientacao_sexual_codigo",
+        "coluna_descricao": "orientacao_sexual_descricao"
+      },
+      {
+        "coluna_chave": "motivo_ausencia_telmail_codigo",
+        "coluna_descricao": "motivo_ausencia_telmail_descricao"
+      }
+    ],
+    "vw_incendio_ocorrencia_s": [
+      {
+        "coluna_chave": "id_subtipo_relatorio",
+        "coluna_descricao": "descricao_subtipo_relatorio"
+      },
+      {
+        "coluna_chave": "acao_bm_codigo",
+        "coluna_descricao": "acao_bm_descricao"
+      },
+      {
+        "coluna_chave": "classe_edificacao_codigo",
+        "coluna_descricao": "classe_edificacao_descricao"
+      },
+      {
+        "coluna_chave": "edificacao_tipo_construcao_codigo",
+        "coluna_descricao": "edificacao_tipo_construcao_descricao"
+      },
+      {
+        "coluna_chave": "edificacao_codigo_tipo_guarda_local",
+        "coluna_descricao": "edificacao_descricao_tipo_guarda_local"
+      },
+      {
+        "coluna_chave": "tipo_entrada_forcada_codigo",
+        "coluna_descricao": "tipo_entrada_forcada_descricao"
+      },
+      {
+        "coluna_chave": "equipamento_codigo",
+        "coluna_descricao": "equipamento_descricao"
+      },
+      {
+        "coluna_chave": "florestal_codigo_aclive_declive",
+        "coluna_descricao": "florestal_descricao_aclive_declive"
+      },
+      {
+        "coluna_chave": "florestal_codigo_tipo_combustivel",
+        "coluna_descricao": "florestal_descricao_tipo_combustivel"
+      },
+      {
+        "coluna_chave": "meio_acesso_codigo",
+        "coluna_descricao": "meio_acesso_descricao"
+      },
+      {
+        "coluna_chave": "meio_evacuacao_codigo",
+        "coluna_descricao": "meio_evacuacao_descricao"
+      },
+      {
+        "coluna_chave": "meio_evacuacao_tipo_codigo",
+        "coluna_descricao": "meio_evacuacao_tipo_descricao"
+      },
+      {
+        "coluna_chave": "meio_retardante_codigo",
+        "coluna_descricao": "meio_retardante_descricao"
+      },
+      {
+        "coluna_chave": "meio_pcip_codigo",
+        "coluna_descricao": "meio_pcip_descricao"
+      },
+      {
+        "coluna_chave": "meio_pcip_tipo_codigo",
+        "coluna_descricao": "meio_pcip_tipo_descricao"
+      },
+      {
+        "coluna_chave": "tipo_incendio_florestal_codigo",
+        "coluna_descricao": "tipo_incendio_florestal_descricao"
+      },
+      {
+        "coluna_chave": "tipo_vegetacao_codigo",
+        "coluna_descricao": "tipo_vegetacao_descricao"
+      },
+      {
+        "coluna_chave": "incendio_veiculo_codigo_tipo_combustivel",
+        "coluna_descricao": "incendio_veiculo_descricao_tipo_combustivel"
+      },
+      {
+        "coluna_chave": "incendio_veiculo_tipo_carga_codigo",
+        "coluna_descricao": "incendio_veiculo_tipo_carga_descricao"
+      },
+      {
+        "coluna_chave": "edificacao_cor_incendio_codigo",
+        "coluna_descricao": "edificacao_cor_incendio_descricao"
+      },
+      {
+        "coluna_chave": "edificacao_cor_incendio_codigo_tipo",
+        "coluna_descricao": "edificacao_cor_incendio_descricao_tipo"
+      }
+    ],
+    "vw_material_apreendido_ocorrencia_s": [
+      {
+        "coluna_chave": "tipo_objeto_codigo",
+        "coluna_descricao": "tipo_objeto_descricao"
+      },
+      {
+        "coluna_chave": "situacao_codigo",
+        "coluna_descricao": "situacao_descricao"
+      },
+      {
+        "coluna_chave": "orgao_codigo",
+        "coluna_descricao": "orgao_descricao"
+      },
+      {
+        "coluna_chave": "motivo_apreencao_codigo",
+        "coluna_descricao": "motivo_apreencao_descricao"
+      },
+      {
+        "coluna_chave": "codigo_categoria",
+        "coluna_descricao": "descricao_categoria"
+      }
+    ],
+    "vw_ocorrencia_s": [
+      {
+        "coluna_chave": "digitador_id_orgao",
+        "coluna_descricao": "digitador_nome_orgao"
+      },
+      {
+        "coluna_chave": "operacao_codigo",
+        "coluna_descricao": "operacao_descricao"
+      },
+      {
+        "coluna_chave": "natureza_codigo",
+        "coluna_descricao": "natureza_descricao"
+      },
+      {
+        "coluna_chave": "natureza_secundaria1_codigo",
+        "coluna_descricao": "natureza_secundaria1_descricao"
+      },
+      {
+        "coluna_chave": "natureza_secundaria2_codigo",
+        "coluna_descricao": "natureza_secundaria2_descricao"
+      },
+      {
+        "coluna_chave": "natureza_secundaria3_codigo",
+        "coluna_descricao": "natureza_secundaria3_descricao"
+      },
+      {
+        "coluna_chave": "complemento_natureza_codigo",
+        "coluna_descricao": "complemento_natureza_descricao"
+      },
+      {
+        "coluna_chave": "logradouro_codigo",
+        "coluna_descricao": "logradouro_nome"
+      },
+      {
+        "coluna_chave": "tipo_logradouro_codigo",
+        "coluna_descricao": "tipo_logradouro_descricao"
+      },
+      {
+        "coluna_chave": "codigo_bairro",
+        "coluna_descricao": "nome_bairro"
+      },
+      {
+        "coluna_chave": "codigo_municipio",
+        "coluna_descricao": "nome_municipio"
+      },
+      {
+        "coluna_chave": "logradouro2_codigo",
+        "coluna_descricao": "logradouro2_nome"
+      },
+      {
+        "coluna_chave": "tipo_logradouro2_codigo",
+        "coluna_descricao": "tipo_logradouro2_descricao"
+      },
+      {
+        "coluna_chave": "tipo_local_codigo",
+        "coluna_descricao": "tipo_local_descricao"
+      },
+      {
+        "coluna_chave": "local_mediato_codigo",
+        "coluna_descricao": "local_mediato_descricao"
+      },
+      {
+        "coluna_chave": "local_imediato_codigo",
+        "coluna_descricao": "local_imediato_descricao"
+      },
+      {
+        "coluna_chave": "instrumento_utilizado_codigo",
+        "coluna_descricao": "instrumento_utilizado_descricao"
+      },
+      {
+        "coluna_chave": "responsavel_apreensao_id_orgao",
+        "coluna_descricao": "responsavel_apreensao_nome_orgao"
+      },
+      {
+        "coluna_chave": "relator_id_orgao",
+        "coluna_descricao": "relator_nome_orgao"
+      },
+      {
+        "coluna_chave": "codigo_tipo_registro",
+        "coluna_descricao": "descricao_tipo_registro"
+      },
+      {
+        "coluna_chave": "natureza_diao_codigo",
+        "coluna_descricao": "natureza_diao_descricao"
+      },
+      {
+        "coluna_chave": "origem_comunicacao_codigo",
+        "coluna_descricao": "origem_comunicacao_descricao"
+      },
+      {
+        "coluna_chave": "tipo_interceptacao_codigo",
+        "coluna_descricao": "tipo_interceptacao_descricao"
+      },
+      {
+        "coluna_chave": "pais_codigo",
+        "coluna_descricao": "pais_nome"
+      },
+      {
+        "coluna_chave": "codigo_localizacao_ocorrencia",
+        "coluna_descricao": "descricao_localizacao_ocorrencia"
+      },
+      {
+        "coluna_chave": "orgao_solicitante_codigo",
+        "coluna_descricao": "orgao_solicitante_descricao"
+      },
+      {
+        "coluna_chave": "perito_id_perito",
+        "coluna_descricao": "perito_nome_perito"
+      }
+    ],
+    "vw_rat_produtividade_ocorrencia_s": [
+      {
+        "coluna_chave": "indicador_codigo",
+        "coluna_descricao": "indicador_descricao"
+      }
+    ],
+    "vw_recibo_s": [
+      {
+        "coluna_chave": "usuario_responsavel_id",
+        "coluna_descricao": "usuario_responsavel_nome"
+      },
+      {
+        "coluna_chave": "orgao_id",
+        "coluna_descricao": "orgao_descricao"
+      },
+      {
+        "coluna_chave": "orgao_codigo",
+        "coluna_descricao": "orgao_descricao"
+      }
+    ],
+    "vw_veiculo_acidente_ocorrencia_s": [
+      {
+        "coluna_chave": "tipo_carga_transportada_codigo",
+        "coluna_descricao": "tipo_carga_transportada_descricao"
+      },
+      {
+        "coluna_chave": "tipo_via_codigo",
+        "coluna_descricao": "tipo_via_descricao"
+      },
+      {
+        "coluna_chave": "largura_pista_codigo",
+        "coluna_descricao": "largura_pista_descricao"
+      },
+      {
+        "coluna_chave": "relevo_pista_codigo",
+        "coluna_descricao": "relevo_pista_descricao"
+      },
+      {
+        "coluna_chave": "tipo_pavimento_codigo",
+        "coluna_descricao": "tipo_pavimento_descricao"
+      },
+      {
+        "coluna_chave": "faixa_via_codigo",
+        "coluna_descricao": "faixa_via_descricao"
+      },
+      {
+        "coluna_chave": "tipo_tracado_codigo",
+        "coluna_descricao": "tipo_tracado_descricao"
+      },
+      {
+        "coluna_chave": "condicao_codigo",
+        "coluna_descricao": "condicao_descricao"
+      },
+      {
+        "coluna_chave": "caracteristica_via_codigo",
+        "coluna_descricao": "caracteristica_via_descricao"
+      },
+      {
+        "coluna_chave": "mao_direcao_codigo",
+        "coluna_descricao": "mao_direcao_descricao"
+      },
+      {
+        "coluna_chave": "condicao_tempo_codigo",
+        "coluna_descricao": "condicao_tempo_descricao"
+      },
+      {
+        "coluna_chave": "condicao_sinalizacao_codigo",
+        "coluna_descricao": "condicao_sinalizacao_descricao"
+      },
+      {
+        "coluna_chave": "condicao_obra_codigo",
+        "coluna_descricao": "condicao_obra_descricao"
+      },
+      {
+        "coluna_chave": "marca_longitudinal_codigo",
+        "coluna_descricao": "marca_longitudinal_descricao"
+      },
+      {
+        "coluna_chave": "controle_trafego_codigo",
+        "coluna_descricao": "controle_trafego_descricao"
+      }
+    ],
+    "vw_veiculo_ocorrencia_s": [
+      {
+        "coluna_chave": "orgao_codigo",
+        "coluna_descricao": "orgao_descricao"
+      },
+      {
+        "coluna_chave": "situacao_placa_codigo",
+        "coluna_descricao": "situacao_placa_descricao"
+      },
+      {
+        "coluna_chave": "motivo_apreensao_codigo",
+        "coluna_descricao": "motivo_apreensao_descricao"
+      },
+      {
+        "coluna_chave": "marca_modelo_codigo",
+        "coluna_descricao": "marca_modelo_descricao"
+      },
+      {
+        "coluna_chave": "cor_veiculo_codigo",
+        "coluna_descricao": "cor_veiculo_descricao"
+      },
+      {
+        "coluna_chave": "tipo_veiculo_codigo",
+        "coluna_descricao": "tipo_veiculo_descricao"
+      },
+      {
+        "coluna_chave": "categoria_veiculo_codigo",
+        "coluna_descricao": "categoria_veiculo_descricao"
+      },
+      {
+        "coluna_chave": "especie_veiculo_codigo",
+        "coluna_descricao": "especie_veiculo_descricao"
+      },
+      {
+        "coluna_chave": "codigo_municipio",
+        "coluna_descricao": "nome_municipio"
+      },
+      {
+        "coluna_chave": "id_pais",
+        "coluna_descricao": "nome_pais"
+      },
+      {
+        "coluna_chave": "motivo_ausencia_foto_codigo",
+        "coluna_descricao": "motivo_ausencia_foto_descricao"
+      }
+    ]
+  },
+  "db_bisp_shared": {
+    "tb_ibge_setores_geodata": [
+      {
+        "coluna_chave": "situacao_codigo",
+        "coluna_descricao": "situacao_descricao"
+      },
+      {
+        "coluna_chave": "tipo_codigo",
+        "coluna_descricao": "tipo_descricao"
+      },
+      {
+        "coluna_chave": "regiao_codigo",
+        "coluna_descricao": "regiao_nome"
+      },
+      {
+        "coluna_chave": "municipio_codigo",
+        "coluna_descricao": "municipio_nome"
+      },
+      {
+        "coluna_chave": "distrito_codigo",
+        "coluna_descricao": "distrito_nome"
+      },
+      {
+        "coluna_chave": "subdistrito_codigo",
+        "coluna_descricao": "subdistrito_nome"
+      },
+      {
+        "coluna_chave": "bairro_codigo",
+        "coluna_descricao": "bairro_nome"
+      },
+      {
+        "coluna_chave": "nucleo_urbano_codigo",
+        "coluna_descricao": "nucleo_urbano_nome"
+      },
+      {
+        "coluna_chave": "aglomerado_codigo",
+        "coluna_descricao": "aglomerado_nome"
+      },
+      {
+        "coluna_chave": "regiao_geografica_intermediaria_codigo",
+        "coluna_descricao": "regiao_geografica_intermediaria_nome"
+      },
+      {
+        "coluna_chave": "regiao_geografica_imediata_codigo",
+        "coluna_descricao": "regiao_geografica_imediata_nome"
+      },
+      {
+        "coluna_chave": "concentracao_urbana_codigo",
+        "coluna_descricao": "concentracao_urbana_nome"
+      }
+    ]
+  },
+  "db_bisp_sigpri_reporting": {
+    "tb_admissao": [
+      {
+        "coluna_chave": "codigo_motivo_admissao",
+        "coluna_descricao": "descricao_motivo_admissao"
+      },
+      {
+        "coluna_chave": "codigo_tipo_admissao",
+        "coluna_descricao": "descricao_tipo_admissao"
+      },
+      {
+        "coluna_chave": "codigo_motivo_do_desligamento",
+        "coluna_descricao": "descricao_motivo_do_desligamento"
+      },
+      {
+        "coluna_chave": "codigo_destino_preso",
+        "coluna_descricao": "nome_destino_preso"
+      }
+    ],
+    "tb_admissao_transito": [
+      {
+        "coluna_chave": "codigo_motivo_do_desligamento",
+        "coluna_descricao": "descricao_motivo_do_desligamento"
+      },
+      {
+        "coluna_chave": "codigo_destino_preso",
+        "coluna_descricao": "nome_destino_preso"
+      }
+    ],
+    "tb_monitoramento_eletronico": [
+      {
+        "coluna_chave": "codigo_tipo_termino_monitoramento",
+        "coluna_descricao": "descricao_tipo_termino_monitoramento"
+      },
+      {
+        "coluna_chave": "id_motivo_do_desligamento",
+        "coluna_descricao": "descricao_motivo_do_desligamento"
+      }
+    ],
+    "tb_movimentacao_individuo": [
+      {
+        "coluna_chave": "id_estrutura_fisica",
+        "coluna_descricao": "nome_estrutura_fisica"
+      }
+    ],
+    "tb_outra_prisao": [
+      {
+        "coluna_chave": "codigo_tipo_prisao_externa",
+        "coluna_descricao": "descricao_tipo_prisao_externa"
+      }
+    ]
+  },
+  "db_bisp_sip_reporting": {
+    "vw_individuo_sip": [
+      {
+        "coluna_chave": "codigo_profissao",
+        "coluna_descricao": "descricao_profissao"
+      }
+    ]
+  },
+  "db_bisp_smab_reporting": {
+    "tb_unidade_pmmg": [
+      {
+        "coluna_chave": "municipio_codigo",
+        "coluna_descricao": "municipio_nome"
+      }
+    ]
+  }
+}

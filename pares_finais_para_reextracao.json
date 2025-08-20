@@ -1,0 +1,72 @@
+[
+    {
+        "tabela": "db_bisp_cad_reporting.tb_chamada_atendimento",
+        "coluna_id": "natureza_id",
+        "coluna_descricao": "natureza_descricao"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.tb_chamada_atendimento_situacao",
+        "coluna_id": "chamada_atendimento_situacao_id",
+        "coluna_descricao": "chamada_atendimento_situacao_descricao"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.tb_chamada_historico",
+        "coluna_id": "usuario_alteracao_id",
+        "coluna_descricao": "usuario_alteracao_nome"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.tb_empenho_situacao",
+        "coluna_id": "empenho_situacao_id",
+        "coluna_descricao": "empenho_situacao_descricao"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.tb_recurso_situacao",
+        "coluna_id": "recurso_situacao_id",
+        "coluna_descricao": "recurso_situacao_descricao"
+    },
+    {
+        "tabela": "db_bisp_escala_reporting.tb_escala",
+        "coluna_id": "responsavel_id",
+        "coluna_descricao": "responsavel_nome"
+    },
+    {
+        "tabela": "db_bisp_infopen_reporting.tb_ocorrencia_disciplinar",
+        "coluna_id": "codigo_comarca",
+        "coluna_descricao": "descricao_comarca"
+    },
+    {
+        "tabela": "db_bisp_reds_master.vw_envolvido_ocorrencia_s",
+        "coluna_id": "id_indicador_uso_etilometro",
+        "coluna_descricao": "descricao_indicador_uso_etilometro"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.tb_ocorrencia",
+        "coluna_id": "perito_id_perito",
+        "coluna_descricao": "perito_nome_perito"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.tb_rat_produtividade_ocorrencia",
+        "coluna_id": "indicador_codigo",
+        "coluna_descricao": "indicador_descricao"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.tb_veiculo_ocorrencia",
+        "coluna_id": "marca_modelo_codigo",
+        "coluna_descricao": "marca_modelo_descricao"
+    },
+    {
+        "tabela": "db_bisp_shared.tb_ibge_setores_geodata",
+        "coluna_id": "distrito_codigo",
+        "coluna_descricao": "distrito_nome"
+    },
+    {
+        "tabela": "db_bisp_shared.tb_ibge_setores_geodata",
+        "coluna_id": "nucleo_urbano_codigo",
+        "coluna_descricao": "nucleo_urbano_nome"
+    },
+    {
+        "tabela": "db_bisp_shared.tb_ibge_setores_geodata",
+        "coluna_id": "aglomerado_codigo",
+        "coluna_descricao": "aglomerado_nome"
+    }
+]

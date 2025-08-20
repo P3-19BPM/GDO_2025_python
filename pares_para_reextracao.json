@@ -1,0 +1,557 @@
+[
+    {
+        "tabela": "db_bisp_cad_reporting.tb_atendimento",
+        "coluna_id": "atendente_id",
+        "coluna_descricao": "atendente_nome"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.tb_chamada",
+        "coluna_id": "id_logradouro",
+        "coluna_descricao": "descricao_logradouro"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.tb_chamada",
+        "coluna_id": "id_logradouro_cruzamento",
+        "coluna_descricao": "descricao_logradouro_cruzamento"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.tb_chamada",
+        "coluna_id": "id_municipio",
+        "coluna_descricao": "descricao_municipio"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.tb_chamada",
+        "coluna_id": "id_bairro",
+        "coluna_descricao": "nome_bairro"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.tb_chamada",
+        "coluna_id": "id_complemento",
+        "coluna_descricao": "descricao_complemento"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.tb_chamada_atendimento",
+        "coluna_id": "local_municipio_id",
+        "coluna_descricao": "local_municipio_nome"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.tb_chamada_atendimento",
+        "coluna_id": "local_bairro_id",
+        "coluna_descricao": "local_bairro_nome"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.tb_chamada_atendimento",
+        "coluna_id": "local_logradouro_id",
+        "coluna_descricao": "local_logradouro_nome"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.tb_chamada_atendimento",
+        "coluna_id": "natureza_id",
+        "coluna_descricao": "natureza_descricao"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.tb_chamada_atendimento",
+        "coluna_id": "natureza_codigo",
+        "coluna_descricao": "natureza_descricao"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.tb_chamada_atendimento_situacao",
+        "coluna_id": "chamada_atendimento_situacao_id",
+        "coluna_descricao": "chamada_atendimento_situacao_descricao"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.tb_chamada_historico",
+        "coluna_id": "usuario_alteracao_id",
+        "coluna_descricao": "usuario_alteracao_nome"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.tb_empenho",
+        "coluna_id": "viatura_id",
+        "coluna_descricao": "viatura_descricao"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.tb_empenho_situacao",
+        "coluna_id": "empenho_situacao_id",
+        "coluna_descricao": "empenho_situacao_descricao"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.tb_integracao_reds",
+        "coluna_id": "viatura_id",
+        "coluna_descricao": "viatura_descricao"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.tb_recurso",
+        "coluna_id": "viatura_id",
+        "coluna_descricao": "viatura_descricao"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.tb_recurso",
+        "coluna_id": "usuario_alteracao_id",
+        "coluna_descricao": "usuario_alteracao_nome"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.tb_recurso",
+        "coluna_id": "usuario_exclusao_id",
+        "coluna_descricao": "usuario_exclusao_nome"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.tb_recurso_componente",
+        "coluna_id": "pessoa_id",
+        "coluna_descricao": "pessoa_nome"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.tb_recurso_componente",
+        "coluna_id": "usuario_inclusao_id",
+        "coluna_descricao": "usuario_inclusao_nome"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.tb_recurso_componente",
+        "coluna_id": "usuario_exclusao_id",
+        "coluna_descricao": "usuario_exclusao_nome"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.tb_recurso_situacao",
+        "coluna_id": "recurso_situacao_id",
+        "coluna_descricao": "recurso_situacao_descricao"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.tb_recurso_situacao",
+        "coluna_id": "usuario_inclusao_id",
+        "coluna_descricao": "usuario_inclusao_nome"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.vw_atendimento_s",
+        "coluna_id": "atendente_id",
+        "coluna_descricao": "atendente_nome"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.vw_chamada_atendimento_s",
+        "coluna_id": "local_municipio_id",
+        "coluna_descricao": "local_municipio_nome"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.vw_chamada_atendimento_s",
+        "coluna_id": "local_bairro_id",
+        "coluna_descricao": "local_bairro_nome"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.vw_chamada_atendimento_s",
+        "coluna_id": "local_logradouro_id",
+        "coluna_descricao": "local_logradouro_nome"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.vw_chamada_atendimento_s",
+        "coluna_id": "natureza_id",
+        "coluna_descricao": "natureza_descricao"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.vw_chamada_atendimento_s",
+        "coluna_id": "natureza_codigo",
+        "coluna_descricao": "natureza_descricao"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.vw_chamada_historico_s",
+        "coluna_id": "usuario_alteracao_id",
+        "coluna_descricao": "usuario_alteracao_nome"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.vw_chamada_s",
+        "coluna_id": "id_logradouro",
+        "coluna_descricao": "descricao_logradouro"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.vw_chamada_s",
+        "coluna_id": "id_logradouro_cruzamento",
+        "coluna_descricao": "descricao_logradouro_cruzamento"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.vw_chamada_s",
+        "coluna_id": "id_municipio",
+        "coluna_descricao": "descricao_municipio"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.vw_chamada_s",
+        "coluna_id": "id_bairro",
+        "coluna_descricao": "nome_bairro"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.vw_chamada_s",
+        "coluna_id": "id_complemento",
+        "coluna_descricao": "descricao_complemento"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.vw_empenho_s",
+        "coluna_id": "viatura_id",
+        "coluna_descricao": "viatura_descricao"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.vw_recurso_componente_s",
+        "coluna_id": "pessoa_id",
+        "coluna_descricao": "pessoa_nome"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.vw_recurso_componente_s",
+        "coluna_id": "usuario_inclusao_id",
+        "coluna_descricao": "usuario_inclusao_nome"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.vw_recurso_componente_s",
+        "coluna_id": "usuario_exclusao_id",
+        "coluna_descricao": "usuario_exclusao_nome"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.vw_recurso_s",
+        "coluna_id": "viatura_id",
+        "coluna_descricao": "viatura_descricao"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.vw_recurso_s",
+        "coluna_id": "usuario_alteracao_id",
+        "coluna_descricao": "usuario_alteracao_nome"
+    },
+    {
+        "tabela": "db_bisp_cad_reporting.vw_recurso_s",
+        "coluna_id": "usuario_exclusao_id",
+        "coluna_descricao": "usuario_exclusao_nome"
+    },
+    {
+        "tabela": "db_bisp_escala_reporting.tb_escala",
+        "coluna_id": "responsavel_id",
+        "coluna_descricao": "responsavel_nome"
+    },
+    {
+        "tabela": "db_bisp_escala_reporting.tb_escala_diaria",
+        "coluna_id": "equipe_id",
+        "coluna_descricao": "equipe_nome"
+    },
+    {
+        "tabela": "db_bisp_escala_reporting.tb_escala_diaria",
+        "coluna_id": "equipe_id",
+        "coluna_descricao": "equipe_descricao"
+    },
+    {
+        "tabela": "db_bisp_escala_reporting.tb_escala_pessoa",
+        "coluna_id": "equipe_id",
+        "coluna_descricao": "equipe_nome"
+    },
+    {
+        "tabela": "db_bisp_escala_reporting.tb_escala_pessoa",
+        "coluna_id": "equipe_id",
+        "coluna_descricao": "equipe_descricao"
+    },
+    {
+        "tabela": "db_bisp_escala_reporting.tb_escala_pessoa",
+        "coluna_id": "pessoa_id",
+        "coluna_descricao": "pessoa_nome"
+    },
+    {
+        "tabela": "db_bisp_escala_reporting.tb_guarnicao",
+        "coluna_id": "viatura_id",
+        "coluna_descricao": "viatura_descricao"
+    },
+    {
+        "tabela": "db_bisp_escala_reporting.tb_indisponibilidade",
+        "coluna_id": "pessoa_id",
+        "coluna_descricao": "pessoa_nome"
+    },
+    {
+        "tabela": "db_bisp_escala_reporting.tb_saldo_horas",
+        "coluna_id": "pessoa_id",
+        "coluna_descricao": "pessoa_nome"
+    },
+    {
+        "tabela": "db_bisp_infopen_reporting.tb_ocorrencia_disciplinar",
+        "coluna_id": "codigo_comarca",
+        "coluna_descricao": "descricao_comarca"
+    },
+    {
+        "tabela": "db_bisp_infopen_reporting.vw_ocorrenciadisciplinar",
+        "coluna_id": "codigo_comarca",
+        "coluna_descricao": "descricao_comarca"
+    },
+    {
+        "tabela": "db_bisp_reds_master.vw_envolvido_ocorrencia_s",
+        "coluna_id": "id_endereco",
+        "coluna_descricao": "descricao_endereco"
+    },
+    {
+        "tabela": "db_bisp_reds_master.vw_envolvido_ocorrencia_s",
+        "coluna_id": "codigo_bairro",
+        "coluna_descricao": "nome_bairro"
+    },
+    {
+        "tabela": "db_bisp_reds_master.vw_envolvido_ocorrencia_s",
+        "coluna_id": "codigo_municipio",
+        "coluna_descricao": "nome_municipio"
+    },
+    {
+        "tabela": "db_bisp_reds_master.vw_envolvido_ocorrencia_s",
+        "coluna_id": "id_indicador_uso_etilometro",
+        "coluna_descricao": "descricao_indicador_uso_etilometro"
+    },
+    {
+        "tabela": "db_bisp_reds_master.vw_ocorrencia_s",
+        "coluna_id": "codigo_bairro",
+        "coluna_descricao": "nome_bairro"
+    },
+    {
+        "tabela": "db_bisp_reds_master.vw_ocorrencia_s",
+        "coluna_id": "codigo_municipio",
+        "coluna_descricao": "nome_municipio"
+    },
+    {
+        "tabela": "db_bisp_reds_master.vw_recibo_s",
+        "coluna_id": "id_destinatario",
+        "coluna_descricao": "nome_destinatario"
+    },
+    {
+        "tabela": "db_bisp_reds_master.vw_veiculo_ocorrencia_s",
+        "coluna_id": "codigo_municipio",
+        "coluna_descricao": "nome_municipio"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.tb_auto_resistencia_ocorrencia",
+        "coluna_id": "codigo_municipio",
+        "coluna_descricao": "nome_municipio"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.tb_auto_resistencia_ocorrencia",
+        "coluna_id": "codigo_bairro",
+        "coluna_descricao": "nome_bairro"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.tb_auto_resistencia_ocorrencia",
+        "coluna_id": "logradouro_codigo",
+        "coluna_descricao": "logradouro_nome"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.tb_auto_resistencia_ocorrencia",
+        "coluna_id": "logradouro2_codigo",
+        "coluna_descricao": "logradouro2_nome"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.tb_autor_suspeito",
+        "coluna_id": "id_sofrimento_mental",
+        "coluna_descricao": "descricao_sofrimento_mental"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.tb_envolvido_ocorrencia",
+        "coluna_id": "natureza_ocorrencia_codigo",
+        "coluna_descricao": "natureza_ocorrencia_descricao"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.tb_envolvido_ocorrencia",
+        "coluna_id": "id_endereco",
+        "coluna_descricao": "descricao_endereco"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.tb_envolvido_ocorrencia",
+        "coluna_id": "logradouro_codigo",
+        "coluna_descricao": "logradouro_nome"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.tb_envolvido_ocorrencia",
+        "coluna_id": "codigo_bairro",
+        "coluna_descricao": "nome_bairro"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.tb_envolvido_ocorrencia",
+        "coluna_id": "codigo_municipio",
+        "coluna_descricao": "nome_municipio"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.tb_envolvido_ocorrencia",
+        "coluna_id": "id_indicador_uso_etilometro",
+        "coluna_descricao": "descricao_indicador_uso_etilometro"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.tb_ocorrencia",
+        "coluna_id": "natureza_codigo",
+        "coluna_descricao": "natureza_descricao"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.tb_ocorrencia",
+        "coluna_id": "logradouro_codigo",
+        "coluna_descricao": "logradouro_nome"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.tb_ocorrencia",
+        "coluna_id": "codigo_bairro",
+        "coluna_descricao": "nome_bairro"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.tb_ocorrencia",
+        "coluna_id": "codigo_municipio",
+        "coluna_descricao": "nome_municipio"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.tb_ocorrencia",
+        "coluna_id": "logradouro2_codigo",
+        "coluna_descricao": "logradouro2_nome"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.tb_ocorrencia",
+        "coluna_id": "perito_id_perito",
+        "coluna_descricao": "perito_nome_perito"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.tb_rat_produtividade_ocorrencia",
+        "coluna_id": "indicador_codigo",
+        "coluna_descricao": "indicador_descricao"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.tb_recibo",
+        "coluna_id": "usuario_responsavel_id",
+        "coluna_descricao": "usuario_responsavel_nome"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.tb_veiculo_ocorrencia",
+        "coluna_id": "marca_modelo_codigo",
+        "coluna_descricao": "marca_modelo_descricao"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.tb_veiculo_ocorrencia",
+        "coluna_id": "codigo_municipio",
+        "coluna_descricao": "nome_municipio"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.tb_viatura_ocorrencia",
+        "coluna_id": "natureza_secundaria_codigo",
+        "coluna_descricao": "natureza_secundaria_descricao"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.vw_envolvido_ocorrencia_s",
+        "coluna_id": "natureza_ocorrencia_codigo",
+        "coluna_descricao": "natureza_ocorrencia_descricao"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.vw_envolvido_ocorrencia_s",
+        "coluna_id": "id_endereco",
+        "coluna_descricao": "descricao_endereco"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.vw_envolvido_ocorrencia_s",
+        "coluna_id": "logradouro_codigo",
+        "coluna_descricao": "logradouro_nome"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.vw_envolvido_ocorrencia_s",
+        "coluna_id": "codigo_bairro",
+        "coluna_descricao": "nome_bairro"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.vw_envolvido_ocorrencia_s",
+        "coluna_id": "codigo_municipio",
+        "coluna_descricao": "nome_municipio"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.vw_envolvido_ocorrencia_s",
+        "coluna_id": "id_indicador_uso_etilometro",
+        "coluna_descricao": "descricao_indicador_uso_etilometro"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.vw_ocorrencia_s",
+        "coluna_id": "natureza_codigo",
+        "coluna_descricao": "natureza_descricao"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.vw_ocorrencia_s",
+        "coluna_id": "natureza_secundaria1_codigo",
+        "coluna_descricao": "natureza_secundaria1_descricao"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.vw_ocorrencia_s",
+        "coluna_id": "natureza_secundaria2_codigo",
+        "coluna_descricao": "natureza_secundaria2_descricao"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.vw_ocorrencia_s",
+        "coluna_id": "natureza_secundaria3_codigo",
+        "coluna_descricao": "natureza_secundaria3_descricao"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.vw_ocorrencia_s",
+        "coluna_id": "logradouro_codigo",
+        "coluna_descricao": "logradouro_nome"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.vw_ocorrencia_s",
+        "coluna_id": "codigo_bairro",
+        "coluna_descricao": "nome_bairro"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.vw_ocorrencia_s",
+        "coluna_id": "codigo_municipio",
+        "coluna_descricao": "nome_municipio"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.vw_ocorrencia_s",
+        "coluna_id": "logradouro2_codigo",
+        "coluna_descricao": "logradouro2_nome"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.vw_ocorrencia_s",
+        "coluna_id": "perito_id_perito",
+        "coluna_descricao": "perito_nome_perito"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.vw_rat_produtividade_ocorrencia_s",
+        "coluna_id": "indicador_codigo",
+        "coluna_descricao": "indicador_descricao"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.vw_recibo_s",
+        "coluna_id": "usuario_responsavel_id",
+        "coluna_descricao": "usuario_responsavel_nome"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.vw_veiculo_ocorrencia_s",
+        "coluna_id": "marca_modelo_codigo",
+        "coluna_descricao": "marca_modelo_descricao"
+    },
+    {
+        "tabela": "db_bisp_reds_reporting.vw_veiculo_ocorrencia_s",
+        "coluna_id": "codigo_municipio",
+        "coluna_descricao": "nome_municipio"
+    },
+    {
+        "tabela": "db_bisp_shared.tb_ibge_setores_geodata",
+        "coluna_id": "municipio_codigo",
+        "coluna_descricao": "municipio_nome"
+    },
+    {
+        "tabela": "db_bisp_shared.tb_ibge_setores_geodata",
+        "coluna_id": "distrito_codigo",
+        "coluna_descricao": "distrito_nome"
+    },
+    {
+        "tabela": "db_bisp_shared.tb_ibge_setores_geodata",
+        "coluna_id": "bairro_codigo",
+        "coluna_descricao": "bairro_nome"
+    },
+    {
+        "tabela": "db_bisp_shared.tb_ibge_setores_geodata",
+        "coluna_id": "nucleo_urbano_codigo",
+        "coluna_descricao": "nucleo_urbano_nome"
+    },
+    {
+        "tabela": "db_bisp_shared.tb_ibge_setores_geodata",
+        "coluna_id": "aglomerado_codigo",
+        "coluna_descricao": "aglomerado_nome"
+    },
+    {
+        "tabela": "db_bisp_sigpri_reporting.tb_movimentacao_individuo",
+        "coluna_id": "id_estrutura_fisica",
+        "coluna_descricao": "nome_estrutura_fisica"
+    },
+    {
+        "tabela": "db_bisp_sip_reporting.vw_individuo_sip",
+        "coluna_id": "codigo_profissao",
+        "coluna_descricao": "descricao_profissao"
+    },
+    {
+        "tabela": "db_bisp_smab_reporting.tb_unidade_pmmg",
+        "coluna_id": "municipio_codigo",
+        "coluna_descricao": "municipio_nome"
+    }
+]

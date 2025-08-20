@@ -29,8 +29,8 @@ OCO.logradouro_nome,                                          -- Nome do logrado
 OCO.numero_endereco,                                          -- Número do endereço
 OCO.nome_bairro,                                              -- Nome do bairro
 OCO.ocorrencia_uf,                                            -- Estado da ocorrência
-OCO.numero_latitude,                                          -- Latitude da localização
-OCO.numero_longitude,                                         -- Longitude da localização
+OCO.numero_latitude AS numero_latitude1,                                          -- Latitude da localização
+OCO.numero_longitude as numero_longitude1,                                         -- Longitude da localização
  CONCAT(
     SUBSTR(CAST(OCO.data_hora_fato AS STRING), 9, 2), '/',  -- Dia (posições 9-10)
     SUBSTR(CAST(OCO.data_hora_fato AS STRING), 6, 2), '/',  -- Mês (posições 6-7)
